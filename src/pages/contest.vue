@@ -121,8 +121,7 @@
 
 <script>
 import { ref } from 'vue';
-import axios from 'axios';
-import { apiUrl } from 'src/self_configs';
+import {api as axios} from '@/boot/axios';
 import { useRoute } from 'vue-router';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 import '@kangc/v-md-editor/lib/style/base-editor.css';
@@ -189,7 +188,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: apiUrl + '/contest/getInfo',
+        url: /*apiUrl +*/ '/contest/getInfo',
         data: {
           contestId: this_route.query.cid,
         },

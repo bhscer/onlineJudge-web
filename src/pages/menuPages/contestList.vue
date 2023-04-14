@@ -72,7 +72,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import {api as axios} from "@/boot/axios";
 import { apiUrl } from "src/self_configs";
 
 export default defineComponent({
@@ -114,7 +114,7 @@ export default defineComponent({
             console.log(post_data);
             axios({
                 method: "post",
-                url: apiUrl + "/contest/getList",
+                url: /*apiUrl +*/ "/contest/getList",
                 data: post_data
             }).then(data => {
                 console.log("Success:", data);

@@ -37,7 +37,7 @@ import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
 import { $t } from '@/boot/i18n';
-import axios from 'axios';
+import {api as axios} from '@/boot/axios';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -56,7 +56,7 @@ function getSubmissionInfo() {
   }
   axios({
     method: 'post',
-    url: apiUrl + '/submission/getInfo',
+    url: /*apiUrl +*/ '/submission/getInfo',
     data: {
       submissionId: this_route.query.sid,
     },

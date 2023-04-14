@@ -202,7 +202,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import axios from 'axios';
+import {api as axios} from '@/boot/axios';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 // import vuepressTheme from "@kangc/v-md-editor/lib/theme/vuepress.js";
@@ -210,7 +210,6 @@ import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import * as monaco from 'monaco-editor';
 // import MonacoEditor from 'monaco-editor-vue';
 // import Prism from "prismjs";
-import { apiUrl } from '../self_configs';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import SubmissionList from '@/components/submissionList.vue';
@@ -259,7 +258,7 @@ export default defineComponent({
       }
       axios({
         method: 'post',
-        url: apiUrl + '/problem/submit',
+        url: /*apiUrl +*/ '/problem/submit',
         data: jdata,
       })
         .then((data) => {
@@ -391,7 +390,7 @@ export default defineComponent({
       console.log(post_data);
       axios({
         method: 'post',
-        url: apiUrl + '/problem/getInfo',
+        url: /*apiUrl +*/ '/problem/getInfo',
         data: post_data,
       })
         .then((data) => {
@@ -421,49 +420,6 @@ export default defineComponent({
             // showFailToast('获取签到情况失败');
           }
         });
-      /*
-                  console.log(this.$route)
-                  if (this.$route.query.type === undefined || this.$route.query.type==='0'&&this.$route.query.id===undefined || this.$route.query.type==='1'&&(this.$route.query.cid===undefined || this.$route.query.pid===undefined)) {
-                      alert("参数不完整");
-                      return;
-                  }
-                  var post_data;
-                  if (this.$route.query.type==='0')
-                  {
-                      post_data = {"type":'0',"problemId":this.$route.query.id}
-                  }
-                  else
-                  {
-                      post_data = {"type":'1',"contestId":this.$route.query.cid,"problemId":this.$route.query.pid}
-                  }
-                  console.log(post_data)
-                  axios({
-                      method: "post",
-                      url: apiUrl + "/problem/getInfo",
-                      data:post_data
-                  })
-                      .then(data => {
-                          console.log("Success:", data);
-                          if (data.data.status === 1) // 列表获取成功
-                          {
-                              console.log(data);
-                              this.problem_info = data.data.data;
-                          } else {
-                              // alert(data.msg)
-                              // showFailToast(data.data.msg)
-                          }
-                      })
-                      .catch((error) => {
-                          console.error("Error:", error);
-                          if (error.request.status === 401) {
-                              // localStorage.removeItem('Authorization');
-                              // showFailToast("登录状态失效，请重新登录")
-                              // router.push('/login');
-                          } else {
-                              // showFailToast('获取签到情况失败');
-                          }
-                      });
-                   */
     };
     return {
       tab: ref('problem'),

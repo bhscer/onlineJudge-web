@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
-import { apiUrl } from '@/self_configs';
+// import { apiUrl } from '@/self_configs';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -14,7 +14,7 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: apiUrl });
+const api = axios.create({ baseURL: process.env.BASE_URL });
 api.interceptors.request.use(
   (config) => {
     if (localStorage.getItem('oj-auth-token')) {

@@ -14,7 +14,7 @@ import md5 from 'js-md5';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 
 import MonacoEditor from 'monaco-editor-vue';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default boot(async ({ app }) => {
   app.config.globalProperties.$md5 = md5;
@@ -26,6 +26,7 @@ export default boot(async ({ app }) => {
   app.use(MonacoEditor);
   // console.log("loaded");
   // console.log(VMdPreview);
+  /*
   axios.interceptors.request.use(
     (config) => {
       if (localStorage.getItem('oj-auth-token')) {
@@ -37,4 +38,5 @@ export default boot(async ({ app }) => {
       return Promise.reject(error);
     }
   );
+  */
 });
