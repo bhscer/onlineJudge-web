@@ -72,7 +72,7 @@ module.exports = configure(function (/* ctx */) {
       // minify: false,
       // polyfillModulePreload: true,
       // distDir
-
+      distDir: ctx.mode.spa ? 'public' : null,
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
