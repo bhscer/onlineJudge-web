@@ -173,7 +173,6 @@
 <script lang="js">
 import { defineComponent, ref } from 'vue';
 import {api as axios} from '@/boot/axios';
-import { apiUrl } from 'src/self_configs';
 import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -275,7 +274,7 @@ export default defineComponent({
             console.log(post_data)
             axios({
                 method: 'post',
-                url: /*apiUrl + */'/submission/getList',
+                url: '/submission/getList',
                 data: post_data
             }) .then(data => {
                 console.log('Success:', data);

@@ -258,7 +258,7 @@ export default defineComponent({
       }
       axios({
         method: 'post',
-        url: /*apiUrl +*/ '/problem/submit',
+        url: '/problem/submit',
         data: jdata,
       })
         .then((data) => {
@@ -390,7 +390,7 @@ export default defineComponent({
       console.log(post_data);
       axios({
         method: 'post',
-        url: /*apiUrl +*/ '/problem/getInfo',
+        url: '/problem/getInfo',
         data: post_data,
       })
         .then((data) => {

@@ -188,7 +188,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: /*apiUrl +*/ '/contest/getInfo',
+        url: '/contest/getInfo',
         data: {
           contestId: this_route.query.cid,
         },

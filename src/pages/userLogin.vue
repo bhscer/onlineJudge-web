@@ -124,7 +124,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { apiUrl } from 'src/self_configs';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
