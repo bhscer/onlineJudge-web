@@ -14,9 +14,12 @@ import md5 from 'js-md5';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 
 import MonacoEditor from 'monaco-editor-vue';
+import { inject } from '@vercel/analytics'
+
 // import axios from 'axios';
 
 export default boot(async ({ app }) => {
+  inject();
   app.config.globalProperties.$md5 = md5;
   VMdPreview.use(githubTheme, {
     Hljs: hljs,
