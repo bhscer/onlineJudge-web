@@ -128,7 +128,7 @@ import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { $t } from '@/boot/i18n';
-import {api as axios} from '@/boot/axios';
+import { api as axios } from '@/boot/axios';
 import { useUserStore } from '@/stores/user';
 
 const user = useUserStore();

@@ -25,109 +25,117 @@
           </q-linear-progress>
         </div>
       </q-card>
-      <q-card :style="qmarkstyle">
-        <q-tabs
-          v-model="tab"
-          dense
-          class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
-          align="justify"
-          narrow-indicator
-          outside-arrows
-          mobile-arrows
-        >
-          <q-tab name="description" label="description" />
-          <q-tab name="problems" label="problems" />
-          <q-tab name="submissions" label="submissions" />
-          <q-tab name="rankList" label="rankList" />
-          <q-tab name="notes" label="notes" />
-        </q-tabs>
 
-        <q-separator />
+      <div>
+          <q-card :style="qmarkstyle">
+          <q-tabs
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+            outside-arrows
+            mobile-arrows
+          >
+            <q-tab name="description" label="description" />
+            <q-tab name="problems" label="problems" />
+            <q-tab name="submissions" label="submissions" />
+            <q-tab name="rankList" label="rankList" />
+            <q-tab name="notes" label="notes" />
+          </q-tabs>
 
-        <q-tab-panels
-          v-model="tab"
-          animated
-          @transition="tab_pannel_change"
-          keep-alive
-        >
-          <q-tab-panel name="description">
-            <v-md-preview :text="contest_info.descriptionMd" />
-          </q-tab-panel>
-          <q-tab-panel name="problems" style="padding: 0">
-            <q-markup-table style="margin: 0" flat bordered>
-              <thead>
-                <tr>
-                  <th class="text-left" style="width: 8%">Status</th>
-                  <th class="text-left" style="width: 8%">ProblemId</th>
-                  <th class="text-left">Title</th>
-                  <th class="text-left" style="width: 5%">Solved</th>
-                  <th class="text-left" style="width: 5%">Submitted</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in contest_info.contestProblem" :key="item">
-                  <td>
-                    <!--q-icon name="done" style="color: #00c853" size="md" class="q-mr-sm"></q-icon-->
-                    <q-icon
-                      v-if="item.userStatus === 2"
-                      name="done"
-                      style="color: #00c853"
-                      size="md"
-                      class="q-mr-sm"
-                    ></q-icon>
-                    <q-icon
-                      v-if="item.userStatus === 1"
-                      name="close"
-                      style="color: red"
-                      size="md"
-                      class="q-mr-sm"
-                    ></q-icon>
-                  </td>
-                  <td class="text-left">{{ item.problemNo }}</td>
-                  <td class="text-left">
-                    <a
-                      @click="
-                        this.$router.push(
-                          `/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
-                        )
-                      "
-                      style="
-                        color: #0d47a1;
-                        cursor: pointer;
-                        text-decoration: none;
-                      "
-                      :href="`/#/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
-                      >{{ item.problemName }}</a
-                    >
-                  </td>
-                  <td class="text-left">{{ item.accepted }}</td>
-                  <td class="text-left">{{ item.submitted }}</td>
-                </tr>
-              </tbody>
-            </q-markup-table>
-          </q-tab-panel>
-          <q-tab-panel name="submissions" style="padding: 0; margin: 0">
-            <submission-list></submission-list>
-          </q-tab-panel>
-          <q-tab-panel name="rankList"></q-tab-panel>
-          <q-tab-panel name="notes"></q-tab-panel>
-        </q-tab-panels>
-      </q-card>
+
+        </q-card>
+        <q-card class="q-mt-md">
+          <q-tab-panels
+            v-model="tab"
+            animated
+            @transition="tab_pannel_change"
+            keep-alive
+          >
+            <q-tab-panel name="description" class="q-pa-none">
+                <v-md-preview :text="contest_info.descriptionMd" />
+            </q-tab-panel>
+            <q-tab-panel name="problems" style="padding: 0">
+              <q-markup-table style="margin: 0" flat bordered>
+                <thead>
+                  <tr>
+                    <th class="text-left" style="width: 8%">Status</th>
+                    <th class="text-left" style="width: 8%">ProblemId</th>
+                    <th class="text-left">Title</th>
+                    <th class="text-left" style="width: 5%">Solved</th>
+                    <th class="text-left" style="width: 5%">Submitted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in contest_info.contestProblem" :key="item">
+                    <td>
+                      <!--q-icon name="done" style="color: #00c853" size="md" class="q-mr-sm"></q-icon-->
+                      <q-icon
+                        v-if="item.userStatus === 2"
+                        name="done"
+                        style="color: #00c853"
+                        size="md"
+                        class="q-mr-sm"
+                      ></q-icon>
+                      <q-icon
+                        v-if="item.userStatus === 1"
+                        name="close"
+                        style="color: red"
+                        size="md"
+                        class="q-mr-sm"
+                      ></q-icon>
+                    </td>
+                    <td class="text-left">{{ item.problemNo }}</td>
+                    <td class="text-left">
+                      <a
+                        @click="
+                          this.$router.push(
+                            `/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
+                          )
+                        "
+                        style="
+                          color: #0d47a1;
+                          cursor: pointer;
+                          text-decoration: none;
+                        "
+                        :href="`/#/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
+                        >{{ item.problemName }}</a
+                      >
+                    </td>
+                    <td class="text-left">{{ item.accepted }}</td>
+                    <td class="text-left">{{ item.submitted }}</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-tab-panel>
+            <q-tab-panel name="submissions" style="padding: 0; margin: 0">
+              <submission-list style="padding: 0; margin: 0;"></submission-list>
+            </q-tab-panel>
+            <q-tab-panel name="rankList"></q-tab-panel>
+            <q-tab-panel name="notes"></q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </div>
+
+
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import {api as axios} from '@/boot/axios';
-import { useRoute } from 'vue-router';
+import { api as axios } from '@/boot/axios';
+import { useRoute,useRouter } from 'vue-router';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 // import vuepressTheme from "@kangc/v-md-editor/lib/theme/vuepress.js";
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import SubmissionList from '@/components/submissionList.vue';
+
+import { useQuasar } from 'quasar';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -141,16 +149,21 @@ export default {
   components: { SubmissionList },
   watch: {
     $route(to, from) {
+      console.log(to)
       this.getContestInfo();
     },
   },
   setup() {
     const tab = ref('description');
+
+    const $q = useQuasar();
     let this_route = useRoute();
+    let this_router = useRouter();
     const contest_info = ref({});
     const show_loading = ref(true);
     const time_percent = ref(0);
     const qmarkstyle = ref('');
+    const showPwdForm = ref(true)
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
       if (window.innerWidth > 850) {
@@ -191,6 +204,7 @@ export default {
         url: '/contest/getInfo',
         data: {
           contestId: this_route.query.cid,
+          pwd:this_route.query.pwd?this_route.query.pwd:''
         },
       })
         .then((data) => {
@@ -213,8 +227,14 @@ export default {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else {
+          } else if (error.request.status === 400) {
             // showFailToast('获取签到情况失败');
+            this_router.push('/contestList')
+            $q.notify({
+              type: 'negative',
+              message: error.response.data.detail,
+              progress: true,
+            });
           }
         });
     };
@@ -226,6 +246,7 @@ export default {
       qmarkstyle,
       getContestInfo,
       getWindowInfo,
+      showPwdForm
     };
   },
   mounted() {

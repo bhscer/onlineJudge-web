@@ -69,7 +69,7 @@ module.exports = configure(function (ctx) {
       // analyze: true,
       // env: {},
 
-			env: ctx.dev ? config.dev : config.prod,
+      env: ctx.dev ? config.dev : config.prod,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

@@ -36,7 +36,7 @@ import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
 import { $t } from '@/boot/i18n';
-import {api as axios} from '@/boot/axios';
+import { api as axios } from '@/boot/axios';
 
 const $q = useQuasar();
 const router = useRouter();

@@ -1,3 +1,3 @@
 export default {
-	add: "添加题目",
+  add: '添加题目',
 };

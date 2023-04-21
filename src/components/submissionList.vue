@@ -11,10 +11,14 @@
     "
   >
     <div v-show="!show_loading" style="padding: 0; margin: 0">
-      <div class="q-pa-md" style="padding: 0">
+      <div class="q-pa-md" style="padding: 0; margin: 0">
         <q-card class="q-pa-md" style="display: flex; flex-direction: column">
-          <div class="" style="display: flex">
-            <h3 style="margin: 0">过滤</h3>
+          <div class="q-gutter-md q-ml-sm" style="display: flex;flex-wrap: wrap;">
+            <h3 style="margin: 0"><strong>过滤</strong></h3>
+            <div v-if="show_loading_mini" class="q-ml-md q-my-auto" style="display: flex;">
+              <q-spinner-gears size="40px" color="primary" />
+              <p class="q-my-auto">loading...</p>
+            </div>
             <div class="q-my-auto" style="margin-left: auto">
               <q-btn color="primary" label="过滤" @click="filter_func_query" />
               <q-btn
@@ -25,9 +29,9 @@
               />
             </div>
           </div>
-          <q-checkbox v-model="filter_show_user_only" label="只看自己" />
+          <q-checkbox v-model="filter_show_user_only" label="只看自己" style="width: fit-content;"/>
           <div
-            class="q-gutter-md"
+            class="q-gutter-md q-ml-sm"
             style="display: flex; flex-direction: row; flex-wrap: wrap"
           >
             <div
@@ -40,6 +44,7 @@
               <q-input
                 outlined
                 v-model="filter_userLabel"
+                dense
                 class="q-my-auto"
               ></q-input>
             </div>
@@ -53,6 +58,7 @@
               <q-input
                 outlined
                 v-model="filter_problemId"
+                dense
                 class="q-my-auto"
               ></q-input>
             </div>
@@ -66,6 +72,7 @@
               <q-input
                 outlined
                 v-model="filter_contest"
+                dense
                 class="q-my-auto"
               ></q-input>
             </div>
@@ -79,6 +86,7 @@
               <q-select
                 outlined
                 v-model="filter_language"
+                dense
                 :options="filter_options_language"
               />
             </div>
@@ -93,14 +101,14 @@
               <q-select
                 outlined
                 v-model="filter_status"
+                dense
                 :options="filter_options_status"
               />
             </div>
           </div>
         </q-card>
 
-        <div v-show="empty_content">暂无提交记录~</div>
-        <q-markup-table class="q-mt-md" v-show="!empty_content">
+        <q-markup-table class="q-mt-md" v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
           <thead>
             <tr>
               <th class="text-left" style="width: 10%">Status</th>
@@ -150,6 +158,9 @@
             </tr>
           </tbody>
         </q-markup-table>
+        <q-card class="q-mt-md q-" style="display: flex;justify-content: center;">
+          <div class="text-h3">{{ err_msg }}</div>
+        </q-card>
       </div>
 
       <div class="q-pa-lg">
@@ -171,19 +182,23 @@
 </template>
 
 <script lang="js">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref,defineExpose } from 'vue';
 import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
     name: 'submissionList',
     setup() {
         let this_route = useRoute();
         let this_router = useRouter();
+        const $q = useQuasar();
+
         const submission_list = ref([{ 'Id': '0000', 'Title': 'test', 'Sovled': 6, 'Submited': 10, 'Rate': 6.6 }]);
         const current_page = ref(1);
         const maxPage = ref(1)
         const show_loading = ref(true)
+        const show_loading_mini = ref(true)
         const empty_content = ref(false)
         const filter_options_language = ['All','CPP','Java','Python3']
         const filter_options_status = [
@@ -198,6 +213,8 @@ export default defineComponent({
         const filter_language = ref('All')
         const filter_status = ref('All')
         const display_small_mode = ref(false);
+        const need_update = ref('false');
+        const err_msg = ref('')
 
 
         const filter_func_reset = ()  => {
@@ -236,7 +253,9 @@ export default defineComponent({
             if (!(this_route.path.toLowerCase() === '/status'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase() || this_route.path.toLowerCase() === '/problem'.toLowerCase())){
               return;
             }
-            show_loading.value = true
+            // show_loading.value = true
+            show_loading_mini.value = true
+            err_msg.value = ''
             // alert(this_route.path)
             var post_data = {}
             post_data = { 'page': current_page.value };
@@ -249,28 +268,6 @@ export default defineComponent({
               status:filter_status.value,
               problem:filter_problemId.value
             }
-
-            /*
-            if (this_route.path.toLowerCase() === '/status'.toLowerCase())
-            {
-              post_data['filter']['source'] = 'status'
-            }
-            else if (this_route.path.toLowerCase() === '/contest'.toLowerCase())
-            {
-              post_data['filter']['source'] = 'contest'
-            }
-            else if (this_route.path.toLowerCase() === '/problem'.toLowerCase())
-            {
-              if (this_route.query.type === '0') {
-
-                post_data['filter']['source'] = 'problem'
-              } else {
-
-                post_data['filter']['source'] = 'contestProblem'
-              }
-            }
-            else return
-            */
             console.log(post_data)
             axios({
                 method: 'post',
@@ -315,8 +312,13 @@ export default defineComponent({
                         submission_list.value[i]['boardText']+= `:${submission_list.value[i]['submissionPassRate']}%`
                       }
                     }
-                    if (submission_list.value.length==0) empty_content.value = true;
+                    if (submission_list.value.length==0)
+                    {
+                      err_msg.value = `没有检索结果`
+                      empty_content.value = true;
+                    }
                     show_loading.value = false;
+                    show_loading_mini.value = false;
                     console.log(submission_list.value)
                 } else {
                     // alert(data.msg)
@@ -329,8 +331,18 @@ export default defineComponent({
                         // localStorage.removeItem('Authorization');
                         // showFailToast("登录状态失效，请重新登录")
                         // router.push('/login');
-                    } else {
-                        // showFailToast('获取签到情况失败');
+                    } else if (error.request.status === 400) {
+                      // showFailToast('获取签到情况失败');
+                      $q.notify({
+                        type: 'negative',
+                        message: error.response.data.detail,
+                        progress: true,
+                      });
+                      err_msg.value = error.response.data.detail
+                    }
+                    else
+                    {
+                      err_msg.value = `未知错误,代码为${error.request.status}`
                     }
                 });
         };
@@ -354,12 +366,22 @@ export default defineComponent({
             display_small_mode,
             filter_func_query,
             filter_func_reset,
-            filter_problemId
+            filter_problemId,
+            need_update,
+            show_loading_mini,
+            err_msg
         };
+
+
+
     },
     watch:{
         '$route' (to, from) {
             this.getSubmissionList()
+        },
+        'need_update' (to,from) {
+          this.need_update = false;
+          this.getSubmissionList()
         }
     },
     mounted() {
@@ -383,10 +405,10 @@ export default defineComponent({
 
         this.getSubmissionList()
     },
-  beforeUnmount() {
-    // window.removeEventListener('resize', this.cancalDebounce);
-    window.removeEventListener('resize', this.getWindowInfo);
-  },
+    beforeUnmount() {
+      // window.removeEventListener('resize', this.cancalDebounce);
+      window.removeEventListener('resize', this.getWindowInfo);
+    },
 });
 </script>
 <style>
