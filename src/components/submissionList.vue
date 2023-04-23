@@ -1,8 +1,7 @@
 <template>
   <q-page
     style="
-      width: 100%;
-      width: auto;
+      width: 1000px;
       flex-wrap: wrap;
       flex-direction: column;
       margin: 0;

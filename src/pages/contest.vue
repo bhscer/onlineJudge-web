@@ -26,8 +26,8 @@
         </div>
       </q-card>
 
-      <div>
-          <q-card :style="qmarkstyle">
+      <div style="display: flex;flex-direction: column;flex-wrap: wrap;justify-content: space-between;padding: 0;">
+        <q-card :style="qmarkstyle">
           <q-tabs
             v-model="tab"
             dense
@@ -48,18 +48,20 @@
 
 
         </q-card>
-        <q-card class="q-mt-md">
+        <q-card class="q-mt-md" :style="`width: 100%;${qmarkstyle};padding:0`">
           <q-tab-panels
+              class="q-pa-sm"
             v-model="tab"
             animated
             @transition="tab_pannel_change"
             keep-alive
+            style="padding: 0;"
           >
             <q-tab-panel name="description" class="q-pa-none">
                 <v-md-preview :text="contest_info.descriptionMd" />
             </q-tab-panel>
-            <q-tab-panel name="problems" style="padding: 0">
-              <q-markup-table style="margin: 0" flat bordered>
+            <q-tab-panel name="problems" style="padding: 0;margin: 0;">
+              <q-markup-table style="margin: 0;" flat bordered>
                 <thead>
                   <tr>
                     <th class="text-left" style="width: 8%">Status</th>
@@ -111,10 +113,12 @@
                 </tbody>
               </q-markup-table>
             </q-tab-panel>
-            <q-tab-panel name="submissions" style="padding: 0; margin: 0">
-              <submission-list style="padding: 0; margin: 0;"></submission-list>
+            <q-tab-panel name="submissions" style="padding: 0; margin: 0;">
+              <submission-list></submission-list>
             </q-tab-panel>
-            <q-tab-panel name="rankList"></q-tab-panel>
+            <q-tab-panel name="rankList">
+              <rank-list-component :contestInfo="contest_info" style="width: fit-content;"></rank-list-component>
+            </q-tab-panel>
             <q-tab-panel name="notes"></q-tab-panel>
           </q-tab-panels>
         </q-card>
@@ -136,6 +140,7 @@ import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import SubmissionList from '@/components/submissionList.vue';
 
 import { useQuasar } from 'quasar';
+import RankListComponent from '@/components/rankListComponent.vue';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -146,7 +151,7 @@ function dateStrChangeTimeTamp(dateStr) {
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'contest',
-  components: { SubmissionList },
+  components: { SubmissionList, RankListComponent },
   watch: {
     $route(to, from) {
       console.log(to)
