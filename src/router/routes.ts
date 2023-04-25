@@ -72,6 +72,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/submitPage.vue') }],
   },
+  // {
+  //   path: '/invigilator',
+  //   component: () => import('layouts/MainLayoutInvigilator.vue'),
+  //   children: [
+  //     { path: '', redirect:'/invigilator/tokenLogin' },
+  //     { path: 'tokenLogin', component: () => import('pages/invigilator/tokenLogin.vue') }
+  //   ],
+  // },
   // Always leave this as last one,
   // but you can also remove it
   {

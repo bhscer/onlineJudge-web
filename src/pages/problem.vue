@@ -198,13 +198,19 @@
                     @update:model-value="language_change"
                   />
                   <q-btn
+                    :loading="submiting"
                     outline
                     rounded
                     color="primary"
                     label="提交"
                     @click="submitCode"
-                    size="xs"
-                  />
+                    style="width: 140px;"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-hourglass class="on-left" />
+                      submiting...
+                    </template>
+                  </q-btn>
                 </div>
 
                 <div
@@ -271,10 +277,12 @@ export default defineComponent({
     const qmarkstyle = ref('')
     const submissionRef = ref();
     const tab_inited = ref({})
+    const submiting = ref(false)
 
     const tab = ref('problem')
 
     const submitCode = () => {
+      submiting.value = true;
       var code_content = ITextModel.getValue();
       var jdata;
       if (this_route.query.type === '0') {
@@ -299,6 +307,7 @@ export default defineComponent({
         data: jdata,
       })
         .then((data) => {
+          submiting.value = false;
           tab.value = 'submissions'
           refreshSubmission();
           console.log('submit Success:', data);
@@ -309,6 +318,7 @@ export default defineComponent({
           });
         })
         .catch((error) => {
+          submiting.value = false;
           console.error('Error:', error);
             alert(error.response.data.detail)
           if (error.request.status === 401) {
@@ -325,7 +335,11 @@ export default defineComponent({
           }
           else
           {
-
+            $q.notify({
+              type: 'negative',
+              message: `网络错误，code=${error.response.status}`,
+              progress: true,
+            });
           }
         });
     };
@@ -512,7 +526,8 @@ export default defineComponent({
       miniMode,
       windowWidth,
       qmarkstyle,
-      tab_inited
+      tab_inited,
+      submiting
     };
   },
   mounted() {

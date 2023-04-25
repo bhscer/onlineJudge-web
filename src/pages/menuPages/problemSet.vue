@@ -169,8 +169,21 @@ export default defineComponent({
                         // localStorage.removeItem('Authorization');
                         // showFailToast("登录状态失效，请重新登录")
                         // router.push('/login');
-                    } else {
-                        // showFailToast('获取签到情况失败');
+                    }  else if (error.request.status === 400) {
+                      // showFailToast('获取签到情况失败');
+                      $q.notify({
+                        type: 'negative',
+                        message: error.response.data.detail,
+                        progress: true,
+                      });
+                    }
+                    else
+                    {
+                      $q.notify({
+                        type: 'negative',
+                        message: `网络错误，code=${error.response.status}`,
+                        progress: true,
+                      });
                     }
                 });
         };

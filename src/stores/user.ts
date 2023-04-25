@@ -56,7 +56,21 @@ export const useUserStore = defineStore('user', () => {
   user.auth().then((d) => {
     info.value = d.data;
     users.push(d.data);
-  });
+  })
+  function user_auth()
+  {
+    return new Promise<user.UserInfo>((resolve, reject) => {
+      user
+        .auth()
+        .then((d) => {
+          info.value = d.data;
+          users.push(d.data);
+          resolve(info.value)
+        })
+        .catch(reject);
+    });
+
+  }
 
   // load info 方法不对外暴露, 因为要维持一个loading queue
   function load_info(id: string) {
@@ -98,5 +112,6 @@ export const useUserStore = defineStore('user', () => {
     login,
     register,
     get_info,
+    user_auth
   };
 });

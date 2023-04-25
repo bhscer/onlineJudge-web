@@ -63,7 +63,7 @@
                       text-color="white"
                       icon="event"
                     >
-                      {{ item.contestTimeBegin }}
+                      {{ timeStampTostring(item.contestTimeBeginStamp) }}
                     </q-chip>
                     <q-chip
                       outline
@@ -72,7 +72,7 @@
                       text-color="white"
                       icon="schedule"
                     >
-                      {{ item.contestLength }}
+                      {{ timeSecondToString(item.contestLength) }}
                     </q-chip>
                     <q-chip
                       v-if="item.permission && item.permission.needPwd"
@@ -152,7 +152,7 @@
               text-color="white"
               icon="event"
             >
-              {{ pwdFormInfo.contestTimeBegin }}
+              {{ pwdFormInfo.contestTimeBeginStamp }}
             </q-chip>
             <q-chip
               outline
@@ -161,7 +161,7 @@
               text-color="white"
               icon="schedule"
             >
-              {{ pwdFormInfo.contestLength }}
+              {{ timeSecondToString(pwdFormInfo.contestLength) }}
             </q-chip>
           </div>
         </div>
@@ -253,7 +253,30 @@ export default defineComponent({
           }
         });
     }
-
+    const timeSecondToString = (tim) => {
+      var s = ''
+      console.log(tim)
+      if (tim / (60*60*24)) s += `${parseInt(tim/(60*60*24))}天`
+      tim %= (60*60*24)
+      if (tim / (60*60)) s += `${parseInt(tim/(60*60))}小时`
+      tim %= (60*60)
+      if (tim % (60)) s += `${parseInt(tim/(60))}分钟`
+      tim %= 60
+      if (tim) s += `${parseInt(tim)}秒`
+      return s
+    }
+    const timeStampTostring = (tim) => {
+      var timestamp = tim ? tim : null;
+          let date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+          let Y = date.getFullYear();
+          let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+          let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+          let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+          let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+          let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+          // return Y + M + D + h + m + s;
+          return `${Y}-${M}-${D} ${h}:${m}:${s}`
+    }
     const changePage = (newPage) => {
       this_router.push({
         path: '/contestList',
@@ -321,7 +344,9 @@ export default defineComponent({
       current_page,
       contest_list,
       pwd_text,
-      pwdVerifiy
+      pwdVerifiy,
+      timeSecondToString,
+      timeStampTostring
     };
   },
   watch: {

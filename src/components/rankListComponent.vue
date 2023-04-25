@@ -11,7 +11,9 @@
     "
   >
     <div v-show="!show_loading" style="padding: 0; margin: 0">
-      <div class="q-pa-md" style="padding: 0; margin: 0">
+      <div v-if="hideMsg.length">{{ hideMsg }}</div>
+      <div v-if="!hideMsg.length">
+        <div class="q-pa-md" style="padding: 0; margin: 0">
 
         <q-markup-table class="q-mt-md" separator="cell" v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
           <thead>
@@ -35,7 +37,7 @@
                   class="q-pa-sm"
                   :style="`margin:0;width:100%;height:100%;background-color:${itemrs.status===1?'#e87272':(itemrs.status===2?'#60e760':'')};`">
 
-                  <p align="center" >{{ itemrs.status }}</p>
+                  <p align="center" >{{ itemrs.status===2?parseInt(itemrs.timeCost/60):'' }}</p>
 
                   <p align="center" style="margin-bottom: 5px;">{{ `${itemrs.tryCnt} try` }}</p>
                 </div>
@@ -48,9 +50,9 @@
         <q-card class="q-mt-md q-" style="display: flex;justify-content: center;">
           <div class="text-h3">{{ err_msg }}</div>
         </q-card>
-      </div>
+        </div>
 
-      <div class="q-pa-lg">
+        <div class="q-pa-lg">
         <q-pagination
           v-model="current_page"
           :max="maxPage"
@@ -58,7 +60,9 @@
           direction-links
           @update:model-value="changePage"
         />
+        </div>
       </div>
+
     </div>
 
     <q-inner-loading :showing="show_loading">
@@ -90,6 +94,7 @@ export default defineComponent({
         const display_small_mode = ref(false);
         const need_update = ref('false');
         const err_msg = ref('')
+        const hideMsg = ref('')
         const {contestInfo} = toRefs(props)
 
         const getWindowInfo = () => {
@@ -151,10 +156,10 @@ export default defineComponent({
                           tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
                         }
                         tmp_dict['res'].push(tmp_tmp_dict)
-                        tmp_dict['res'].push(tmp_tmp_dict)
-                        tmp_dict['res'].push(tmp_tmp_dict)
-                        tmp_dict['res'].push(tmp_tmp_dict)
-                        tmp_dict['res'].push(tmp_tmp_dict)
+                        // tmp_dict['res'].push(tmp_tmp_dict)
+                        // tmp_dict['res'].push(tmp_tmp_dict)
+                        // tmp_dict['res'].push(tmp_tmp_dict)
+                        // tmp_dict['res'].push(tmp_tmp_dict)
                       }
                       rank_list.value.push(tmp_dict)
                     }
@@ -172,6 +177,9 @@ export default defineComponent({
                 } else {
                     // alert(data.msg)
                     // showFailToast(data.data.msg)
+                    hideMsg.value = data.data.msg;
+                    show_loading.value = false;
+                    show_loading_mini.value = false;
                 }
             })
                 .catch((error) => {
@@ -207,7 +215,8 @@ export default defineComponent({
             display_small_mode,
             need_update,
             show_loading_mini,
-            err_msg
+            err_msg,
+            hideMsg
         };
 
 

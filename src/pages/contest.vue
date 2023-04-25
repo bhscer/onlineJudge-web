@@ -1,5 +1,5 @@
 <template>
-  <div class="bg_div">
+  <div class="bg_div" v-show="!show_loading">
     <div class="content_main">
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
@@ -11,8 +11,8 @@
             <q-badge color="orange">ended</q-badge>
           </div>
           <div style="display: flex; justify-content: space-between">
-            <p>Start:{{ contest_info.contestTimeBegin }}</p>
-            <p>End:{{ contest_info.contestTimeEnd }}</p>
+            <p>Start:{{ timeStampTostring(contest_info.contestTimeBeginStamp) }}</p>
+            <p>End:{{ timeStampTostring(contest_info.contestTimeEndStamp) }}</p>
           </div>
           <q-linear-progress
             size="15px"
@@ -127,6 +127,10 @@
 
     </div>
   </div>
+  <q-inner-loading :showing="show_loading">
+    <q-spinner-gears size="50px" color="primary" />
+    <p>loading...</p>
+  </q-inner-loading>
 </template>
 
 <script>
@@ -192,6 +196,29 @@ export default {
         clearInterval(cgTimeTimer);
       }
     };
+    const timeSecondToString = (tim) => {
+      var s = ''
+      if (tim % (60*60*24)) s += `${tim/(60*60*24)}天`
+      tim /= 24
+      if (tim % (60*60)) s += `${tim/(60*60)}小时`
+      tim /= 60
+      if (tim % (60)) s += `${tim/(60)}分钟`
+      tim /= 60
+      if (tim) s += `${tim}秒`
+      return s
+    }
+    const timeStampTostring = (tim) => {
+      var timestamp = tim ? tim : null;
+          let date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+          let Y = date.getFullYear();
+          let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+          let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+          let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+          let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+          let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+          // return Y + M + D + h + m + s;
+          return `${Y}-${M}-${D} ${h}:${m}:${s}`
+    }
     const getContestInfo = () => {
       show_loading.value = true;
       if (cgTimeTimer !== null) {
@@ -225,8 +252,10 @@ export default {
             // alert(data.msg)
             // showFailToast(data.data.msg)
           }
+          show_loading.value = false;
         })
         .catch((error) => {
+          show_loading.value = false;
           console.error('Error:', error);
           if (error.request.status === 401) {
             // localStorage.removeItem('Authorization');
@@ -234,10 +263,17 @@ export default {
             // router.push('/login');
           } else if (error.request.status === 400) {
             // showFailToast('获取签到情况失败');
-            this_router.push('/contestList')
             $q.notify({
               type: 'negative',
               message: error.response.data.detail,
+              progress: true,
+            });
+          }
+          else
+          {
+            $q.notify({
+              type: 'negative',
+              message: `网络错误，code=${error.response.status}`,
               progress: true,
             });
           }
@@ -251,7 +287,9 @@ export default {
       qmarkstyle,
       getContestInfo,
       getWindowInfo,
-      showPwdForm
+      showPwdForm,
+      timeSecondToString,
+      timeStampTostring
     };
   },
   mounted() {
