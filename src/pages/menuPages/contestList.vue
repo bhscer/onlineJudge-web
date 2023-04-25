@@ -94,7 +94,7 @@
                     text-color="white"
                     icon="info"
                   >
-                    ended
+                    {{ ['Not start','Competing','Ended'][item.timeStatus] }}
                   </q-chip>
                 </div>
               </div>
@@ -255,7 +255,6 @@ export default defineComponent({
     }
     const timeSecondToString = (tim) => {
       var s = ''
-      console.log(tim)
       if (tim / (60*60*24)) s += `${parseInt(tim/(60*60*24))}天`
       tim %= (60*60*24)
       if (tim / (60*60)) s += `${parseInt(tim/(60*60))}小时`
@@ -317,6 +316,26 @@ export default defineComponent({
             console.log(data);
             maxPage.value = data.data.maxPage;
             contest_list.value = data.data.data;
+            for (var i=0;i<contest_list.value.length;i++)
+            {
+              var tstatus = 0
+              if (contest_list.value[i]['contestTimeBeginStamp'] >= Date.now()/1000)
+              {
+                tstatus = 0; // 未开始
+              }
+              else
+              {
+                if (contest_list.value[i]['contestTimeBeginStamp'] + contest_list.value[i]['contestLength'] >= Date.now()/1000)
+                {
+                  tstatus = 1 // 比赛中
+                }
+                else
+                {
+                  tstatus = 2
+                }
+              }
+              contest_list.value[i]['timeStatus'] = tstatus
+            }
             show_loading.value = false;
           } else {
             // alert(data.msg)

@@ -8,7 +8,7 @@
           </div>
           <div style="display: flex; flex-wrap: wrap">
             <q-badge color="primary">public</q-badge>
-            <q-badge color="orange">ended</q-badge>
+            <q-badge color="orange">{{ ['Not start','Competing','Ended'][tstatus] }}</q-badge>
           </div>
           <div style="display: flex; justify-content: space-between">
             <p>Start:{{ timeStampTostring(contest_info.contestTimeBeginStamp) }}</p>
@@ -173,6 +173,8 @@ export default {
     const time_percent = ref(0);
     const qmarkstyle = ref('');
     const showPwdForm = ref(true)
+    const tstatus = ref(0)
+
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
       if (window.innerWidth > 850) {
@@ -183,8 +185,8 @@ export default {
     };
     let cgTimeTimer = null;
     const changeTimePercent = () => {
-      var timeL = dateStrChangeTimeTamp(contest_info.value.contestTimeBegin);
-      var timeR = dateStrChangeTimeTamp(contest_info.value.contestTimeEnd);
+      var timeL = contest_info.value.contestTimeBeginStamp*1000;
+      var timeR = contest_info.value.contestTimeEndStamp*1000;
       var curr = Date.now();
       var lenth = timeR - timeL + 1;
       // console.log(timeL,timeR,curr,lenth)
@@ -198,13 +200,14 @@ export default {
     };
     const timeSecondToString = (tim) => {
       var s = ''
-      if (tim % (60*60*24)) s += `${tim/(60*60*24)}天`
-      tim /= 24
-      if (tim % (60*60)) s += `${tim/(60*60)}小时`
-      tim /= 60
-      if (tim % (60)) s += `${tim/(60)}分钟`
-      tim /= 60
-      if (tim) s += `${tim}秒`
+      console.log(tim)
+      if (tim / (60*60*24)) s += `${parseInt(tim/(60*60*24))}天`
+      tim %= (60*60*24)
+      if (tim / (60*60)) s += `${parseInt(tim/(60*60))}小时`
+      tim %= (60*60)
+      if (tim % (60)) s += `${parseInt(tim/(60))}分钟`
+      tim %= 60
+      if (tim) s += `${parseInt(tim)}秒`
       return s
     }
     const timeStampTostring = (tim) => {
@@ -245,6 +248,21 @@ export default {
             // 列表获取成功
             console.log(data);
             contest_info.value = data.data.data;
+              if (contest_info.value['contestTimeBeginStamp'] >= Date.now()/1000)
+              {
+                tstatus.value = 0; // 未开始
+              }
+              else
+              {
+                if (contest_info.value['contestTimeEndStamp'] >= Date.now()/1000)
+                {
+                  tstatus.value = 1 // 比赛中
+                }
+                else
+                {
+                  tstatus.value = 2
+                }
+              }
             changeTimePercent();
             cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
             show_loading.value = false;
@@ -289,7 +307,8 @@ export default {
       getWindowInfo,
       showPwdForm,
       timeSecondToString,
-      timeStampTostring
+      timeStampTostring,
+      tstatus
     };
   },
   mounted() {
