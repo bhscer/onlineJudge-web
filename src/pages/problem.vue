@@ -349,7 +349,8 @@ export default defineComponent({
         {
           value: '',
           language: 'cpp',
-          theme: 'vs-dark',
+          // theme: 'vs-dark',
+          theme: 'vs-white',
           editorOptions: {
             automaticLayout: true,
             autoIndent: true, //自动缩进
@@ -361,7 +362,7 @@ export default defineComponent({
     const tab_pannel_change = (next, prev) => {
       if (next == 'submit' && firstTimeToSubmit) {
         firstTimeToSubmit = false;
-        console.log(document.getElementById('monaco_editor_container'));
+        // console.log(document.getElementById('monaco_editor_container'));
         createEditor();
       }
       tab_inited.value[next] = true;

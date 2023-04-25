@@ -54,7 +54,7 @@
                     )
                   "
                   :href="`/#/problem?type=0&&id=${item.problemIdString}`"
-                  style="color: #0d47a1; cursor: pointer; text-decoration: none"
+                  style="color: inherit; cursor: pointer; text-decoration: none"
                   >{{ item.title }}</a
                 >
               </td>
