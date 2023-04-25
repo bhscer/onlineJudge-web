@@ -107,8 +107,8 @@
                         >{{ item.problemName }}</a
                       >
                     </td>
-                    <td class="text-left">{{ item.accepted }}</td>
-                    <td class="text-left">{{ item.submitted }}</td>
+                    <td class="text-left">{{ item.accpetCnt }}</td>
+                    <td class="text-left">{{ item.submitCnt }}</td>
                   </tr>
                 </tbody>
               </q-markup-table>
