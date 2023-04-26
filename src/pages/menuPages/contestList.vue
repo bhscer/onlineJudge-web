@@ -197,6 +197,7 @@ export default defineComponent({
     let this_route = useRoute();
     let this_router = useRouter();
     const contest_list = ref([
+      /*
       {
         contestId: 66,
         contestTitle: '浙江财经大学新生赛',
@@ -209,6 +210,7 @@ export default defineComponent({
         contestTimeBegin: '2022-9-4 13:00',
         contestLength: '1h',
       },
+      */
     ]);
     const current_page = ref(1);
     const maxPage = ref(1);
@@ -285,7 +287,7 @@ export default defineComponent({
         },
       });
     };
-    const getProblemList = () => {
+    const getContestList = () => {
       show_loading.value = false;
       // return;
       show_loading.value = true;
@@ -357,7 +359,7 @@ export default defineComponent({
       showPwdForm,
       pwdFormInfo,
       changePage,
-      getProblemList,
+      getContestList,
       show_loading,
       maxPage,
       current_page,
@@ -370,11 +372,11 @@ export default defineComponent({
   },
   watch: {
     $route(to, from) {
-      this.getProblemList();
+      this.getContestList();
     },
   },
   mounted() {
-    this.getProblemList();
+    this.getContestList();
   },
 });
 </script>
