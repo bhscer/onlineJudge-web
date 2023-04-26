@@ -256,6 +256,9 @@ export default defineComponent({
     $route(to, from) {
       this.getProblemInfo();
     },
+    '$q.dark.isActive'(to,from) {
+      monaco.editor.setTheme(to ? 'vs-dark':'vs-white')
+    }
   },
   setup() {
     // const language_model = ref(null);
@@ -282,6 +285,7 @@ export default defineComponent({
     const tab = ref('problem')
 
     const submitCode = () => {
+      if (submiting.value) return
       submiting.value = true;
       var code_content = ITextModel.getValue();
       var jdata;
@@ -350,7 +354,7 @@ export default defineComponent({
           value: '',
           language: 'cpp',
           // theme: 'vs-dark',
-          theme: 'vs-white',
+          theme: $q.dark.isActive ? 'vs-dark':'vs-white',
           editorOptions: {
             automaticLayout: true,
             autoIndent: true, //自动缩进
