@@ -6,7 +6,6 @@
       flex-direction: column;
       margin: 0;
       padding: 0;
-      min-height: auto;
     "
   >
     <div v-show="!show_loading" style="padding: 0; margin: 0">

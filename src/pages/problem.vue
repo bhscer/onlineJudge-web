@@ -401,7 +401,12 @@ export default defineComponent({
       textarea.select();
       if (document.execCommand('copy')) {
         document.execCommand('copy');
-        alert('复制成功');
+        // alert('复制成功');
+        $q.notify({
+            type: 'positive',
+            message: '复制成功',
+            progress: true,
+          });
       }
       document.body.removeChild(textarea);
     };
@@ -586,11 +591,22 @@ export default defineComponent({
   padding-right: 10vh;
 }
 
-.sample_box {
+
+.body--light .sample_box {
   margin: 0.5em 0;
   padding: 0.3em 0.5em;
   border: #ddd solid 1px;
   background: #f8f8f8;
+  border-radius: 3px;
+  overflow: auto;
+  font-size: 0.875em;
+  font-family: monospace;
+}
+.body--dark .sample_box {
+  margin: 0.5em 0;
+  padding: 0.3em 0.5em;
+  border: #ddd solid 1px;
+  background: #111111;
   border-radius: 3px;
   overflow: auto;
   font-size: 0.875em;

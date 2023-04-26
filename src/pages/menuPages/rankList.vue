@@ -18,14 +18,15 @@
           </tbody>
         </q-markup-table>
 
-      <q-inner-loading :showing="show_loading">
+
+  </q-card>
+
+  <q-inner-loading :showing="show_loading">
       <q-spinner-gears size="50px" color="primary" />
       <p>loading...</p>
     </q-inner-loading>
-  </q-card>
 
   </q-page>
-
 
 </template>
 

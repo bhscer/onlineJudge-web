@@ -20,18 +20,24 @@
       <q-tab-panels
         v-model="tab"
         animated
-        @transition="tab_pannel_change"
         keep-alive
       >
-        <q-tab-panel name="login"> </q-tab-panel>
-        <q-tab-panel name="register"> </q-tab-panel>
+        <q-tab-panel name="points">
+          <div v-for="point in submission_info.submissionResultDetail" :key="point">
+            <div :style="`background-color:${statusCovernt(point.result)[0]} ;`">
+              {{statusCovernt(point.result)[1]}}
+            </div>
+
+          </div>
+        </q-tab-panel>
+        <q-tab-panel name="code"> </q-tab-panel>
       </q-tab-panels>
     </div>
   </q-page>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
+<script setup>
+import { onMounted, ref } from 'vue';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
@@ -43,13 +49,14 @@ const router = useRouter();
 const this_route = useRoute();
 const tab = ref('points');
 const show_loading = ref(true);
+const submission_info = ref({})
 
 function getSubmissionInfo() {
   show_loading.value = true;
   // console.log(this_route)
   // console.log(this_route.path)
-  if (this_route.path.toLowerCase() !== '/contest'.toLowerCase()) return;
-  if (this_route.query.cid === undefined) {
+  if (this_route.path.toLowerCase() !== '/record'.toLowerCase()) return;
+  if (this_route.query.sid === undefined) {
     alert('参数不完整');
     return;
   }
@@ -62,15 +69,8 @@ function getSubmissionInfo() {
   })
     .then((data) => {
       console.log('Success:', data);
-      if (data.data.status === 1) {
-        // 列表获取成功
-        console.log(data);
-        // contest_info.value = data.data.data;
+        submission_info.value = data.data
         show_loading.value = false;
-      } else {
-        // alert(data.msg)
-        // showFailToast(data.data.msg)
-      }
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -83,6 +83,41 @@ function getSubmissionInfo() {
       }
     });
 }
+
+function statusCovernt(status)
+{
+  if (status==10)
+  {
+    return ['#17b978','Accepted']
+  }
+  else if (status==11)
+  {
+    return ['red','WA']
+  }
+  else
+  {
+    var rest = [];
+    rest.push('#ff8a5c')
+    switch (status)
+    {
+      case 0: rest.push('UnknownError');break;
+      case 1: rest.push('Pending');break;
+      case 3: rest.push('CompileError');break;
+      case 12: rest.push('FormatError');break;
+      case 13: rest.push('TLE');break;
+      case 14: rest.push('MLE');break;
+      case 15: rest.push('RuntimeError');break;
+      case 16: rest.push('OutputOverRange');break;
+      case 17: rest.push('SystemError');break;
+      case 18: rest.push('MultipleError');break;
+      default: rest.push('UnknownError');
+    }
+    return rest
+  }
+}
+onMounted(()=>{
+  getSubmissionInfo()
+})
 </script>
 
 <style scoped></style>
