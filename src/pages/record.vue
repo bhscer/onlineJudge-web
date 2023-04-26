@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page class="flex flex-center q-pa-lg q-ma-lg">
-    <div style="width: max-content; flex-direction: column">
+    <div style="width: 800px; flex-direction: column">
       <q-tabs
         v-model="tab"
         dense
@@ -21,6 +21,7 @@
         v-model="tab"
         animated
         keep-alive
+        @transition="tab_pannel_change"
       >
         <q-tab-panel name="points">
           <div v-for="point in submission_info.submissionResultDetail" :key="point">
@@ -30,7 +31,12 @@
 
           </div>
         </q-tab-panel>
-        <q-tab-panel name="code"> </q-tab-panel>
+        <q-tab-panel name="code">
+          <div
+                  id="monaco_editor_container"
+                  style="height: 500px; width: 99%; margin-left: 0.5%;resize: vertical;overflow: hidden;"
+                ></div>
+        </q-tab-panel>
       </q-tab-panels>
     </div>
   </q-page>
@@ -43,6 +49,7 @@ import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
 import { $t } from '@/boot/i18n';
 import { api as axios } from '@/boot/axios';
+import * as monaco from 'monaco-editor';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -50,6 +57,7 @@ const this_route = useRoute();
 const tab = ref('points');
 const show_loading = ref(true);
 const submission_info = ref({})
+let firstTimeToCode = true
 
 function getSubmissionInfo() {
   show_loading.value = true;
@@ -83,7 +91,42 @@ function getSubmissionInfo() {
       }
     });
 }
-
+function createEditor() {
+  var true_type = ''
+  switch (submission_info.value.submissionCodeLanguage) {
+    case 'CPP':
+      true_type = 'cpp';
+      break;
+    case 'Java':
+      true_type = 'java';
+      break;
+    case 'Python3':
+      true_type = 'python';
+      break;
+  }
+  ITextModel = monaco.editor.create(
+    document.getElementById('monaco_editor_container'),
+    {
+      value: '',
+      language: true_type,
+      // theme: 'vs-dark',
+      theme: $q.dark.isActive ? 'vs-dark':'vs-white',
+      editorOptions: {
+        automaticLayout: true,
+        autoIndent: true, //自动缩进
+      },
+      automaticLayout: true,
+      value:submission_info.value.submissionCode
+    }
+  );
+};
+function tab_pannel_change (next, prev) {
+  if (next == 'code' && firstTimeToCode) {
+    firstTimeToCode = false;
+    // console.log(document.getElementById('monaco_editor_container'));
+    createEditor();
+  }
+};
 function statusCovernt(status)
 {
   if (status==10)
