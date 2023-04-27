@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page class="flex flex-center q-pa-lg q-ma-lg">
-    <div style="width: 800px; flex-direction: column">
+    <div style="width: 800px; flex-direction: column" :v-show="!show_loading">
       <q-tabs
         v-model="tab"
         dense
@@ -39,6 +39,10 @@
         </q-tab-panel>
       </q-tab-panels>
     </div>
+    <q-inner-loading :showing="show_loading">
+      <q-spinner-gears size="50px" color="primary" />
+      <p>loading...</p>
+  </q-inner-loading>
   </q-page>
 </template>
 
