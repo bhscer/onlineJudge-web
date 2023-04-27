@@ -204,16 +204,35 @@
                     color="primary"
                     label="提交"
                     @click="submitCode"
-                    style="width: 140px;"
+                    style="width: 140px;height: fit-content;"
                   >
                     <template v-slot:loading>
                       <q-spinner-hourglass class="on-left" />
                       submiting...
                     </template>
                   </q-btn>
-                </div>
 
+                </div>
+                <q-file
+                class="q-mx-lg"
+                    rounded
+                    outlined
+                    dense
+                    bottom-slots
+                    v-model="file_model"
+                    label="submit code from file"
+                    counter
+                    style="width: fit-content;">
+                    <template v-slot:prepend>
+                      <q-icon name="cloud_upload" @click.stop.prevent />
+                    </template>
+                    <template v-slot:append>
+                      <q-icon name="close" @click.stop.prevent="file_model = null" class="cursor-pointer" />
+                    </template>
+
+                  </q-file>
                 <div
+                  v-if="!file_model"
                   id="monaco_editor_container"
                   style="height: 500px; width: 99%; margin-left: 0.5%;resize: vertical;overflow: hidden;"
                 ></div>
@@ -235,7 +254,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, getCurrentInstance } from 'vue';
 import { api as axios } from '@/boot/axios';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 import '@kangc/v-md-editor/lib/style/base-editor.css';
@@ -281,13 +300,35 @@ export default defineComponent({
     const submissionRef = ref();
     const tab_inited = ref({})
     const submiting = ref(false)
-
+    const file_model = ref(null)
+    let code_content = ''
     const tab = ref('problem')
+    const readCodeFromFile = async ()=>{
+      var promise = new Promise((reslove)=>{
+          var reader = new FileReader()
+          // result 属性中将包含一个字符串以表示所读取的文件内容。
+          reader.readAsText(file_model.value)
+          reader.onload = function(){
+            reslove(this.result);
+          }
+        })
+        await promise.then((res)=>{
+          code_content =  res;
+        })
+    }
 
-    const submitCode = () => {
+    const submitCode = async () => {
+
       if (submiting.value) return
       submiting.value = true;
-      var code_content = ITextModel.getValue();
+      if (file_model.value===null){
+        code_content = ITextModel.getValue();
+      }
+      else
+      {
+        await readCodeFromFile();
+      }
+      // console.log('then',code_content)
       var jdata;
       if (this_route.query.type === '0') {
         jdata = {
@@ -513,6 +554,7 @@ export default defineComponent({
       // else
       //  submissionRef.value.getSubmissionList()
     }
+
     return {
       tab,
       getProblemInfo,
@@ -537,7 +579,9 @@ export default defineComponent({
       windowWidth,
       qmarkstyle,
       tab_inited,
-      submiting
+      submiting,
+      file_model,
+      readCodeFromFile
     };
   },
   mounted() {
