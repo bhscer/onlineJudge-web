@@ -1,8 +1,7 @@
 <template>
   <q-page
     style="
-      width: 100%;
-      width: auto;
+      width: max-content;
       flex-wrap: wrap;
       flex-direction: column;
       margin: 0;
@@ -15,34 +14,50 @@
       <div v-if="!hideMsg.length">
         <div class="q-pa-md" style="padding: 0; margin: 0">
 
-        <q-markup-table class="q-mt-md" separator="cell" v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
+        <q-markup-table
+          class="q-mt-md"
+          separator="cell"
+          v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
           <thead>
             <tr>
-              <th class="text-left" style="width: 5%">Rank</th>
+              <th class="text-left">Rank</th>
               <th class="text-left">Name</th>
-              <th class="text-center" style="width: 80px" v-for="item in contestInfo.contestProblem" :key="item">{{ item.problemNo }}</th>
+              <th class="text-left">Score</th>
+              <th class="text-center" v-for="item in contestInfo.contestProblem" :key="item">{{ item.problemNo }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in rank_list" :key="item">
               <td class="text-left">{{ item.rank}}</td>
-              <td class="text-left">{{ item.name  }}</td>
-              <th class="text-left"
-                style="width: 80px;height:70px;padding: 0;"
+              <td class="text-left">{{ item.name}}</td>
+              <td>
+                <div>
+                  <strong>{{ item.solved }}</strong>
+                  <span style="margin-left: 8px;">{{ parseInt(item.timeCostWithPenalties/60) }}</span>
+                </div>
+              </td>
+              <td class="text-left"
+                style="padding: 0;width: fit-content;height: fit-content;"
                 v-for="itemrs in item.res"
                 :key="itemrs"
               >
+              <div
+                v-if="!itemrs.status"
+                  align="center"
+                  style="width: 60px;height:50px">
+
+              </div>
                 <div
                   v-if="itemrs.status"
-                  class="q-pa-sm"
-                  :style="`margin:0;width:100%;height:100%;background-color:${itemrs.status===1?'#e87272':(itemrs.status===2?'#60e760':'')};`">
+                  align="center"
+                  :style="`width: 60px;height:50px;margin:0;background-color:${itemrs.status===1?'#e87272':(itemrs.status===2?'#60e760':'')};`">
 
-                  <p align="center" >{{ itemrs.status===2?parseInt(itemrs.timeCost/60):'' }}</p>
+                  <p style="padding: 0;margin-bottom: 0;">{{ itemrs.status===2?parseInt(itemrs.timeCost/60):'' }}</p>
 
-                  <p align="center" style="margin-bottom: 5px;">{{ `${itemrs.tryCnt} try` }}</p>
+                  <p style="margin-top: 6px;margin-bottom: 0;">{{ `${itemrs.tryCnt} ${itemrs.tryCnt<=1?'try':'tries'}` }}</p>
                 </div>
 
-              </th>
+              </td>
 
             </tr>
           </tbody>
@@ -156,10 +171,6 @@ export default defineComponent({
                           tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
                         }
                         tmp_dict['res'].push(tmp_tmp_dict)
-                        // tmp_dict['res'].push(tmp_tmp_dict)
-                        // tmp_dict['res'].push(tmp_tmp_dict)
-                        // tmp_dict['res'].push(tmp_tmp_dict)
-                        // tmp_dict['res'].push(tmp_tmp_dict)
                       }
                       rank_list.value.push(tmp_dict)
                     }

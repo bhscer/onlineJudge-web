@@ -72,6 +72,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/submitPage.vue') }],
   },
+  {
+    path: '/admin',
+    component: () => import('layouts/MainLayoutAdmin.vue'),
+    children: [
+      { path: '', redirect:'/admin/welcome' },
+      { path: 'welcome', component: () => import('pages/admin/welcome.vue') },
+      { path: 'editProblem', component: () => import('pages/admin/editProblem.vue') },
+      { path: 'editContest', component: () => import('pages/admin/editContest.vue') },
+      { path: 'editProblemList', component: () => import('pages/admin/editProblemList.vue') },
+      { path: 'editContestList', component: () => import('pages/admin/editContestList.vue') }
+    ],
+  },
   // {
   //   path: '/invigilator',
   //   component: () => import('layouts/MainLayoutInvigilator.vue'),

@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Online Judge </q-toolbar-title>
+        <q-toolbar-title> OJ · Admin </q-toolbar-title>
 
         <toolbar-btn-group></toolbar-btn-group>
       </q-toolbar>
@@ -38,46 +38,28 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { $t } from '@/boot/i18n';
+// import { $t } from '@/boot/i18n';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';
 
 const linksList = [
   {
-    title: 'Home',
+    title: 'Back to Home',
     caption: 'Online Judge',
     icon: 'home',
-    link: 'home',
+    link: '/home',
   },
   {
-    title: 'Problems',
-    caption: 'All Problem',
+    title: 'Edit Problem',
+    caption: 'edit problem',
     icon: 'code',
-    link: 'problemSet',
+    link: 'editProblemList',
   },
   {
-    title: 'Contests',
-    caption: 'contests && homeworks',
+    title: 'Edit Contest',
+    caption: 'edit contest',
     icon: 'chat',
-    link: 'contestList',
-  },
-  {
-    title: 'Status',
-    caption: 'view all status',
-    icon: 'segment',
-    link: 'status',
-  },
-  {
-    title: 'Rank',
-    caption: 'ranks',
-    icon: 'analytics',
-    link: 'rankList',
-  },
-  {
-    title: 'Q&A',
-    caption: 'qa',
-    icon: 'question_answer',
-    link: 'faqs',
+    link: 'editContestList',
   },
 ];
 

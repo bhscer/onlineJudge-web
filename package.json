@@ -19,11 +19,13 @@
     "@quasar/extras": "^1.0.0",
     "@vercel/analytics": "^1.0.0",
     "axios": "^1.2.1",
+    "font-awesome": "^4.7.0",
     "js-md5": "^0.7.3",
     "monaco-editor-vue": "^1.0.10",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
+    "vue-html5-editor": "^1.1.1",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.0.0"
   },

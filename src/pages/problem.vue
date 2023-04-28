@@ -382,7 +382,7 @@ export default defineComponent({
           {
             $q.notify({
               type: 'negative',
-              message: `网络错误，code=${error.response.status}`,
+              message: `网络错误，code=${error.request.status}`,
               progress: true,
             });
           }

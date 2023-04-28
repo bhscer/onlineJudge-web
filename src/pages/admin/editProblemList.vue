@@ -5,46 +5,33 @@
   >
     <div v-show="!show_loading" style="width: 800px">
       <div class="q-pa-md">
-        <div style="display: flex" v-if="false">
-          <p class="q-my-auto">搜索</p>
-          <q-input rounded outlined v-model="text" class="q-my-auto">
-            <template v-slot:prepend>
-              <q-icon name="search"></q-icon>
-            </template>
-          </q-input>
+        <div style="display: flex">
+          <q-btn
+            outline
+            color="primary"
+            label="新增"
+            size="lg"
+            style="width: 100%"
+            padding="xs xs"
+            @click="this.$router.push(
+              `/admin/editProblem?add=1`
+            )"
+          />
         </div>
 
         <q-markup-table>
           <thead>
             <tr>
-              <th class="text-left" style="width: 5%">Status</th>
               <th class="text-left" style="width: 5%">Problem Id</th>
               <th class="text-left">Title</th>
               <th class="text-left">Sources</th>
               <th class="text-left" style="width: 5%">Solved</th>
               <th class="text-left" style="width: 5%">Submitted</th>
-              <th class="text-left" style="width: 5%">Accpect rate</th>
+              <th class="text-left" style="width: 10%">Action</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in problem_list" :key="item">
-              <td>
-                <!--q-icon name="done" style="color: #00c853" size="md" class="q-mr-sm"></q-icon-->
-                <q-icon
-                  v-if="item.userStatus === 2"
-                  name="done"
-                  style="color: #00c853"
-                  size="md"
-                  class="q-mr-sm"
-                ></q-icon>
-                <q-icon
-                  v-if="item.userStatus === 1"
-                  name="close"
-                  style="color: red"
-                  size="md"
-                  class="q-mr-sm"
-                ></q-icon>
-              </td>
               <td class="text-left">{{ item.problemIdString }}</td>
               <td class="text-left">
                 <a
@@ -65,22 +52,13 @@
               </td>
               <td class="text-left">{{ item.accepted }}</td>
               <td class="text-left">{{ item.submitted }}</td>
-              <td class="text-left">
-                <q-linear-progress
-                  size="15px"
-                  :value="item.acPercent / 100"
-                  color="primary"
-                  class="q-my-sm progress_bar"
-                  style="text-align: center"
-                >
-                  <div class="absolute-full flex flex-center progress_tip">
-                    <q-badge
-                      color="white"
-                      text-color="primary"
-                      :label="item.acPercent + '%'"
-                    />
-                  </div>
-                </q-linear-progress>
+              <td>
+                <a @click="this.$router.push(
+                      `/admin/editProblem?add=0&&id=${item.id}`
+                    )"
+                    :href="`/#/admin/editProblem?add=0&&id=${item.id}`"
+                  style="color: inherit; cursor: pointer; text-decoration: none"
+                  >Edit</a>
               </td>
             </tr>
           </tbody>
@@ -112,10 +90,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 
 export default defineComponent({
-    name: 'problemSet',
+    name: 'editProblemList',
     setup() {
         let this_route = useRoute();
         let this_router = useRouter();
+
         const $q = useQuasar();
         const problem_list = ref([{ 'Id': '0000', 'Title': 'test', 'Sovled': 6, 'Submited': 10, 'Rate': 6.6 }]);
         const current_page = ref(1);
@@ -123,7 +102,7 @@ export default defineComponent({
         const show_loading = ref(true)
         const changePage = (newPage) => {
             this_router.push({
-                path: '/problemSet',
+                path: '/admin/editProblemList',
                     // name: 'index',
                     query: {
                         page:newPage
@@ -131,8 +110,9 @@ export default defineComponent({
             })
         }
         const getProblemList = () => {
+          console.log(this_route.path)
             show_loading.value = true
-            if (this_route.path.toLowerCase() !== '/problemSet'.toLowerCase()) return;
+            if (this_route.path.toLowerCase() !== '/admin/editProblemList'.toLowerCase()) return;
             let post_data = {};
             if (this_route.query.page === undefined) {
                 post_data = { 'page': 1 };
@@ -150,7 +130,7 @@ export default defineComponent({
             console.log(post_data)
             axios({
                 method: 'post',
-                url: '/problemSet/getList',
+                url: '/admin/problemList/getList',
                 data: post_data
             }) .then(data => {
                 console.log('Success:', data);
