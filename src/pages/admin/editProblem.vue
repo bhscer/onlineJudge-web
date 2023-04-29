@@ -266,11 +266,11 @@ export default defineComponent({
           submiting.value = false;
           console.error('Error:', error);
           alert(error.response.data.detail);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else if (error.request.status === 400) {
+          } else if (error.response.status === 400) {
             // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
@@ -280,7 +280,7 @@ export default defineComponent({
           } else {
             $q.notify({
               type: 'negative',
-              message: `网络错误,code=${error.request.status}`,
+              message: `网络错误,code=${error.response.status}`,
               progress: true,
             });
           }
@@ -387,7 +387,7 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             this_router.push({ path: '/userLogin' }).then(() => {
               localStorage.removeItem('oj-auth-token');
               $q.notify({

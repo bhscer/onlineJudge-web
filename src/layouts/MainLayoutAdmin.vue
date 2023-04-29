@@ -40,6 +40,7 @@ import { defineComponent, ref } from 'vue';
 // import { $t } from '@/boot/i18n';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';
+import { useUserStore } from '@/stores/user';
 
 const linksList = [
   {
@@ -72,6 +73,7 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
+    const user = useUserStore();
 
     return {
       essentialLinks: linksList,
@@ -79,7 +81,21 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      user,
     };
+  },
+  mounted() {
+    if (
+      !this.user.exists ||
+      (this.user.exists && this.user.info?.permission === 'user')
+    ) {
+      this.$router.push('/');
+      this.$q.notify({
+        type: 'negative',
+        message: '非法进入，管理员请从首页进入',
+        progress: true,
+      });
+    }
   },
 });
 </script>

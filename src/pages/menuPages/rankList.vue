@@ -19,10 +19,7 @@
       </q-markup-table>
     </q-card>
 
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
 
@@ -31,6 +28,7 @@ import { defineComponent, ref } from 'vue';
 import { api as axios } from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   name: 'rankList',
@@ -38,6 +36,7 @@ export default defineComponent({
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
+    const user = useUserStore();
 
     const current_page = ref(1);
     const maxPage = ref(1);
@@ -55,11 +54,12 @@ export default defineComponent({
         post_data = { page: 1 };
         current_page.value = 1;
       } else {
-        try {
+        if (parseInt(this_route.query.page)) {
           post_data = { page: parseInt(this_route.query.page) };
           current_page.value = parseInt(this_route.query.page);
-        } catch (e) {
-          alert('页码错误');
+        } else {
+          show_loading.value = true;
+          err_msg.value = '页码错误';
         }
       }
       console.log(post_data);
@@ -85,12 +85,13 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else {
-            // showFailToast('获取签到情况失败');
+          try {
+            if (error.response.status === 401) user.back_login();
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
           }
         });
     };

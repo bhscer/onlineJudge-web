@@ -1,6 +1,7 @@
 <template>
   <div class="bg_div" v-show="!show_loading">
     <div class="content_main">
+      <div>{{ contest_info }}</div>
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
           <q-input outlined v-model="contest_info.contestId" label="竞赛编号" />
@@ -81,6 +82,23 @@
               </q-icon>
             </template>
           </q-input>
+        </div>
+      </q-card>
+
+      <q-card class="q-pa-lg q-my-md">
+        <div class="q-gutter-md">
+          <q-checkbox
+            dense
+            v-model="contest_info.permission.needPwd"
+            label="需要密码"
+          />
+          <q-input
+            v-if="contest_info.permission.needPwd"
+            outlined
+            dense
+            v-model="contest_info.pwdString"
+            label="比赛密码"
+          />
         </div>
       </q-card>
 
@@ -213,6 +231,7 @@ import SubmissionList from '@/components/submissionList.vue';
 
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
+import LoadingPage from '@/components/loadingPage.vue';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -231,7 +250,6 @@ export default {
   },
   setup() {
     const tab = ref('description');
-
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
@@ -243,10 +261,8 @@ export default {
     const tstatus = ref(0);
     const date_start = ref('2019-02-01 12:44');
     const date_end = ref('2019-02-01 12:44');
-
     const submitEdit = async () => {
       // submiting.value = true;
-
       // console.log('then',code_content)
       // 处理两个时间
       contest_info.value.contestTimeBeginStamp = parseInt(
@@ -255,7 +271,6 @@ export default {
       contest_info.value.contestTimeEndStamp = parseInt(
         dateStrChangeTimeTamp(date_end.value) / 1000
       );
-
       axios({
         method: 'post',
         url: '/admin/contest/edit',
@@ -277,11 +292,11 @@ export default {
           // submiting.value = false;
           console.error('Error:', error);
           alert(error.response.data.detail);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else if (error.request.status === 400) {
+          } else if (error.response.status === 400) {
             // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
@@ -291,13 +306,12 @@ export default {
           } else {
             $q.notify({
               type: 'negative',
-              message: `网络错误,code=${error.request.status}`,
+              message: `网络错误,code=${error.response.status}`,
               progress: true,
             });
           }
         });
     };
-
     const changeProblemNo = (type) => {
       if (type === 0) {
         // a.b.c...z
@@ -309,7 +323,6 @@ export default {
             csns = String.fromCharCode(65 + ((csnt - 1) % 26)) + csns;
             csnt = parseInt((csnt - 1) / 26);
           } while (csnt);
-
           contest_info.value.contestProblem[i].problemNo = csns;
           csn++;
         }
@@ -387,7 +400,6 @@ export default {
         alert('参数不完整');
         return;
       }
-
       if (this_route.query.add === '1') {
         contest_info.value = {
           contestId: '',
@@ -395,6 +407,7 @@ export default {
           permission: {
             isPublic: true,
             needPwd: false,
+            pwdString: '',
             rangeOnly: false,
             stuRange: [],
             allowViewCodeAfterContest: true,
@@ -406,15 +419,15 @@ export default {
           contestTimeEndStamp: parseInt(Date.now() / 1000 / 60) * 60,
           contestProblem: [
             /*
-            {
-              'problemNo':'',
-              'data':{
-                "sourceProblemId":"",
-                "isCustomTitle":false,
-                "customTitle":"",
-              }
-            }
-            */
+                    {
+                      'problemNo':'',
+                      'data':{
+                        "sourceProblemId":"",
+                        "isCustomTitle":false,
+                        "customTitle":"",
+                      }
+                    }
+                    */
           ],
         };
         date_start.value = timeStampTostring(
@@ -445,7 +458,6 @@ export default {
             date_end.value = timeStampTostring(
               contest_info.value.contestTimeEndStamp
             );
-
             show_loading.value = false;
           } else {
             // alert(data.msg)
@@ -456,11 +468,11 @@ export default {
         .catch((error) => {
           show_loading.value = false;
           console.error('Error:', error);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else if (error.request.status === 400) {
+          } else if (error.response.status === 400) {
             // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
@@ -470,7 +482,7 @@ export default {
           } else {
             $q.notify({
               type: 'negative',
-              message: `网络错误，code=${error.request.status}`,
+              message: `网络错误，code=${error.response.status}`,
               progress: true,
             });
           }

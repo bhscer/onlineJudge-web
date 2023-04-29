@@ -1,7 +1,7 @@
 <template>
-  <q-page
+  <div
     style="
-      width: 1000px;
+      width: 100%;
       flex-wrap: wrap;
       flex-direction: column;
       margin: 0;
@@ -37,10 +37,11 @@
           <q-checkbox
             v-model="filter_show_user_only"
             label="只看自己"
+            dense
             style="width: fit-content"
           />
           <div
-            class="q-gutter-md q-ml-sm"
+            class="q-gutter-sm q-ml-sm"
             style="display: flex; flex-direction: row; flex-wrap: wrap"
           >
             <div
@@ -49,7 +50,7 @@
                 (display_small_mode ? '100%' : '20%')
               "
             >
-              <p>由用户名/昵称</p>
+              <p style="margin: 0; padding: 0">由用户名/昵称</p>
               <q-input
                 outlined
                 v-model="filter_userLabel"
@@ -63,7 +64,7 @@
                 (display_small_mode ? '100%' : '20%')
               "
             >
-              <p>由题目ID</p>
+              <p style="margin: 0; padding: 0">由题目ID</p>
               <q-input
                 outlined
                 v-model="filter_problemId"
@@ -77,7 +78,7 @@
                 (display_small_mode ? '100%' : '20%')
               "
             >
-              <p>由比赛</p>
+              <p style="margin: 0; padding: 0">由比赛</p>
               <q-input
                 outlined
                 v-model="filter_contest"
@@ -91,7 +92,7 @@
                 (display_small_mode ? '100%' : '20%')
               "
             >
-              <p>由语言</p>
+              <p style="margin: 0; padding: 0">由语言</p>
               <q-select
                 outlined
                 v-model="filter_language"
@@ -106,7 +107,7 @@
                 (display_small_mode ? '100%' : '30%')
               "
             >
-              <p>由状态</p>
+              <p style="margin: 0; padding: 0">由状态</p>
               <q-select
                 outlined
                 v-model="filter_status"
@@ -198,7 +199,7 @@
       <q-spinner-gears size="50px" color="primary" />
       <p>loading...</p>
     </q-inner-loading>
-  </q-page>
+  </div>
 </template>
 
 <script lang="js">
@@ -347,11 +348,11 @@ export default defineComponent({
             })
                 .catch((error) => {
                     console.error('Error:', error);
-                    if (error.request.status === 401) {
+                    if (error.response.status === 401) {
                         // localStorage.removeItem('Authorization');
                         // showFailToast("登录状态失效，请重新登录")
                         // router.push('/login');
-                    } else if (error.request.status === 400) {
+                    } else if (error.response.status === 400) {
                       // showFailToast('获取签到情况失败');
                       $q.notify({
                         type: 'negative',
@@ -362,7 +363,7 @@ export default defineComponent({
                     }
                     else
                     {
-                      err_msg.value = `未知错误,代码为${error.request.status}`
+                      err_msg.value = `未知错误,代码为${error.response.status}`
                     }
                 });
         };

@@ -138,10 +138,9 @@
       </div>
     </div>
   </div>
-  <q-inner-loading :showing="show_loading">
-    <q-spinner-gears size="50px" color="primary" />
-    <p>loading...</p>
-  </q-inner-loading>
+  <q-page class="flex flex-center" v-show="show_loading">
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  </q-page>
 </template>
 
 <script>
@@ -156,6 +155,8 @@ import SubmissionList from '@/components/submissionList.vue';
 
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
+import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -166,7 +167,7 @@ function dateStrChangeTimeTamp(dateStr) {
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'contest',
-  components: { SubmissionList, RankListComponent },
+  components: { SubmissionList, RankListComponent, LoadingPage },
   watch: {
     $route(to, from) {
       console.log(to);
@@ -179,12 +180,14 @@ export default {
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
+    const user = useUserStore();
     const contest_info = ref({});
     const show_loading = ref(true);
     const time_percent = ref(0);
     const qmarkstyle = ref('');
     const showPwdForm = ref(true);
     const tstatus = ref(0);
+    const err_msg = ref('');
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
@@ -260,54 +263,38 @@ export default {
       })
         .then((data) => {
           console.log('Success:', data);
-          if (data.data.status === 1) {
-            // 列表获取成功
-            console.log(data);
-            contest_info.value = data.data.data;
+          // 列表获取成功
+          console.log(data);
+          contest_info.value = data.data.data;
+          if (
+            contest_info.value['contestTimeBeginStamp'] >=
+            Date.now() / 1000
+          ) {
+            tstatus.value = 0; // 未开始
+          } else {
             if (
-              contest_info.value['contestTimeBeginStamp'] >=
+              contest_info.value['contestTimeEndStamp'] >=
               Date.now() / 1000
             ) {
-              tstatus.value = 0; // 未开始
+              tstatus.value = 1; // 比赛中
             } else {
-              if (
-                contest_info.value['contestTimeEndStamp'] >=
-                Date.now() / 1000
-              ) {
-                tstatus.value = 1; // 比赛中
-              } else {
-                tstatus.value = 2;
-              }
+              tstatus.value = 2;
             }
-            changeTimePercent();
-            cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
-            show_loading.value = false;
-          } else {
-            // alert(data.msg)
-            // showFailToast(data.data.msg)
           }
+          changeTimePercent();
+          cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
+          show_loading.value = false;
           show_loading.value = false;
         })
         .catch((error) => {
-          show_loading.value = false;
           console.error('Error:', error);
-          if (error.request.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else if (error.request.status === 400) {
-            // showFailToast('获取签到情况失败');
-            $q.notify({
-              type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            $q.notify({
-              type: 'negative',
-              message: `网络错误，code=${error.request.status}`,
-              progress: true,
-            });
+          try {
+            if (error.response.status === 401) user.back_login();
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
           }
         });
     };
@@ -323,6 +310,7 @@ export default {
       timeSecondToString,
       timeStampTostring,
       tstatus,
+      err_msg,
     };
   },
   mounted() {

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page class="flex flex-center q-pa-lg q-ma-lg">
-    <div style="width: 800px; flex-direction: column" :v-show="!show_loading">
+    <div style="width: 800px; flex-direction: column" v-show="!show_loading">
       <q-tabs
         v-model="tab"
         dense
@@ -49,10 +49,7 @@
         </q-tab-panel>
       </q-tab-panels>
     </div>
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
 
@@ -64,13 +61,17 @@ import { useRouter, useRoute } from 'vue-router';
 import { $t } from '@/boot/i18n';
 import { api as axios } from '@/boot/axios';
 import * as monaco from 'monaco-editor';
+import loadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 const $q = useQuasar();
 const router = useRouter();
 const this_route = useRoute();
+const user = useUserStore();
 const tab = ref('points');
 const show_loading = ref(true);
 const submission_info = ref({});
+const err_msg = ref('');
 let firstTimeToCode = true;
 
 function getSubmissionInfo() {
@@ -79,7 +80,9 @@ function getSubmissionInfo() {
   // console.log(this_route.path)
   if (this_route.path.toLowerCase() !== '/record'.toLowerCase()) return;
   if (this_route.query.sid === undefined) {
-    alert('参数不完整');
+    // alert('参数不完整');
+    show_loading.value = true;
+    err_msg.value = '参数不完整';
     return;
   }
   axios({
@@ -96,12 +99,13 @@ function getSubmissionInfo() {
     })
     .catch((error) => {
       console.error('Error:', error);
-      if (error.request.status === 401) {
-        // localStorage.removeItem('Authorization');
-        // showFailToast("登录状态失效，请重新登录")
-        // router.push('/login');
-      } else {
-        // showFailToast('获取签到情况失败');
+      try {
+        if (error.response.status === 401) user.back_login();
+        else if (error.response.status === 400)
+          err_msg.value = error.response.data.detail;
+        else err_msg.value = error.response.status;
+      } catch {
+        err_msg.value = error.code;
       }
     });
 }

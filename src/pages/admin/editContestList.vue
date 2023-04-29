@@ -211,11 +211,11 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else if (error.request.status === 400) {
+          } else if (error.response.status === 400) {
             // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
@@ -329,7 +329,7 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');

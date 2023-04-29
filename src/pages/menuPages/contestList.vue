@@ -117,10 +117,7 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 
   <q-dialog v-model="showPwdForm" v-if="pwdFormInfo">
@@ -198,35 +195,24 @@ import { useRoute, useRouter } from 'vue-router';
 import { api as axios } from '@/boot/axios';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
+import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   name: 'contestList',
   setup() {
     const $q = useQuasar();
+    const user = useUserStore();
     let this_route = useRoute();
     let this_router = useRouter();
-    const contest_list = ref([
-      /*
-      {
-        contestId: 66,
-        contestTitle: '浙江财经大学新生赛',
-        contestTimeBegin: '2022-9-4 13:00',
-        contestLength: '1h',
-      },
-      {
-        contestId: 66,
-        contestTitle: '浙江财经大学新生赛',
-        contestTimeBegin: '2022-9-4 13:00',
-        contestLength: '1h',
-      },
-      */
-    ]);
+    const contest_list = ref([]);
     const current_page = ref(1);
     const maxPage = ref(1);
     const show_loading = ref(true);
     const showPwdForm = ref(false);
     const pwdFormInfo = ref({});
     const pwd_text = ref('');
+    const err_msg = ref('');
 
     const pwdVerifiy = () => {
       axios({
@@ -247,23 +233,13 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else if (error.request.status === 400) {
-            // showFailToast('获取签到情况失败');
-            $q.notify({
-              type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            $q.notify({
-              type: 'negative',
-              message: '未知错误',
-              progress: true,
-            });
+          try {
+            if (error.response.status === 401) user.back_login();
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
           }
         });
     };
@@ -315,11 +291,12 @@ export default defineComponent({
         post_data = { page: 1 };
         current_page.value = 1;
       } else {
-        try {
+        if (parseInt(this_route.query.page)) {
           post_data = { page: parseInt(this_route.query.page) };
           current_page.value = parseInt(this_route.query.page);
-        } catch (e) {
-          alert('页码错误');
+        } else {
+          show_loading.value = true;
+          err_msg.value = '页码错误';
         }
       }
       console.log(post_data);
@@ -363,12 +340,13 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else {
-            // showFailToast('获取签到情况失败');
+          try {
+            if (error.response.status === 401) user.back_login();
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
           }
         });
     };
@@ -385,6 +363,7 @@ export default defineComponent({
       pwdVerifiy,
       timeSecondToString,
       timeStampTostring,
+      err_msg,
     };
   },
   watch: {
@@ -395,5 +374,6 @@ export default defineComponent({
   mounted() {
     this.getContestList();
   },
+  components: { LoadingPage },
 });
 </script>

@@ -98,10 +98,7 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
 
@@ -110,17 +107,22 @@ import { defineComponent, ref } from 'vue';
 import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
     name: 'problemSet',
+    components: { LoadingPage },
     setup() {
         let this_route = useRoute();
         let this_router = useRouter();
+        const user = useUserStore();
         const $q = useQuasar();
         const problem_list = ref([{ 'Id': '0000', 'Title': 'test', 'Sovled': 6, 'Submited': 10, 'Rate': 6.6 }]);
         const current_page = ref(1);
         const maxPage = ref(1)
         const show_loading = ref(true)
+        const err_msg = ref('')
         const changePage = (newPage) => {
             this_router.push({
                 path: '/problemSet',
@@ -167,25 +169,13 @@ export default defineComponent({
             })
                 .catch((error) => {
                     console.error('Error:', error);
-                    if (error.request.status === 401) {
-                        // localStorage.removeItem('Authorization');
-                        // showFailToast("登录状态失效，请重新登录")
-                        // router.push('/login');
-                    }  else if (error.request.status === 400) {
-                      // showFailToast('获取签到情况失败');
-                      $q.notify({
-                        type: 'negative',
-                        message: error.response.data.detail,
-                        progress: true,
-                      });
+                    try{
+                      if (error.response.status === 401) user.back_login()
+                      else if (error.response.status === 400) err_msg.value = error.response.data.detail
+                      else err_msg.value = error.response.status
                     }
-                    else
-                    {
-                      $q.notify({
-                        type: 'negative',
-                        message: `网络错误，code=${error.request.status}`,
-                        progress: true,
-                      });
+                    catch{
+                      err_msg.value = error.code
                     }
                 });
         };
@@ -195,7 +185,8 @@ export default defineComponent({
             show_loading,
             maxPage,
             current_page,
-            problem_list
+            problem_list,
+            err_msg
         };
     },
     watch:{

@@ -16,43 +16,40 @@
 
       <q-separator />
 
-      <q-tab-panels
-        v-model="tab"
-        animated
-        @transition="tab_pannel_change"
-        keep-alive
-      >
+      <q-tab-panels v-model="tab" animated keep-alive>
         <q-tab-panel name="login">
-          <div style="display: flex; flex-direction: column">
-            <q-input
-              outlined
-              v-model="username"
-              label="username"
-              :rules="[(val) => val.length || 'Please input this field']"
-            />
-            <q-input
-              outlined
-              v-model="password"
-              label="password"
-              :type="showPwd ? 'password' : 'text'"
-              hint=""
-              :rules="[(val) => val.length || 'Please input this field']"
-            >
-              <template v-slot:append>
-                <q-icon
-                  :name="showPwd ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
-                  @click="showPwd = !showPwd"
-                />
-              </template>
-            </q-input>
-            <q-btn
-              class="q-my-md"
-              color="primary"
-              label="Login"
-              @click="loginFun"
-            />
-          </div>
+          <q-form>
+            <div style="display: flex; flex-direction: column">
+              <q-input
+                outlined
+                v-model="username"
+                label="username"
+                :rules="[(val) => val.length || 'Please input this field']"
+              />
+              <q-input
+                outlined
+                v-model="password"
+                label="password"
+                :type="showPwd ? 'password' : 'text'"
+                hint=""
+                :rules="[(val) => val.length || 'Please input this field']"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="showPwd = !showPwd"
+                  />
+                </template>
+              </q-input>
+              <q-btn
+                class="q-my-md"
+                color="primary"
+                label="Login"
+                @click="loginFun"
+              />
+            </div>
+          </q-form>
         </q-tab-panel>
         <q-tab-panel name="register">
           <div style="display: flex; flex-direction: column">
@@ -140,8 +137,8 @@ const nickname = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirm = ref('');
-const showPwd = ref(false);
-const showPwdConfirm = ref(false);
+const showPwd = ref(true);
+const showPwdConfirm = ref(true);
 
 function IsEmail(str: string) {
   var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -195,7 +192,16 @@ const loginFun = () => {
         message: '登陆成功',
         progress: true,
       });
-      router.back(); /*.then(() => {
+      router.push('/');
+      // if (window.history.length <= 1)
+      // {
+      //   router.push('/')
+      // }
+      // else
+      // {
+      //   router.back();
+      // }
+      /*.then(() => {
         $q.notify({
           type: 'positive',
           message: '登陆成功',

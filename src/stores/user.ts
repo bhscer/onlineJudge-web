@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { user } from '@/lib/api/user';
 import { ref, computed, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 // 第一个参数是应用程序中 store 的唯一 id
 export const useUserStore = defineStore('user', () => {
@@ -8,6 +10,8 @@ export const useUserStore = defineStore('user', () => {
   const info = ref<null | user.UserInfo>(null);
   const exists = computed(() => info.value !== null);
   const loading_queue: any = {}; // uid=>bool 表示是否正在从服务器获取对应用户的info
+  const router = useRouter();
+  const $q = useQuasar();
 
   function login(form: user.LoginForm) {
     return new Promise<user.UserInfo>((resolve, reject) => {
@@ -35,6 +39,29 @@ export const useUserStore = defineStore('user', () => {
       */
       localStorage.removeItem('oj-auth-token');
       info.value = null;
+      resolve(void 0);
+    });
+  }
+  function back_login() {
+    return new Promise((resolve, reject) => {
+      /*
+      user
+        .logout()
+        .then(() => {
+          info.value = null;
+          resolve(void 0);
+        })
+        .catch(reject);
+      */
+      localStorage.removeItem('oj-auth-token');
+      info.value = null;
+      router.push({ path: '/userLogin' }).then(() => {
+        $q.notify({
+          type: 'negative',
+          message: '请先登录',
+          progress: true,
+        });
+      });
       resolve(void 0);
     });
   }
@@ -111,5 +138,6 @@ export const useUserStore = defineStore('user', () => {
     register,
     get_info,
     user_auth,
+    back_login,
   };
 });

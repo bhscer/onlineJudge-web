@@ -48,14 +48,15 @@
             outside-arrows
             mobile-arrows
           >
-            <q-tab name="problem" label="problem" icon="description" />
-            <q-tab name="submit" label="submit" icon="code" />
+            <q-tab name="problem" label="题面" icon="description" />
+            <q-tab name="submit" label="提交" icon="code" />
             <q-tab
               name="submissions"
-              label="submissions"
+              label="记录"
               icon="reorder"
               @click="refreshSubmission()"
             />
+            <q-tab name="solution" label="题解" icon="code" />
           </q-tabs>
         </q-card>
         <q-card
@@ -251,10 +252,7 @@
       </div>
     </div>
   </div>
-  <q-inner-loading :showing="show_loading">
-    <q-spinner-gears size="50px" color="primary" />
-    <p>loading...</p>
-  </q-inner-loading>
+  <loading-page :loading="show_loading" :message="err_msg"></loading-page>
 </template>
 
 <script>
@@ -270,7 +268,8 @@ import * as monaco from 'monaco-editor';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import SubmissionList from '@/components/submissionList.vue';
-import SubmitPage from './submitPage.vue';
+import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -285,8 +284,9 @@ export default defineComponent({
   },
   setup() {
     // const language_model = ref(null);
+    const user = useUserStore();
     const language_model = ref('C++');
-    const language_options = ['C++', 'Java', 'Python3'];
+    const language_options = ref(['C++', 'Java', 'Python3']);
     const problem_info = ref({});
     const samplewidthTextLeft = ref('width:49%;margin-right:.5%');
     const samplewidthTextRight = ref('width:49%;margin-left:.5%');
@@ -307,6 +307,8 @@ export default defineComponent({
     const file_model = ref(null);
     let code_content = '';
     const tab = ref('problem');
+    const err_msg = ref('');
+
     const readCodeFromFile = async () => {
       var promise = new Promise((reslove) => {
         var reader = new FileReader();
@@ -367,11 +369,11 @@ export default defineComponent({
           submiting.value = false;
           console.error('Error:', error);
           alert(error.response.data.detail);
-          if (error.request.status === 401) {
+          if (error.response.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
             // router.push('/login');
-          } else if (error.request.status === 400) {
+          } else if (error.response.status === 400) {
             // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
@@ -381,7 +383,7 @@ export default defineComponent({
           } else {
             $q.notify({
               type: 'negative',
-              message: `网络错误，code=${error.request.status}`,
+              message: `网络错误，code=${error.response.status}`,
               progress: true,
             });
           }
@@ -516,29 +518,20 @@ export default defineComponent({
       })
         .then((data) => {
           console.log('Success:', data);
-          if (data.data.status === 1) {
-            // 列表获取成功
-            console.log(data);
-            problem_info.value = data.data.data;
-            show_loading.value = false;
-          } else {
-            // alert(data.msg)
-            // showFailToast(data.data.msg)
-          }
+          console.log(data);
+          problem_info.value = data.data.data;
+          language_options.value = data.data.data.language;
+          show_loading.value = false;
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.request.status === 401) {
-            this_router.push({ path: '/userLogin' }).then(() => {
-              localStorage.removeItem('oj-auth-token');
-              $q.notify({
-                type: 'negative',
-                message: '请先登录',
-                progress: true,
-              });
-            });
-          } else {
-            // showFailToast('获取签到情况失败');
+          try {
+            if (error.response.status === 401) user.back_login();
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
           }
         });
     };
@@ -577,25 +570,10 @@ export default defineComponent({
       submiting,
       file_model,
       readCodeFromFile,
+      err_msg,
     };
   },
   mounted() {
-    /*
-            var clipboard = new ClipboardJS('.btn_copy');
-            clipboard.on('success', function(e) {
-              console.info('Action:', e.action);
-              console.info('Text:', e.text);
-              console.info('Trigger:', e.trigger);
-
-              e.clearSelection();
-            });
-
-            clipboard.on('error', function(e) {
-              console.error('Action:', e.action);
-              console.error('Trigger:', e.trigger);
-            });
-
-             */
     // window.addEventListener('resize', this.cancalDebounce);
     window.addEventListener('resize', this.getWindowInfo);
     /*
@@ -609,7 +587,7 @@ export default defineComponent({
     // window.removeEventListener('resize', this.cancalDebounce);
     window.removeEventListener('resize', this.getWindowInfo);
   },
-  components: { SubmissionList },
+  components: { SubmissionList, LoadingPage },
 });
 </script>
 <style>
