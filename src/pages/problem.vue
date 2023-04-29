@@ -27,224 +27,228 @@
           </div>
         </div>
       </q-card>
-      <div :style="`display: flex;flex-direction: row-reverse;flex-wrap: wrap;justify-content: ${miniMode?'center':'space-between;'}`">
-        <q-card :style="`width: ${miniMode?'100%':'20%'};height: fit-content;${qmarkstyle}`">
-            <q-tabs
-              v-model="tab"
-              :vertical="!miniMode"
-              :inline-label="miniMode"
-              class="text-grey"
-              active-color="primary"
-              indicator-color="primary"
-              :switch-indicator="!miniMode"
-              outside-arrows
-              mobile-arrows
-            >
-              <q-tab name="problem" label="problem" icon="description" />
-              <q-tab name="submit" label="submit" icon="code"/>
-              <q-tab
-                name="submissions"
-                label="submissions"
-                icon="reorder"
-                @click="refreshSubmission()"
-              />
-            </q-tabs>
+      <div
+        :style="`display: flex;flex-direction: row-reverse;flex-wrap: wrap;justify-content: ${
+          miniMode ? 'center' : 'space-between;'
+        }`"
+      >
+        <q-card
+          :style="`width: ${
+            miniMode ? '100%' : '20%'
+          };height: fit-content;${qmarkstyle}`"
+        >
+          <q-tabs
+            v-model="tab"
+            :vertical="!miniMode"
+            :inline-label="miniMode"
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            :switch-indicator="!miniMode"
+            outside-arrows
+            mobile-arrows
+          >
+            <q-tab name="problem" label="problem" icon="description" />
+            <q-tab name="submit" label="submit" icon="code" />
+            <q-tab
+              name="submissions"
+              label="submissions"
+              icon="reorder"
+              @click="refreshSubmission()"
+            />
+          </q-tabs>
         </q-card>
-        <q-card :style="`width: ${miniMode?'100%':'78%'};${qmarkstyle};${miniMode?'margin-top:15px':''}`">
-
+        <q-card
+          :style="`width: ${miniMode ? '100%' : '78%'};${qmarkstyle};${
+            miniMode ? 'margin-top:15px' : ''
+          }`"
+        >
           <q-tab-panels
-              class="q-pa-sm"
-              v-model="tab"
-              animated
-              :vertical="!miniMode"
-              @transition="tab_pannel_change"
-              keep-alive
-
-            >
-              <q-tab-panel name="problem">
-                <div class="q-pa-md q-gutter-md">
+            class="q-pa-sm"
+            v-model="tab"
+            animated
+            :vertical="!miniMode"
+            @transition="tab_pannel_change"
+            keep-alive
+          >
+            <q-tab-panel name="problem">
+              <div class="q-pa-md q-gutter-md">
+                <div
+                  v-if="
+                    problem_info.description && problem_info.description.length
+                  "
+                >
+                  <!--h2>题目描述</h2-->
+                  <div class="text-h5" style="font-weight: bold">题目描述</div>
+                  <v-md-preview
+                    v-if="problem_info.uiType === 'markdown'"
+                    :text="problem_info.description"
+                  ></v-md-preview>
                   <div
-                    v-if="
-                      problem_info.description &&
-                      problem_info.description.length
-                    "
-                  >
-                    <!--h2>题目描述</h2-->
-                    <div class="text-h5" style="font-weight: bold">
-                      题目描述
-                    </div>
-                    <v-md-preview
-                      v-if="problem_info.uiType === 'markdown'"
-                      :text="problem_info.description"
-                    ></v-md-preview>
-                    <div
-                      v-if="problem_info.uiType === 'html'"
-                      v-html="problem_info.description"
-                    ></div>
+                    v-if="problem_info.uiType === 'html'"
+                    v-html="problem_info.description"
+                  ></div>
+                </div>
+
+                <div
+                  v-if="
+                    problem_info.inputFormat && problem_info.inputFormat.length
+                  "
+                >
+                  <!--h2>输入格式</h2-->
+                  <div class="text-h5" style="font-weight: bold">输入格式</div>
+                  <v-md-preview
+                    v-if="problem_info.uiType === 'markdown'"
+                    :text="problem_info.inputFormat"
+                  ></v-md-preview>
+                  <div
+                    v-if="problem_info.uiType === 'html'"
+                    v-html="problem_info.inputFormat"
+                  ></div>
+                </div>
+
+                <div
+                  v-if="
+                    problem_info.outputFormat &&
+                    problem_info.outputFormat.length
+                  "
+                >
+                  <!--h2>输出格式</h2-->
+                  <div class="text-h5" style="font-weight: bold">输出格式</div>
+                  <v-md-preview
+                    v-if="problem_info.uiType === 'markdown'"
+                    :text="problem_info.outputFormat"
+                  ></v-md-preview>
+                  <div
+                    v-if="problem_info.uiType === 'html'"
+                    v-html="problem_info.outputFormat"
+                  ></div>
+                </div>
+
+                <div v-if="problem_info.samples && problem_info.samples.length">
+                  <div class="text-h5" style="font-weight: bold">
+                    输入输出样例
                   </div>
-
-                  <div
-                    v-if="
-                      problem_info.inputFormat &&
-                      problem_info.inputFormat.length
-                    "
-                  >
-                    <!--h2>输入格式</h2-->
-                    <div class="text-h5" style="font-weight: bold">
-                      输入格式
-                    </div>
-                    <v-md-preview
-                      v-if="problem_info.uiType === 'markdown'"
-                      :text="problem_info.inputFormat"
-                    ></v-md-preview>
-                    <div
-                      v-if="problem_info.uiType === 'html'"
-                      v-html="problem_info.inputFormat"
-                    ></div>
-                  </div>
-
-                  <div
-                    v-if="
-                      problem_info.outputFormat &&
-                      problem_info.outputFormat.length
-                    "
-                  >
-                    <!--h2>输出格式</h2-->
-                    <div class="text-h5" style="font-weight: bold">
-                      输出格式
-                    </div>
-                    <v-md-preview
-                      v-if="problem_info.uiType === 'markdown'"
-                      :text="problem_info.outputFormat"
-                    ></v-md-preview>
-                    <div
-                      v-if="problem_info.uiType === 'html'"
-                      v-html="problem_info.outputFormat"
-                    ></div>
-                  </div>
-
-                  <div
-                    v-if="problem_info.samples && problem_info.samples.length"
-                  >
-                    <div class="text-h5" style="font-weight: bold">
-                      输入输出样例
-                    </div>
-                    <div
-                      v-for="(item, idx) in problem_info.samples"
-                      :key="item"
-                    >
-                      <div style="display: flex; flex-wrap: wrap">
-                        <div :style="samplewidthTextLeft">
-                          <strong>{{ '输入#' + (idx + 1) }}</strong>
-                          <q-btn
-                            outline
-                            color="primary"
-                            label="复制"
-                            size="xs"
-                            style="float: right"
-                            padding="xs xs"
-                            @click="copySample(0, idx)"
-                          />
-                          <pre class="sample_box">{{ item.input }}</pre>
-                        </div>
-                        <div :style="samplewidthTextRight">
-                          <strong>{{ '输出#' + (idx + 1) }}</strong>
-                          <q-btn
-                            outline
-                            color="primary"
-                            label="复制"
-                            size="xs"
-                            style="float: right"
-                            padding="xs xs"
-                            @click="copySample(1, idx)"
-                          />
-                          <pre class="sample_box">{{ item.output }}</pre>
-                        </div>
+                  <div v-for="(item, idx) in problem_info.samples" :key="item">
+                    <div style="display: flex; flex-wrap: wrap">
+                      <div :style="samplewidthTextLeft">
+                        <strong>{{ '输入#' + (idx + 1) }}</strong>
+                        <q-btn
+                          outline
+                          color="primary"
+                          label="复制"
+                          size="xs"
+                          style="float: right"
+                          padding="xs xs"
+                          @click="copySample(0, idx)"
+                        />
+                        <pre class="sample_box">{{ item.input }}</pre>
+                      </div>
+                      <div :style="samplewidthTextRight">
+                        <strong>{{ '输出#' + (idx + 1) }}</strong>
+                        <q-btn
+                          outline
+                          color="primary"
+                          label="复制"
+                          size="xs"
+                          style="float: right"
+                          padding="xs xs"
+                          @click="copySample(1, idx)"
+                        />
+                        <pre class="sample_box">{{ item.output }}</pre>
                       </div>
                     </div>
                   </div>
-
-                  <div
-                    v-if="
-                      problem_info.problemHint &&
-                      problem_info.problemHint.length
-                    "
-                  >
-                    <!--h2>输出格式</h2-->
-                    <div class="text-h5" style="font-weight: bold">提示</div>
-                    <v-md-preview
-                      v-if="problem_info.uiType === 'markdown'"
-                      :text="problem_info.problemHint"
-                    ></v-md-preview>
-                    <div
-                      v-if="problem_info.uiType === 'html'"
-                      v-html="problem_info.problemHint"
-                    ></div>
-                  </div>
                 </div>
-              </q-tab-panel>
 
-              <q-tab-panel name="submit">
-                <div style="display: flex; margin-bottom: 20px" class="q-mx-lg">
-                  <q-select
-                    rounded
-                    outlined
-                    v-model="language_model"
-                    :options="language_options"
-                    label="Select Your Language"
-                    dense
-                    options-dense
-                    style="width: 200px"
-                    @update:model-value="language_change"
-                  />
-                  <q-btn
-                    :loading="submiting"
-                    outline
-                    rounded
-                    color="primary"
-                    label="提交"
-                    @click="submitCode"
-                    style="width: 140px;height: fit-content;"
-                  >
-                    <template v-slot:loading>
-                      <q-spinner-hourglass class="on-left" />
-                      submiting...
-                    </template>
-                  </q-btn>
-
-                </div>
-                <q-file
-                class="q-mx-lg"
-                    rounded
-                    outlined
-                    dense
-                    bottom-slots
-                    v-model="file_model"
-                    label="submit code from file"
-                    counter
-                    style="width: fit-content;">
-                    <template v-slot:prepend>
-                      <q-icon name="cloud_upload" @click.stop.prevent />
-                    </template>
-                    <template v-slot:append>
-                      <q-icon name="close" @click.stop.prevent="file_model = null" class="cursor-pointer" />
-                    </template>
-
-                  </q-file>
                 <div
-                  v-if="!file_model"
-                  id="monaco_editor_container"
-                  style="height: 500px; width: 99%; margin-left: 0.5%;resize: vertical;overflow: hidden;"
-                ></div>
-              </q-tab-panel>
+                  v-if="
+                    problem_info.problemHint && problem_info.problemHint.length
+                  "
+                >
+                  <!--h2>输出格式</h2-->
+                  <div class="text-h5" style="font-weight: bold">提示</div>
+                  <v-md-preview
+                    v-if="problem_info.uiType === 'markdown'"
+                    :text="problem_info.problemHint"
+                  ></v-md-preview>
+                  <div
+                    v-if="problem_info.uiType === 'html'"
+                    v-html="problem_info.problemHint"
+                  ></div>
+                </div>
+              </div>
+            </q-tab-panel>
 
-              <q-tab-panel name="submissions" style="padding: 0; margin: 0">
-                <submission-list ref="submissionRef"></submission-list>
-              </q-tab-panel>
-            </q-tab-panels>
+            <q-tab-panel name="submit">
+              <div style="display: flex; margin-bottom: 20px" class="q-mx-lg">
+                <q-select
+                  rounded
+                  outlined
+                  v-model="language_model"
+                  :options="language_options"
+                  label="Select Your Language"
+                  dense
+                  options-dense
+                  style="width: 200px"
+                  @update:model-value="language_change"
+                />
+                <q-btn
+                  :loading="submiting"
+                  outline
+                  rounded
+                  color="primary"
+                  label="提交"
+                  @click="submitCode"
+                  style="width: 140px; height: fit-content"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-hourglass class="on-left" />
+                    submiting...
+                  </template>
+                </q-btn>
+              </div>
+              <q-file
+                class="q-mx-lg"
+                rounded
+                outlined
+                dense
+                bottom-slots
+                v-model="file_model"
+                label="submit code from file"
+                counter
+                style="width: fit-content"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="cloud_upload" @click.stop.prevent />
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    name="close"
+                    @click.stop.prevent="file_model = null"
+                    class="cursor-pointer"
+                  />
+                </template>
+              </q-file>
+              <div
+                v-if="!file_model"
+                id="monaco_editor_container"
+                style="
+                  height: 500px;
+                  width: 99%;
+                  margin-left: 0.5%;
+                  resize: vertical;
+                  overflow: hidden;
+                "
+              ></div>
+            </q-tab-panel>
+
+            <q-tab-panel name="submissions" style="padding: 0; margin: 0">
+              <submission-list ref="submissionRef"></submission-list>
+            </q-tab-panel>
+          </q-tab-panels>
         </q-card>
-
-        </div>
+      </div>
     </div>
   </div>
   <q-inner-loading :showing="show_loading">
@@ -275,9 +279,9 @@ export default defineComponent({
     $route(to, from) {
       this.getProblemInfo();
     },
-    '$q.dark.isActive'(to,from) {
-      monaco.editor.setTheme(to ? 'vs-dark':'vs-white')
-    }
+    '$q.dark.isActive'(to, from) {
+      monaco.editor.setTheme(to ? 'vs-dark' : 'vs-white');
+    },
   },
   setup() {
     // const language_model = ref(null);
@@ -295,37 +299,34 @@ export default defineComponent({
     let this_router = useRouter();
     const $q = useQuasar();
     const miniMode = ref(false);
-    const windowWidth = ref(10)
-    const qmarkstyle = ref('')
+    const windowWidth = ref(10);
+    const qmarkstyle = ref('');
     const submissionRef = ref();
-    const tab_inited = ref({})
-    const submiting = ref(false)
-    const file_model = ref(null)
-    let code_content = ''
-    const tab = ref('problem')
-    const readCodeFromFile = async ()=>{
-      var promise = new Promise((reslove)=>{
-          var reader = new FileReader()
-          // result 属性中将包含一个字符串以表示所读取的文件内容。
-          reader.readAsText(file_model.value)
-          reader.onload = function(){
-            reslove(this.result);
-          }
-        })
-        await promise.then((res)=>{
-          code_content =  res;
-        })
-    }
+    const tab_inited = ref({});
+    const submiting = ref(false);
+    const file_model = ref(null);
+    let code_content = '';
+    const tab = ref('problem');
+    const readCodeFromFile = async () => {
+      var promise = new Promise((reslove) => {
+        var reader = new FileReader();
+        // result 属性中将包含一个字符串以表示所读取的文件内容。
+        reader.readAsText(file_model.value);
+        reader.onload = function () {
+          reslove(this.result);
+        };
+      });
+      await promise.then((res) => {
+        code_content = res;
+      });
+    };
 
     const submitCode = async () => {
-
-      if (submiting.value) return
+      if (submiting.value) return;
       submiting.value = true;
-      if (file_model.value===null){
+      if (file_model.value === null) {
         code_content = ITextModel.getValue();
-      }
-      else
-      {
+      } else {
         await readCodeFromFile();
       }
       // console.log('then',code_content)
@@ -353,7 +354,7 @@ export default defineComponent({
       })
         .then((data) => {
           submiting.value = false;
-          tab.value = 'submissions'
+          tab.value = 'submissions';
           refreshSubmission();
           console.log('submit Success:', data);
           $q.notify({
@@ -365,7 +366,7 @@ export default defineComponent({
         .catch((error) => {
           submiting.value = false;
           console.error('Error:', error);
-            alert(error.response.data.detail)
+          alert(error.response.data.detail);
           if (error.request.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
@@ -377,9 +378,7 @@ export default defineComponent({
               message: error.response.data.detail,
               progress: true,
             });
-          }
-          else
-          {
+          } else {
             $q.notify({
               type: 'negative',
               message: `网络错误，code=${error.request.status}`,
@@ -395,7 +394,7 @@ export default defineComponent({
           value: '',
           language: 'cpp',
           // theme: 'vs-dark',
-          theme: $q.dark.isActive ? 'vs-dark':'vs-white',
+          theme: $q.dark.isActive ? 'vs-dark' : 'vs-white',
           editorOptions: {
             automaticLayout: true,
             autoIndent: true, //自动缩进
@@ -444,10 +443,10 @@ export default defineComponent({
         document.execCommand('copy');
         // alert('复制成功');
         $q.notify({
-            type: 'positive',
-            message: '复制成功',
-            progress: true,
-          });
+          type: 'positive',
+          message: '复制成功',
+          progress: true,
+        });
       }
       document.body.removeChild(textarea);
     };
@@ -463,18 +462,14 @@ export default defineComponent({
         samplewidthTextRight.value = 'width:100%';
         // sampledivStyle.value = ""
       }
-      if (window.innerWidth > 850)
-        miniMode.value = false;
-      else
-        miniMode.value = true;
-
+      if (window.innerWidth > 850) miniMode.value = false;
+      else miniMode.value = true;
 
       if (window.innerWidth > 850) {
         qmarkstyle.value = '';
       } else {
         qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
       }
-
     };
     const debounce = (fn, delay) => {
       let timer;
@@ -547,13 +542,13 @@ export default defineComponent({
           }
         });
     };
-    const refreshSubmission = ()=>{
-      if (!tab_inited.value['submissions']) return
+    const refreshSubmission = () => {
+      if (!tab_inited.value['submissions']) return;
       // if (tab_inited.value['submissions'])
-        submissionRef.value.need_update = true;
+      submissionRef.value.need_update = true;
       // else
       //  submissionRef.value.getSubmissionList()
-    }
+    };
 
     return {
       tab,
@@ -581,7 +576,7 @@ export default defineComponent({
       tab_inited,
       submiting,
       file_model,
-      readCodeFromFile
+      readCodeFromFile,
     };
   },
   mounted() {
@@ -634,7 +629,6 @@ export default defineComponent({
   padding-left: 10vh;
   padding-right: 10vh;
 }
-
 
 .body--light .sample_box {
   margin: 0.5em 0;

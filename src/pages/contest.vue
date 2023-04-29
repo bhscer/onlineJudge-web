@@ -8,10 +8,14 @@
           </div>
           <div style="display: flex; flex-wrap: wrap">
             <q-badge color="primary">public</q-badge>
-            <q-badge color="orange">{{ ['Not start','Competing','Ended'][tstatus] }}</q-badge>
+            <q-badge color="orange">{{
+              ['Not start', 'Competing', 'Ended'][tstatus]
+            }}</q-badge>
           </div>
           <div style="display: flex; justify-content: space-between">
-            <p>Start:{{ timeStampTostring(contest_info.contestTimeBeginStamp) }}</p>
+            <p>
+              Start:{{ timeStampTostring(contest_info.contestTimeBeginStamp) }}
+            </p>
             <p>End:{{ timeStampTostring(contest_info.contestTimeEndStamp) }}</p>
           </div>
           <q-linear-progress
@@ -26,7 +30,15 @@
         </div>
       </q-card>
 
-      <div style="display: flex;flex-direction: column;flex-wrap: wrap;justify-content: space-between;padding: 0;">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          padding: 0;
+        "
+      >
         <q-card :style="qmarkstyle">
           <q-tabs
             v-model="tab"
@@ -45,23 +57,21 @@
             <q-tab name="rankList" label="rankList" />
             <q-tab name="notes" label="notes" />
           </q-tabs>
-
-
         </q-card>
         <q-card class="q-mt-md" :style="`width: 100%;${qmarkstyle};padding:0`">
           <q-tab-panels
-              class="q-pa-sm"
+            class="q-pa-sm"
             v-model="tab"
             animated
             @transition="tab_pannel_change"
             keep-alive
-            style="padding: 0;"
+            style="padding: 0"
           >
             <q-tab-panel name="description" class="q-pa-none">
-                <v-md-preview :text="contest_info.descriptionMd" />
+              <v-md-preview :text="contest_info.descriptionMd" />
             </q-tab-panel>
-            <q-tab-panel name="problems" style="padding: 0;margin: 0;">
-              <q-markup-table style="margin: 0;" flat bordered>
+            <q-tab-panel name="problems" style="padding: 0; margin: 0">
+              <q-markup-table style="margin: 0" flat bordered>
                 <thead>
                   <tr>
                     <th class="text-left" style="width: 8%">Status</th>
@@ -113,18 +123,19 @@
                 </tbody>
               </q-markup-table>
             </q-tab-panel>
-            <q-tab-panel name="submissions" style="padding: 0; margin: 0;">
+            <q-tab-panel name="submissions" style="padding: 0; margin: 0">
               <submission-list></submission-list>
             </q-tab-panel>
             <q-tab-panel name="rankList">
-              <rank-list-component :contestInfo="contest_info" style="width: fit-content;"></rank-list-component>
+              <rank-list-component
+                :contestInfo="contest_info"
+                style="width: fit-content"
+              ></rank-list-component>
             </q-tab-panel>
             <q-tab-panel name="notes"></q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>
-
-
     </div>
   </div>
   <q-inner-loading :showing="show_loading">
@@ -136,7 +147,7 @@
 <script>
 import { ref } from 'vue';
 import { api as axios } from '@/boot/axios';
-import { useRoute,useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 // import vuepressTheme from "@kangc/v-md-editor/lib/theme/vuepress.js";
@@ -158,7 +169,7 @@ export default {
   components: { SubmissionList, RankListComponent },
   watch: {
     $route(to, from) {
-      console.log(to)
+      console.log(to);
       this.getContestInfo();
     },
   },
@@ -172,8 +183,8 @@ export default {
     const show_loading = ref(true);
     const time_percent = ref(0);
     const qmarkstyle = ref('');
-    const showPwdForm = ref(true)
-    const tstatus = ref(0)
+    const showPwdForm = ref(true);
+    const tstatus = ref(0);
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
@@ -185,8 +196,8 @@ export default {
     };
     let cgTimeTimer = null;
     const changeTimePercent = () => {
-      var timeL = contest_info.value.contestTimeBeginStamp*1000;
-      var timeR = contest_info.value.contestTimeEndStamp*1000;
+      var timeL = contest_info.value.contestTimeBeginStamp * 1000;
+      var timeR = contest_info.value.contestTimeEndStamp * 1000;
       var curr = Date.now();
       var lenth = timeR - timeL + 1;
       // console.log(timeL,timeR,curr,lenth)
@@ -199,29 +210,34 @@ export default {
       }
     };
     const timeSecondToString = (tim) => {
-      var s = ''
-      console.log(tim)
-      if (tim / (60*60*24)) s += `${parseInt(tim/(60*60*24))}天`
-      tim %= (60*60*24)
-      if (tim / (60*60)) s += `${parseInt(tim/(60*60))}小时`
-      tim %= (60*60)
-      if (tim % (60)) s += `${parseInt(tim/(60))}分钟`
-      tim %= 60
-      if (tim) s += `${parseInt(tim)}秒`
-      return s
-    }
+      var s = '';
+      console.log(tim);
+      if (tim / (60 * 60 * 24)) s += `${parseInt(tim / (60 * 60 * 24))}天`;
+      tim %= 60 * 60 * 24;
+      if (tim / (60 * 60)) s += `${parseInt(tim / (60 * 60))}小时`;
+      tim %= 60 * 60;
+      if (tim % 60) s += `${parseInt(tim / 60)}分钟`;
+      tim %= 60;
+      if (tim) s += `${parseInt(tim)}秒`;
+      return s;
+    };
     const timeStampTostring = (tim) => {
       var timestamp = tim ? tim : null;
-          let date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-          let Y = date.getFullYear();
-          let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-          let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-          let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-          let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-          let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-          // return Y + M + D + h + m + s;
-          return `${Y}-${M}-${D} ${h}:${m}:${s}`
-    }
+      let date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear();
+      let M =
+        date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1;
+      let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      let h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      let m =
+        date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      let s =
+        date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      // return Y + M + D + h + m + s;
+      return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+    };
     const getContestInfo = () => {
       show_loading.value = true;
       if (cgTimeTimer !== null) {
@@ -239,7 +255,7 @@ export default {
         url: '/contest/getInfo',
         data: {
           contestId: this_route.query.cid,
-          pwd:this_route.query.pwd?this_route.query.pwd:''
+          pwd: this_route.query.pwd ? this_route.query.pwd : '',
         },
       })
         .then((data) => {
@@ -248,21 +264,21 @@ export default {
             // 列表获取成功
             console.log(data);
             contest_info.value = data.data.data;
-              if (contest_info.value['contestTimeBeginStamp'] >= Date.now()/1000)
-              {
-                tstatus.value = 0; // 未开始
+            if (
+              contest_info.value['contestTimeBeginStamp'] >=
+              Date.now() / 1000
+            ) {
+              tstatus.value = 0; // 未开始
+            } else {
+              if (
+                contest_info.value['contestTimeEndStamp'] >=
+                Date.now() / 1000
+              ) {
+                tstatus.value = 1; // 比赛中
+              } else {
+                tstatus.value = 2;
               }
-              else
-              {
-                if (contest_info.value['contestTimeEndStamp'] >= Date.now()/1000)
-                {
-                  tstatus.value = 1 // 比赛中
-                }
-                else
-                {
-                  tstatus.value = 2
-                }
-              }
+            }
             changeTimePercent();
             cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
             show_loading.value = false;
@@ -286,9 +302,7 @@ export default {
               message: error.response.data.detail,
               progress: true,
             });
-          }
-          else
-          {
+          } else {
             $q.notify({
               type: 'negative',
               message: `网络错误，code=${error.request.status}`,
@@ -308,7 +322,7 @@ export default {
       showPwdForm,
       timeSecondToString,
       timeStampTostring,
-      tstatus
+      tstatus,
     };
   },
   mounted() {

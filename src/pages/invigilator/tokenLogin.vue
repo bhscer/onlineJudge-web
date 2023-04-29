@@ -3,48 +3,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref } from 'vue';
-import {api as axios} from '@/boot/axios'
+import { defineComponent, ref } from 'vue';
+import { api as axios } from '@/boot/axios';
 import { useUserStore } from '@/stores/user';
 import { useQuasar } from 'quasar';
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'tokenLogin',
-  setup(){
+  setup() {
     const user = useUserStore();
     const $q = useQuasar();
     const router = useRouter();
     const route = useRoute();
-    const message = ref('登录中')
+    const message = ref('登录中');
 
-    const token_login = ()=>{
-      if (route.query.token)
-      {
+    const token_login = () => {
+      if (route.query.token) {
         localStorage.setItem('oj-auth-token', route.query.token.toString());
-        user.
-          user_auth().
-            then((result) => {
-              router.push('/')
-            }).catch((err) => {
-              console.log(err)
-            });
+        user
+          .user_auth()
+          .then((result) => {
+            router.push('/');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        message.value = 'token不存在，无法登录。';
       }
-      else
-      {
-        message.value = "token不存在，无法登录。"
-      }
-    }
-    return{
+    };
+    return {
       message,
       user,
-      token_login
-    }
+      token_login,
+    };
   },
-  mounted(){
+  mounted() {
     // 先清空token
     this.user.logout();
     this.token_login();
-  }
+  },
 });
 </script>

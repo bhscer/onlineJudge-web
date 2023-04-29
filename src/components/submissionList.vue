@@ -11,9 +11,16 @@
     <div v-show="!show_loading" style="padding: 0; margin: 0">
       <div class="q-pa-md" style="padding: 0; margin: 0">
         <q-card class="q-pa-md" style="display: flex; flex-direction: column">
-          <div class="q-gutter-md q-ml-sm" style="display: flex;flex-wrap: wrap;">
+          <div
+            class="q-gutter-md q-ml-sm"
+            style="display: flex; flex-wrap: wrap"
+          >
             <h3 style="margin: 0"><strong>过滤</strong></h3>
-            <div v-if="show_loading_mini" class="q-ml-md q-my-auto" style="display: flex;">
+            <div
+              v-if="show_loading_mini"
+              class="q-ml-md q-my-auto"
+              style="display: flex"
+            >
               <q-spinner-gears size="40px" color="primary" />
               <p class="q-my-auto">loading...</p>
             </div>
@@ -27,7 +34,11 @@
               />
             </div>
           </div>
-          <q-checkbox v-model="filter_show_user_only" label="只看自己" style="width: fit-content;"/>
+          <q-checkbox
+            v-model="filter_show_user_only"
+            label="只看自己"
+            style="width: fit-content"
+          />
           <div
             class="q-gutter-md q-ml-sm"
             style="display: flex; flex-direction: row; flex-wrap: wrap"
@@ -106,7 +117,15 @@
           </div>
         </q-card>
 
-        <q-markup-table class="q-mt-md" v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
+        <q-markup-table
+          class="q-mt-md"
+          v-show="
+            !empty_content &&
+            !show_loading &&
+            !show_loading_mini &&
+            !err_msg.length
+          "
+        >
           <thead>
             <tr>
               <th class="text-left" style="width: 10%">Status</th>
@@ -156,7 +175,10 @@
             </tr>
           </tbody>
         </q-markup-table>
-        <q-card class="q-mt-md q-" style="display: flex;justify-content: center;">
+        <q-card
+          class="q-mt-md q-"
+          style="display: flex; justify-content: center"
+        >
           <div class="text-h3">{{ err_msg }}</div>
         </q-card>
       </div>

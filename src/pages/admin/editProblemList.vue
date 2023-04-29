@@ -13,9 +13,7 @@
             size="lg"
             style="width: 100%"
             padding="xs xs"
-            @click="this.$router.push(
-              `/admin/editProblem?add=1`
-            )"
+            @click="this.$router.push(`/admin/editProblem?add=1`)"
           />
         </div>
 
@@ -53,12 +51,14 @@
               <td class="text-left">{{ item.accepted }}</td>
               <td class="text-left">{{ item.submitted }}</td>
               <td>
-                <a @click="this.$router.push(
-                      `/admin/editProblem?add=0&&id=${item.id}`
-                    )"
-                    :href="`/#/admin/editProblem?add=0&&id=${item.id}`"
+                <a
+                  @click="
+                    this.$router.push(`/admin/editProblem?add=0&&id=${item.id}`)
+                  "
+                  :href="`/#/admin/editProblem?add=0&&id=${item.id}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
-                  >Edit</a>
+                  >Edit</a
+                >
               </td>
             </tr>
           </tbody>

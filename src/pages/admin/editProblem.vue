@@ -2,110 +2,146 @@
   <div class="bg_div" v-show="!show_loading">
     <!-- 题目 -->
     <div class="content_main">
-      <div class="text-h3"><strong>{{this.$route.query.add==='0'? '题目编辑':'添加题目'}}</strong></div>
+      <div class="text-h3">
+        <strong>{{
+          this.$route.query.add === '0' ? '题目编辑' : '添加题目'
+        }}</strong>
+      </div>
       <div class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
-          <q-input outlined v-model="problem_info.problemIdString" label="题目编号" />
+          <q-input
+            outlined
+            v-model="problem_info.problemIdString"
+            label="题目编号"
+          />
 
           <q-input outlined v-model="problem_info.title" label="题目名称" />
 
           <div style="display: flex; flex-wrap: wrap">
-            <q-input outlined dense v-model="problem_info.timeLimitNum" label="Time Limit (s)" />
-            <q-input outlined dense v-model="problem_info.memoryLimitNum" label="Memory Limit (mb)" />
+            <q-input
+              outlined
+              dense
+              v-model="problem_info.timeLimitNum"
+              label="Time Limit (s)"
+            />
+            <q-input
+              outlined
+              dense
+              v-model="problem_info.memoryLimitNum"
+              label="Memory Limit (mb)"
+            />
           </div>
         </div>
       </div>
       <div class="q-gutter-sm">
         <q-radio v-model="problem_info.uiType" val="html" label="html" />
-        <q-radio v-model="problem_info.uiType" val="markdown" label="markdown" />
+        <q-radio
+          v-model="problem_info.uiType"
+          val="markdown"
+          label="markdown"
+        />
       </div>
 
       <div class="q-pa-md q-gutter-md">
         <div>
           <!--h2>题目描述</h2-->
-          <div class="text-h5" style="font-weight: bold">
-            题目描述
-          </div>
+          <div class="text-h5" style="font-weight: bold">题目描述</div>
           <div>
-            <div
-              v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor :content="problem_info.description" @change="updateData" :height="500" :z-index="1000" :auto-height="true" :show-module-name="false"></vue-html5-editor>
+            <div v-if="problem_info.uiType === 'html'">
+              <vue-html5-editor
+                :content="problem_info.description"
+                @change="updateData"
+                :height="500"
+                :z-index="1000"
+                :auto-height="true"
+                :show-module-name="false"
+              ></vue-html5-editor>
             </div>
-            <div
-              v-if="problem_info.uiType === 'markdown'">
-              <v-md-editor v-model="problem_info.description" height="400px"></v-md-editor>
+            <div v-if="problem_info.uiType === 'markdown'">
+              <v-md-editor
+                v-model="problem_info.description"
+                height="400px"
+              ></v-md-editor>
             </div>
           </div>
-
         </div>
 
         <div>
           <!--h2>输入格式</h2-->
-          <div class="text-h5" style="font-weight: bold">
-            输入格式
-          </div>
+          <div class="text-h5" style="font-weight: bold">输入格式</div>
           <div>
-            <div
-              v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor :content="problem_info.inputFormat" @change="updateData" :height="500" :z-index="1000" :auto-height="true" :show-module-name="false"></vue-html5-editor>
+            <div v-if="problem_info.uiType === 'html'">
+              <vue-html5-editor
+                :content="problem_info.inputFormat"
+                @change="updateData"
+                :height="500"
+                :z-index="1000"
+                :auto-height="true"
+                :show-module-name="false"
+              ></vue-html5-editor>
             </div>
-            <div
-              v-if="problem_info.uiType === 'markdown'">
-              <v-md-editor v-model="problem_info.inputFormat" height="400px"></v-md-editor>
+            <div v-if="problem_info.uiType === 'markdown'">
+              <v-md-editor
+                v-model="problem_info.inputFormat"
+                height="400px"
+              ></v-md-editor>
             </div>
           </div>
         </div>
 
         <div>
           <!--h2>输出格式</h2-->
-          <div class="text-h5" style="font-weight: bold">
-            输出格式
-          </div>
+          <div class="text-h5" style="font-weight: bold">输出格式</div>
           <div>
-            <div
-              v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor :content="problem_info.outputFormat" @change="updateData" :height="500" :z-index="1000" :auto-height="true" :show-module-name="false"></vue-html5-editor>
+            <div v-if="problem_info.uiType === 'html'">
+              <vue-html5-editor
+                :content="problem_info.outputFormat"
+                @change="updateData"
+                :height="500"
+                :z-index="1000"
+                :auto-height="true"
+                :show-module-name="false"
+              ></vue-html5-editor>
             </div>
-            <div
-              v-if="problem_info.uiType === 'markdown'">
-              <v-md-editor v-model="problem_info.outputFormat" height="400px"></v-md-editor>
+            <div v-if="problem_info.uiType === 'markdown'">
+              <v-md-editor
+                v-model="problem_info.outputFormat"
+                height="400px"
+              ></v-md-editor>
             </div>
           </div>
-
         </div>
 
         <div>
-          <div style="display: flex;">
-            <div class="text-h5" style="font-weight: bold">
-              输入输出样例
-            </div>
-            <q-btn
-                outline
-                color="primary"
-                label="添加"
-                size="xs"
-                padding="xs xs"
-                @click="problem_info['samples'].push({
-                  input:'',output:''
-                })"
-              />
-          </div>
-
-          <div
-            v-for="(item, idx) in problem_info.samples"
-            :key="item"
-          >
-          <div style="display: flex;">
-            <h5 style="margin: 0;">{{'样例#' + (idx + 1)}}</h5>
+          <div style="display: flex">
+            <div class="text-h5" style="font-weight: bold">输入输出样例</div>
             <q-btn
               outline
-              color="red"
-              label="删除"
+              color="primary"
+              label="添加"
               size="xs"
               padding="xs xs"
-              @click="problem_info['samples'].splice(idx,1)"
+              @click="
+                problem_info['samples'].push({
+                  input: '',
+                  output: '',
+                })
+              "
             />
           </div>
+
+          <div v-for="(item, idx) in problem_info.samples" :key="item">
+            <div style="display: flex">
+              <h5 style="margin: 0">{{ '样例#' + (idx + 1) }}</h5>
+              <q-btn
+                outline
+                color="red"
+                label="删除"
+                size="xs"
+                padding="xs xs"
+                @click="problem_info['samples'].splice(idx, 1)"
+              />
+            </div>
 
             <div style="display: flex; flex-wrap: wrap">
               <div :style="samplewidthTextLeft">
@@ -123,13 +159,21 @@
         <div>
           <div class="text-h5" style="font-weight: bold">提示</div>
           <div>
-            <div
-              v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor :content="problem_info.problemHint" @change="updateData" :height="500" :z-index="1000" :auto-height="true" :show-module-name="false"></vue-html5-editor>
+            <div v-if="problem_info.uiType === 'html'">
+              <vue-html5-editor
+                :content="problem_info.problemHint"
+                @change="updateData"
+                :height="500"
+                :z-index="1000"
+                :auto-height="true"
+                :show-module-name="false"
+              ></vue-html5-editor>
             </div>
-            <div
-              v-if="problem_info.uiType === 'markdown'">
-              <v-md-editor v-model="problem_info.problemHint" height="400px"></v-md-editor>
+            <div v-if="problem_info.uiType === 'markdown'">
+              <v-md-editor
+                v-model="problem_info.problemHint"
+                height="400px"
+              ></v-md-editor>
             </div>
           </div>
         </div>
@@ -143,7 +187,6 @@
         padding="xs xs"
         @click="submitEdit()"
       />
-
     </div>
   </div>
   <q-inner-loading :showing="show_loading">
@@ -156,10 +199,8 @@
 import { defineComponent, ref, getCurrentInstance } from 'vue';
 import { api as axios } from '@/boot/axios';
 
-
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
-
 
 import * as monaco from 'monaco-editor';
 import { useRoute, useRouter } from 'vue-router';
@@ -172,9 +213,9 @@ export default defineComponent({
     $route(to, from) {
       this.getProblemInfo();
     },
-    '$q.dark.isActive'(to,from) {
-      monaco.editor.setTheme(to ? 'vs-dark':'vs-white')
-    }
+    '$q.dark.isActive'(to, from) {
+      monaco.editor.setTheme(to ? 'vs-dark' : 'vs-white');
+    },
   },
   setup() {
     // const language_model = ref(null);
@@ -192,24 +233,25 @@ export default defineComponent({
     let this_router = useRouter();
     const $q = useQuasar();
     const miniMode = ref(false);
-    const windowWidth = ref(10)
-    const qmarkstyle = ref('')
-    const submiting = ref(false)
-    const tab = ref('problem')
+    const windowWidth = ref(10);
+    const qmarkstyle = ref('');
+    const submiting = ref(false);
+    const tab = ref('problem');
 
     const submitEdit = async () => {
       submiting.value = true;
 
-      problem_info.value.timeLimit = problem_info.value.timeLimitNum+'s',
-      problem_info.value.memoryLimit = problem_info.value.memoryLimitNum+'s'
+      (problem_info.value.timeLimit = problem_info.value.timeLimitNum + 's'),
+        (problem_info.value.memoryLimit =
+          problem_info.value.memoryLimitNum + 's');
       // console.log('then',code_content)
       axios({
         method: 'post',
         url: '/admin/problem/edit',
         data: {
-          type : this_route.query.add,
-          data : problem_info.value
-        }
+          type: this_route.query.add,
+          data: problem_info.value,
+        },
       })
         .then((data) => {
           submiting.value = false;
@@ -223,7 +265,7 @@ export default defineComponent({
         .catch((error) => {
           submiting.value = false;
           console.error('Error:', error);
-            alert(error.response.data.detail)
+          alert(error.response.data.detail);
           if (error.request.status === 401) {
             // localStorage.removeItem('Authorization');
             // showFailToast("登录状态失效，请重新登录")
@@ -235,9 +277,7 @@ export default defineComponent({
               message: error.response.data.detail,
               progress: true,
             });
-          }
-          else
-          {
+          } else {
             $q.notify({
               type: 'negative',
               message: `网络错误,code=${error.request.status}`,
@@ -258,18 +298,14 @@ export default defineComponent({
         samplewidthTextRight.value = 'width:100%';
         // sampledivStyle.value = ""
       }
-      if (window.innerWidth > 850)
-        miniMode.value = false;
-      else
-        miniMode.value = true;
-
+      if (window.innerWidth > 850) miniMode.value = false;
+      else miniMode.value = true;
 
       if (window.innerWidth > 850) {
         qmarkstyle.value = '';
       } else {
         qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
       }
-
     };
     const debounce = (fn, delay) => {
       let timer;
@@ -287,43 +323,45 @@ export default defineComponent({
       show_loading.value = true;
       // console.log(this_route)
       // console.log(this_route.path)
-      if (this_route.path.toLowerCase() !== '/admin/editProblem'.toLowerCase()) return;
+      if (this_route.path.toLowerCase() !== '/admin/editProblem'.toLowerCase())
+        return;
       if (
-        this_route.query.add === undefined || this_route.query.add === '0' && this_route.query.id===undefined || this_route.query.add!=='1'&&this_route.query.add!=='0'
+        this_route.query.add === undefined ||
+        (this_route.query.add === '0' && this_route.query.id === undefined) ||
+        (this_route.query.add !== '1' && this_route.query.add !== '0')
       ) {
         alert('参数不完整');
         return;
       }
 
-      if (this_route.query.add === '1')
-      {
+      if (this_route.query.add === '1') {
         problem_info.value = {
-          "problemIdString": "",
-          "autoGenPrefix": false,
-          "prefixIdx": 0,
-          "public": true,
-          "privateRange": [],
-          "title": "",
-          "ReferredInfo": {
-            "isProblemReferred": false,
-            "problemReferredWebsite": "",
-            "problemReferredUrl": "",
-            "showToPublic": false
+          problemIdString: '',
+          autoGenPrefix: false,
+          prefixIdx: 0,
+          public: true,
+          privateRange: [],
+          title: '',
+          ReferredInfo: {
+            isProblemReferred: false,
+            problemReferredWebsite: '',
+            problemReferredUrl: '',
+            showToPublic: false,
           },
-          "submitted": 0,
-          "accepted": 0,
-          "timeLimitNum": "1",
-          "timeLimit": "?s",
-          "memoryLimitNum": "256",
-          "memoryLimit": "?mb",
-          "uiType": "markdown",
-          "description": "",
-          "inputFormat": "",
-          "outputFormat": "",
-          "problemHint": "",
-          "source": [],
-          "samples": []
-        }
+          submitted: 0,
+          accepted: 0,
+          timeLimitNum: '1',
+          timeLimit: '?s',
+          memoryLimitNum: '256',
+          memoryLimit: '?mb',
+          uiType: 'markdown',
+          description: '',
+          inputFormat: '',
+          outputFormat: '',
+          problemHint: '',
+          source: [],
+          samples: [],
+        };
 
         show_loading.value = false;
         return;
@@ -332,8 +370,8 @@ export default defineComponent({
         method: 'post',
         url: '/admin/problem/getInfo',
         data: {
-          id: this_route.query.id
-        }
+          id: this_route.query.id,
+        },
       })
         .then((data) => {
           console.log('Success:', data);
@@ -363,7 +401,6 @@ export default defineComponent({
           }
         });
     };
-
 
     return {
       tab,
@@ -435,7 +472,6 @@ export default defineComponent({
   padding-left: 10vh;
   padding-right: 10vh;
 }
-
 
 .body--light .sample_box {
   margin: 0.5em 0;

@@ -1,6 +1,5 @@
 import { boot } from 'quasar/wrappers';
 
-
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -17,9 +16,9 @@ import md5 from 'js-md5';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 
 import MonacoEditor from 'monaco-editor-vue';
-import { inject } from '@vercel/analytics'
-import VueHtml5Editor from 'vue-html5-editor'
-import 'font-awesome/css/font-awesome.css'
+import { inject } from '@vercel/analytics';
+import VueHtml5Editor from 'vue-html5-editor';
+import 'font-awesome/css/font-awesome.css';
 
 // import axios from 'axios';
 
@@ -59,7 +58,7 @@ export default boot(async ({ app }) => {
       eraser: 'fa fa-eraser',
       undo: 'fa-undo fa',
       // 'full-screen': 'fa fa-arrows-alt',
-      info: 'fa fa-info'
+      info: 'fa fa-info',
     },
     // 配置图片模块
     // config image module
@@ -72,7 +71,7 @@ export default boot(async ({ app }) => {
         url: 'http://localhost:8080/files/upload',
         headers: {},
         params: {},
-        fieldName: 'file'
+        fieldName: 'file',
       },
       // 压缩参数,默认使用localResizeIMG进行压缩,设置为null禁止压缩
       // compression config,default resize image by localResizeIMG (https://github.com/think2011/localResizeIMG)
@@ -80,11 +79,11 @@ export default boot(async ({ app }) => {
       compress: null,
       // 响应数据处理,最终返回图片链接
       // handle response data，return image url
-      uploadHandler (responseText:string) {
+      uploadHandler(responseText: string) {
         // default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"}
-        const json = JSON.parse(responseText)
-        return json.data.fileurl
-      }
+        const json = JSON.parse(responseText);
+        return json.data.fileurl;
+      },
     },
     // 语言，内建的有英文（en-us）和中文（zh-cn）
     // default en-us, en-us and zh-cn are built-in
@@ -93,27 +92,27 @@ export default boot(async ({ app }) => {
     i18n: {
       // specify your language here
       'zh-cn': {
-        'align': '对齐方式',
-        'image': '图片',
-        'list': '列表',
-        'link': '链接',
-        'unlink': '去除链接',
-        'table': '表格',
-        'font': '文字',
+        align: '对齐方式',
+        image: '图片',
+        list: '列表',
+        link: '链接',
+        unlink: '去除链接',
+        table: '表格',
+        font: '文字',
         'full screen': '全屏',
-        'text': '排版',
-        'eraser': '格式清除',
-        'info': '关于',
-        'color': '颜色',
+        text: '排版',
+        eraser: '格式清除',
+        info: '关于',
+        color: '颜色',
         'please enter a url': '请输入地址',
         'create link': '创建链接',
-        'bold': '加粗',
-        'italic': '倾斜',
-        'underline': '下划线',
+        bold: '加粗',
+        italic: '倾斜',
+        underline: '下划线',
         'strike through': '删除线',
-        'subscript': '上标',
-        'superscript': '下标',
-        'heading': '标题',
+        subscript: '上标',
+        superscript: '下标',
+        heading: '标题',
         'font name': '字体',
         'font size': '文字大小',
         'left justify': '左对齐',
@@ -125,21 +124,19 @@ export default boot(async ({ app }) => {
         'background color': '背景色',
         'row count': '行数',
         'column count': '列数',
-        'save': '确定',
-        'upload': '上传',
-        'progress': '进度',
-        'unknown': '未知',
+        save: '确定',
+        upload: '上传',
+        progress: '进度',
+        unknown: '未知',
         'please wait': '请稍等',
-        'error': '错误',
-        'abort': '中断',
-        'reset': '重置'
-      }
+        error: '错误',
+        abort: '中断',
+        reset: '重置',
+      },
     },
     // 隐藏不想要显示出来的模块
     // the modules you don't want
-    hiddenModules: [
-      'info','full-screen'
-    ],
+    hiddenModules: ['info', 'full-screen'],
     // 自定义要显示的模块，并控制顺序
     // keep only the modules you want and customize the order.
     // can be used with hiddenModules together
@@ -157,7 +154,7 @@ export default boot(async ({ app }) => {
       'eraser',
       'undo',
       'full-screen',
-      'info'
-  ], // 扩展模块，具体可以参考examples或查看源码 // extended modules  modules: { // omit,reference to source code of build-in modules  } })
-})
+      'info',
+    ], // 扩展模块，具体可以参考examples或查看源码 // extended modules  modules: { // omit,reference to source code of build-in modules  } })
+  });
 });

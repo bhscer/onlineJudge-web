@@ -24,7 +24,7 @@
                   style="display: flex; flex-direction: column; flex-wrap: wrap"
                 >
                   <a
-                    v-if = "item.permission && !item.permission.needPwd"
+                    v-if="item.permission && !item.permission.needPwd"
                     class=""
                     style="
                       margin: 0;
@@ -40,7 +40,7 @@
                     {{ item.contestTitle }}
                   </a>
                   <a
-                    v-if = "item.permission && item.permission.needPwd"
+                    v-if="item.permission && item.permission.needPwd"
                     class=""
                     style="
                       margin: 0;
@@ -50,7 +50,10 @@
                       font-size: 20px;
                       width: max-content;
                     "
-                    @click="showPwdForm=true;pwdFormInfo=item"
+                    @click="
+                      showPwdForm = true;
+                      pwdFormInfo = item;
+                    "
                   >
                     {{ item.contestTitle }}
                   </a>
@@ -94,7 +97,7 @@
                     text-color="white"
                     icon="info"
                   >
-                    {{ ['Not start','Competing','Ended'][item.timeStatus] }}
+                    {{ ['Not start', 'Competing', 'Ended'][item.timeStatus] }}
                   </q-chip>
                 </div>
               </div>
@@ -122,9 +125,9 @@
 
   <q-dialog v-model="showPwdForm" v-if="pwdFormInfo">
     <q-card>
-      <div style="display: flex;">
-          <div class="q-my-lg q-ml-lg q-mr-md">
-                    <q-icon color="primary" name="article" size="lg"></q-icon>
+      <div style="display: flex">
+        <div class="q-my-lg q-ml-lg q-mr-md">
+          <q-icon color="primary" name="article" size="lg"></q-icon>
         </div>
         <div
           class="q-my-md"
@@ -167,7 +170,14 @@
         </div>
       </div>
 
-      <q-input class="q-ma-md" rounded outlined v-model="pwd_text" style="width: 300px;" label="输入密码">
+      <q-input
+        class="q-ma-md"
+        rounded
+        outlined
+        v-model="pwd_text"
+        style="width: 300px"
+        label="输入密码"
+      >
         <template v-slot:prepend>
           <q-icon name="lock" />
         </template>
@@ -175,7 +185,7 @@
           <q-icon name="close" @click="pwd_text = ''" class="cursor-pointer" />
         </template>
         <template v-slot:after>
-          <q-btn round dense flat icon="send" @click="pwdVerifiy()"/>
+          <q-btn round dense flat icon="send" @click="pwdVerifiy()" />
         </template>
       </q-input>
     </q-card>
@@ -192,7 +202,6 @@ import { useQuasar } from 'quasar';
 export default defineComponent({
   name: 'contestList',
   setup() {
-
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
@@ -216,21 +225,25 @@ export default defineComponent({
     const maxPage = ref(1);
     const show_loading = ref(true);
     const showPwdForm = ref(false);
-    const pwdFormInfo = ref({})
-    const pwd_text = ref('')
+    const pwdFormInfo = ref({});
+    const pwd_text = ref('');
 
-    const pwdVerifiy = ()=>{
+    const pwdVerifiy = () => {
       axios({
         method: 'post',
         url: '/contest/pwdVerifiy',
         data: {
-          contestId:pwdFormInfo.value.contestId,
-          pwd:md5(pwd_text.value)
+          contestId: pwdFormInfo.value.contestId,
+          pwd: md5(pwd_text.value),
         },
       })
         .then((data) => {
           console.log('Success:', data);
-          this_router.push(`/contest?cid=${pwdFormInfo.value.contestId}&&pwd=${md5(pwd_text.value)}`)
+          this_router.push(
+            `/contest?cid=${pwdFormInfo.value.contestId}&&pwd=${md5(
+              pwd_text.value
+            )}`
+          );
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -245,8 +258,7 @@ export default defineComponent({
               message: error.response.data.detail,
               progress: true,
             });
-          }
-          else{
+          } else {
             $q.notify({
               type: 'negative',
               message: '未知错误',
@@ -254,30 +266,35 @@ export default defineComponent({
             });
           }
         });
-    }
+    };
     const timeSecondToString = (tim) => {
-      var s = ''
-      if (tim / (60*60*24)) s += `${parseInt(tim/(60*60*24))}天`
-      tim %= (60*60*24)
-      if (tim / (60*60)) s += `${parseInt(tim/(60*60))}小时`
-      tim %= (60*60)
-      if (tim % (60)) s += `${parseInt(tim/(60))}分钟`
-      tim %= 60
-      if (tim) s += `${parseInt(tim)}秒`
-      return s
-    }
+      var s = '';
+      if (tim / (60 * 60 * 24)) s += `${parseInt(tim / (60 * 60 * 24))}天`;
+      tim %= 60 * 60 * 24;
+      if (tim / (60 * 60)) s += `${parseInt(tim / (60 * 60))}小时`;
+      tim %= 60 * 60;
+      if (tim % 60) s += `${parseInt(tim / 60)}分钟`;
+      tim %= 60;
+      if (tim) s += `${parseInt(tim)}秒`;
+      return s;
+    };
     const timeStampTostring = (tim) => {
       var timestamp = tim ? tim : null;
-          let date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-          let Y = date.getFullYear();
-          let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-          let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-          let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-          let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-          let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-          // return Y + M + D + h + m + s;
-          return `${Y}-${M}-${D} ${h}:${m}:${s}`
-    }
+      let date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear();
+      let M =
+        date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1;
+      let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      let h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+      let m =
+        date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      let s =
+        date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      // return Y + M + D + h + m + s;
+      return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+    };
     const changePage = (newPage) => {
       this_router.push({
         path: '/contestList',
@@ -318,25 +335,25 @@ export default defineComponent({
             console.log(data);
             maxPage.value = data.data.maxPage;
             contest_list.value = data.data.data;
-            for (var i=0;i<contest_list.value.length;i++)
-            {
-              var tstatus = 0
-              if (contest_list.value[i]['contestTimeBeginStamp'] >= Date.now()/1000)
-              {
+            for (var i = 0; i < contest_list.value.length; i++) {
+              var tstatus = 0;
+              if (
+                contest_list.value[i]['contestTimeBeginStamp'] >=
+                Date.now() / 1000
+              ) {
                 tstatus = 0; // 未开始
-              }
-              else
-              {
-                if (contest_list.value[i]['contestTimeBeginStamp'] + contest_list.value[i]['contestLength'] >= Date.now()/1000)
-                {
-                  tstatus = 1 // 比赛中
+              } else {
+                if (
+                  contest_list.value[i]['contestTimeBeginStamp'] +
+                    contest_list.value[i]['contestLength'] >=
+                  Date.now() / 1000
+                ) {
+                  tstatus = 1; // 比赛中
+                } else {
+                  tstatus = 2;
                 }
-                else
-                {
-                  tstatus = 2
-                }
               }
-              contest_list.value[i]['timeStatus'] = tstatus
+              contest_list.value[i]['timeStatus'] = tstatus;
             }
             show_loading.value = false;
           } else {
@@ -367,7 +384,7 @@ export default defineComponent({
       pwd_text,
       pwdVerifiy,
       timeSecondToString,
-      timeStampTostring
+      timeStampTostring,
     };
   },
   watch: {

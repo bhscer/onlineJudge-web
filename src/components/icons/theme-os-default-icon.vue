@@ -1,32 +1,32 @@
 <template>
-	<svg
-		viewBox="0 0 16 16"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		role="img"
-    style="color: white;"
-	>
-		<circle cx="8" cy="8" r="7.25" stroke="#ffffff" stroke-width="1.5" />
-		<mask
-			id="a"
-			style="mask-type: alpha"
-			maskUnits="userSpaceOnUse"
-			x="0"
-			y="0"
-			width="16"
-			height="16"
-		>
-			<circle
-				cx="8"
-				cy="8"
-				r="7.25"
-				fill="#ffffff"
-				stroke="#ffffff"
-				stroke-width="1.5"
-			/>
-		</mask>
-		<g mask="url(#a)">
-			<path fill="#ffffff" d="M0 0h8v16H0z" />
-		</g>
-	</svg>
+  <svg
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    style="color: white"
+  >
+    <circle cx="8" cy="8" r="7.25" stroke="#ffffff" stroke-width="1.5" />
+    <mask
+      id="a"
+      style="mask-type: alpha"
+      maskUnits="userSpaceOnUse"
+      x="0"
+      y="0"
+      width="16"
+      height="16"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        r="7.25"
+        fill="#ffffff"
+        stroke="#ffffff"
+        stroke-width="1.5"
+      />
+    </mask>
+    <g mask="url(#a)">
+      <path fill="#ffffff" d="M0 0h8v16H0z" />
+    </g>
+  </svg>
 </template>

@@ -13,71 +13,102 @@
       <div v-if="hideMsg.length">{{ hideMsg }}</div>
       <div v-if="!hideMsg.length">
         <div class="q-pa-md" style="padding: 0; margin: 0">
+          <q-markup-table
+            class="q-mt-md"
+            separator="cell"
+            v-show="
+              !empty_content &&
+              !show_loading &&
+              !show_loading_mini &&
+              !err_msg.length
+            "
+          >
+            <thead>
+              <tr>
+                <th class="text-left">Rank</th>
+                <th class="text-left">Name</th>
+                <th class="text-left">Score</th>
+                <th
+                  class="text-center"
+                  v-for="item in contestInfo.contestProblem"
+                  :key="item"
+                >
+                  {{ item.problemNo }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in rank_list" :key="item">
+                <td class="text-left">{{ item.rank }}</td>
+                <td class="text-left">{{ item.name }}</td>
+                <td>
+                  <div>
+                    <strong>{{ item.solved }}</strong>
+                    <span style="margin-left: 8px">{{
+                      parseInt(item.timeCostWithPenalties / 60)
+                    }}</span>
+                  </div>
+                </td>
+                <td
+                  class="text-left"
+                  style="padding: 0; width: fit-content; height: fit-content"
+                  v-for="itemrs in item.res"
+                  :key="itemrs"
+                >
+                  <div
+                    v-if="!itemrs.status"
+                    align="center"
+                    style="width: 60px; height: 50px"
+                  ></div>
+                  <div
+                    v-if="itemrs.status"
+                    align="center"
+                    :style="`width: 60px;height:50px;margin:0;background-color:${
+                      itemrs.status === 1
+                        ? '#e87272'
+                        : itemrs.status === 2
+                        ? '#60e760'
+                        : ''
+                    };`"
+                  >
+                    <p style="padding: 0; margin-bottom: 0">
+                      {{
+                        itemrs.status === 2
+                          ? parseInt(itemrs.timeCost / 60)
+                          : ''
+                      }}
+                    </p>
 
-        <q-markup-table
-          class="q-mt-md"
-          separator="cell"
-          v-show="!empty_content && !show_loading && !show_loading_mini && !err_msg.length">
-          <thead>
-            <tr>
-              <th class="text-left">Rank</th>
-              <th class="text-left">Name</th>
-              <th class="text-left">Score</th>
-              <th class="text-center" v-for="item in contestInfo.contestProblem" :key="item">{{ item.problemNo }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in rank_list" :key="item">
-              <td class="text-left">{{ item.rank}}</td>
-              <td class="text-left">{{ item.name}}</td>
-              <td>
-                <div>
-                  <strong>{{ item.solved }}</strong>
-                  <span style="margin-left: 8px;">{{ parseInt(item.timeCostWithPenalties/60) }}</span>
-                </div>
-              </td>
-              <td class="text-left"
-                style="padding: 0;width: fit-content;height: fit-content;"
-                v-for="itemrs in item.res"
-                :key="itemrs"
-              >
-              <div
-                v-if="!itemrs.status"
-                  align="center"
-                  style="width: 60px;height:50px">
-
-              </div>
-                <div
-                  v-if="itemrs.status"
-                  align="center"
-                  :style="`width: 60px;height:50px;margin:0;background-color:${itemrs.status===1?'#e87272':(itemrs.status===2?'#60e760':'')};`">
-
-                  <p style="padding: 0;margin-bottom: 0;">{{ itemrs.status===2?parseInt(itemrs.timeCost/60):'' }}</p>
-
-                  <p style="margin-top: 6px;margin-bottom: 0;">{{ `${itemrs.tryCnt} ${itemrs.tryCnt<=1?'try':'tries'}` }}</p>
-                </div>
-
-              </td>
-
-            </tr>
-          </tbody>
-        </q-markup-table>
-        <q-card class="q-mt-md q-" style="display: flex;justify-content: center;">
-          <div class="text-h3">{{ err_msg }}</div>
-        </q-card>
+                    <p style="margin-top: 6px; margin-bottom: 0">
+                      {{
+                        `${itemrs.tryCnt} ${
+                          itemrs.tryCnt <= 1 ? 'try' : 'tries'
+                        }`
+                      }}
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+          <q-card
+            class="q-mt-md q-"
+            style="display: flex; justify-content: center"
+          >
+            <div class="text-h3">{{ err_msg }}</div>
+          </q-card>
         </div>
 
         <div class="q-pa-lg">
-        <q-pagination
-          v-model="current_page"
-          :max="maxPage"
-          :max-pages="6"
-          direction-links
-          @update:model-value="changePage"
-        />
+          <q-pagination
+            v-model="current_page"
+            :max="maxPage"
+            :max-pages="6"
+            direction-links
+            @update:model-value="changePage"
+          />
         </div>
       </div>
-
     </div>
 
     <q-inner-loading :showing="show_loading">

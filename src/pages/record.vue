@@ -24,25 +24,35 @@
         @transition="tab_pannel_change"
       >
         <q-tab-panel name="points">
-          <div v-for="point in submission_info.submissionResultDetail" :key="point">
-            <div :style="`background-color:${statusCovernt(point.result)[0]} ;`">
-              {{statusCovernt(point.result)[1]}}
+          <div
+            v-for="point in submission_info.submissionResultDetail"
+            :key="point"
+          >
+            <div
+              :style="`background-color:${statusCovernt(point.result)[0]} ;`"
+            >
+              {{ statusCovernt(point.result)[1] }}
             </div>
-
           </div>
         </q-tab-panel>
         <q-tab-panel name="code">
           <div
-                  id="monaco_editor_container"
-                  style="height: 500px; width: 99%; margin-left: 0.5%;resize: vertical;overflow: hidden;"
-                ></div>
+            id="monaco_editor_container"
+            style="
+              height: 500px;
+              width: 99%;
+              margin-left: 0.5%;
+              resize: vertical;
+              overflow: hidden;
+            "
+          ></div>
         </q-tab-panel>
       </q-tab-panels>
     </div>
     <q-inner-loading :showing="show_loading">
       <q-spinner-gears size="50px" color="primary" />
       <p>loading...</p>
-  </q-inner-loading>
+    </q-inner-loading>
   </q-page>
 </template>
 
@@ -60,8 +70,8 @@ const router = useRouter();
 const this_route = useRoute();
 const tab = ref('points');
 const show_loading = ref(true);
-const submission_info = ref({})
-let firstTimeToCode = true
+const submission_info = ref({});
+let firstTimeToCode = true;
 
 function getSubmissionInfo() {
   show_loading.value = true;
@@ -81,8 +91,8 @@ function getSubmissionInfo() {
   })
     .then((data) => {
       console.log('Success:', data);
-        submission_info.value = data.data
-        show_loading.value = false;
+      submission_info.value = data.data;
+      show_loading.value = false;
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -96,7 +106,7 @@ function getSubmissionInfo() {
     });
 }
 function createEditor() {
-  var true_type = ''
+  var true_type = '';
   switch (submission_info.value.submissionCodeLanguage) {
     case 'CPP':
       true_type = 'cpp';
@@ -114,57 +124,71 @@ function createEditor() {
       value: '',
       language: true_type,
       // theme: 'vs-dark',
-      theme: $q.dark.isActive ? 'vs-dark':'vs-white',
+      theme: $q.dark.isActive ? 'vs-dark' : 'vs-white',
       editorOptions: {
         automaticLayout: true,
         autoIndent: true, //自动缩进
       },
       automaticLayout: true,
-      value:submission_info.value.submissionCode
+      value: submission_info.value.submissionCode,
     }
   );
-};
-function tab_pannel_change (next, prev) {
+}
+function tab_pannel_change(next, prev) {
   if (next == 'code' && firstTimeToCode) {
     firstTimeToCode = false;
     // console.log(document.getElementById('monaco_editor_container'));
     createEditor();
   }
-};
-function statusCovernt(status)
-{
-  if (status==10)
-  {
-    return ['#17b978','Accepted']
-  }
-  else if (status==11)
-  {
-    return ['red','WA']
-  }
-  else
-  {
+}
+function statusCovernt(status) {
+  if (status == 10) {
+    return ['#17b978', 'Accepted'];
+  } else if (status == 11) {
+    return ['red', 'WA'];
+  } else {
     var rest = [];
-    rest.push('#ff8a5c')
-    switch (status)
-    {
-      case 0: rest.push('UnknownError');break;
-      case 1: rest.push('Pending');break;
-      case 3: rest.push('CompileError');break;
-      case 12: rest.push('FormatError');break;
-      case 13: rest.push('TLE');break;
-      case 14: rest.push('MLE');break;
-      case 15: rest.push('RuntimeError');break;
-      case 16: rest.push('OutputOverRange');break;
-      case 17: rest.push('SystemError');break;
-      case 18: rest.push('MultipleError');break;
-      default: rest.push('UnknownError');
+    rest.push('#ff8a5c');
+    switch (status) {
+      case 0:
+        rest.push('UnknownError');
+        break;
+      case 1:
+        rest.push('Pending');
+        break;
+      case 3:
+        rest.push('CompileError');
+        break;
+      case 12:
+        rest.push('FormatError');
+        break;
+      case 13:
+        rest.push('TLE');
+        break;
+      case 14:
+        rest.push('MLE');
+        break;
+      case 15:
+        rest.push('RuntimeError');
+        break;
+      case 16:
+        rest.push('OutputOverRange');
+        break;
+      case 17:
+        rest.push('SystemError');
+        break;
+      case 18:
+        rest.push('MultipleError');
+        break;
+      default:
+        rest.push('UnknownError');
     }
-    return rest
+    return rest;
   }
 }
-onMounted(()=>{
-  getSubmissionInfo()
-})
+onMounted(() => {
+  getSubmissionInfo();
+});
 </script>
 
 <style scoped></style>
