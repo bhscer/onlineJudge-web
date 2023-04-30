@@ -21,7 +21,7 @@
           v-if="user.info?.permission !== 'user'"
           clickable
           v-close-popup
-          @click="this.$router.push('/admin')"
+          @click="$router.push('/admin')"
         >
           <q-item-section>管理</q-item-section>
         </q-item>
