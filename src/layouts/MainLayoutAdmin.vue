@@ -44,20 +44,20 @@ import { useUserStore } from '@/stores/user';
 
 const linksList = [
   {
-    title: 'Back to Home',
-    caption: 'Online Judge',
+    title: '回到前台',
+    caption: '',
     icon: 'home',
     link: '/home',
   },
   {
-    title: 'Edit Problem',
-    caption: 'edit problem',
+    title: '问题管理',
+    caption: '',
     icon: 'code',
     link: 'editProblemList',
   },
   {
-    title: 'Edit Contest',
-    caption: 'edit contest',
+    title: '比赛管理',
+    caption: '',
     icon: 'chat',
     link: 'editContestList',
   },

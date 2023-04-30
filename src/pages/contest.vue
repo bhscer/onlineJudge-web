@@ -19,6 +19,7 @@
             <p>End:{{ timeStampTostring(contest_info.contestTimeEndStamp) }}</p>
           </div>
           <q-linear-progress
+            v-if="tstatus"
             size="15px"
             :value="time_percent"
             color="primary"
@@ -29,8 +30,17 @@
           </q-linear-progress>
         </div>
       </q-card>
-
+      <q-card
+        v-if="!tstatus"
+        class="q-py-lg"
+      >
+          <div class="text-h6" align="center">距离开始还有</div>
+          <div class="text-h4" align="center">
+            {{ countdown_text }}
+          </div>
+      </q-card>
       <div
+        class="q-mt-sm"
         style="
           display: flex;
           flex-direction: column;
@@ -51,11 +61,11 @@
             outside-arrows
             mobile-arrows
           >
-            <q-tab name="description" label="description" />
-            <q-tab name="problems" label="problems" />
-            <q-tab name="submissions" label="submissions" />
-            <q-tab name="rankList" label="rankList" />
-            <q-tab name="notes" label="notes" />
+            <q-tab name="description" label="description"/>
+            <q-tab name="problems" label="problems" v-if="tstatus"/>
+            <q-tab name="submissions" label="submissions" v-if="tstatus"/>
+            <q-tab name="rankList" label="rankList" v-if="tstatus"/>
+            <q-tab name="notes" label="notes" v-if="tstatus"/>
           </q-tabs>
         </q-card>
         <q-card class="q-mt-md" :style="`width: 100%;${qmarkstyle};padding:0`">
@@ -186,6 +196,9 @@ export default {
     const showPwdForm = ref(true);
     const tstatus = ref(0);
     const err_msg = ref('');
+    const countdown_text = ref('00:00:00');
+    let cgTimeTimer = null;
+    let cgTimeTimerCountdown = null;
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
@@ -195,7 +208,6 @@ export default {
         qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
       }
     };
-    let cgTimeTimer = null;
     const changeTimePercent = () => {
       var timeL = contest_info.value.contestTimeBeginStamp * 1000;
       var timeR = contest_info.value.contestTimeEndStamp * 1000;
@@ -204,10 +216,38 @@ export default {
       // console.log(timeL,timeR,curr,lenth)
       if (timeL <= curr && curr <= timeR) {
         time_percent.value = (curr - timeL) / lenth;
+        tstatus.value = 1;
       }
       if (curr > timeR) {
         time_percent.value = 1;
+        tstatus.value = 2;
         clearInterval(cgTimeTimer);
+      }
+    };
+    const timerCountdown = () => {
+      var timeL = contest_info.value.contestTimeBeginStamp * 1000;
+      var curr = Date.now();
+      var dit = parseInt((timeL - curr) / 1000);
+      var time_text = '';
+      if (parseInt(dit / 3600 / 24))
+        time_text += `${parseInt(dit / 3600 / 24)}天 `;
+      dit %= 3600 * 24;
+      time_text += `${parseInt(dit / 3600)}:`;
+      dit %= 3600;
+      time_text += `${parseInt(dit / 60)}:`;
+      dit %= 60;
+      time_text += `${parseInt(dit)}`;
+      countdown_text.value = time_text;
+
+      if (timeL <= curr) {
+        // 比赛开始，刷新网页
+        getContestInfo();
+        $q.notify({
+          type: 'positive',
+          message: '比赛开始',
+          progress: true,
+        });
+        clearInterval(cgTimeTimerCountdown);
       }
     };
     const timeSecondToString = (tim) => {
@@ -279,8 +319,13 @@ export default {
               tstatus.value = 2;
             }
           }
-          changeTimePercent();
-          cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
+          if (tstatus.value) {
+            changeTimePercent();
+            cgTimeTimer = setInterval(changeTimePercent, 60 * 1000);
+          } else {
+            timerCountdown();
+            cgTimeTimerCountdown = setInterval(timerCountdown, 1000);
+          }
           show_loading.value = false;
           show_loading.value = false;
         })
@@ -310,6 +355,9 @@ export default {
       timeStampTostring,
       tstatus,
       err_msg,
+      timerCountdown,
+      cgTimeTimerCountdown,
+      countdown_text,
     };
   },
   mounted() {
