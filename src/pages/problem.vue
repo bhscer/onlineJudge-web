@@ -365,23 +365,23 @@ export default defineComponent({
         })
         .catch((error) => {
           submiting.value = false;
-          console.error('Error:', error);
-          alert(error.response.data.detail);
-          if (error.response.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else if (error.response.status === 400) {
-            // showFailToast('获取签到情况失败');
+          // console.error('Error:', error);
+          // alert(error.response.data.detail);
+          var err_msg_notify = ''
+          try {
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
+            else if (error.response.status === 400)
+            err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码'+ error.response.status;
+          } catch {
+            err_msg_notify = '错误码'+ error.code;
+          }
+          if (err_msg_notify!=='')
+          {
             $q.notify({
               type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            $q.notify({
-              type: 'negative',
-              message: `网络错误，code=${error.response.status}`,
+              message: err_msg_notify,
               progress: true,
             });
           }
