@@ -8,8 +8,9 @@
       padding: 0;
       min-height: auto;
     "
+    v-show="!show_loading"
   >
-    <div v-show="!show_loading" style="padding: 0; margin: 0">
+    <div style="padding: 0; margin: 0">
       <div v-if="hideMsg.length">{{ hideMsg }}</div>
       <div v-if="!hideMsg.length">
         <div class="q-pa-md" style="padding: 0; margin: 0">
@@ -110,11 +111,9 @@
         </div>
       </div>
     </div>
-
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+  </q-page>
+  <q-page class="flex flex-center">
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
 
@@ -123,9 +122,11 @@ import { defineComponent, ref,defineExpose,toRefs } from 'vue';
 import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import LoadingPage from './loadingPage.vue';
 
 export default defineComponent({
     name: 'rankListComponent',
+    components:{LoadingPage},
     setup(props) {
         let this_route = useRoute();
         let this_router = useRouter();
@@ -226,22 +227,13 @@ export default defineComponent({
             })
                 .catch((error) => {
                     console.error('Error:', error);
-                    if (error.response.status === 401) {
-                        // localStorage.removeItem('Authorization');
-                        // showFailToast("登录状态失效，请重新登录")
-                        // router.push('/login');
-                    } else if (error.response.status === 400) {
-                      // showFailToast('获取签到情况失败');
-                      $q.notify({
-                        type: 'negative',
-                        message: error.response.data.detail,
-                        progress: true,
-                      });
-                      err_msg.value = error.response.data.detail
-                    }
-                    else
-                    {
-                      err_msg.value = `未知错误,代码为${error.response.status}`
+                    try {
+                      if (error.response.status === 401) route.push('/userLogin?type=2')
+                      else if (error.response.status === 400)
+                        err_msg.value = error.response.data.detail;
+                      else err_msg.value = error.response.status;
+                    } catch {
+                      err_msg.value = error.code;
                     }
                 });
         };

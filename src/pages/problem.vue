@@ -269,7 +269,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import SubmissionList from '@/components/submissionList.vue';
 import LoadingPage from '@/components/loadingPage.vue';
-import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -284,7 +283,6 @@ export default defineComponent({
   },
   setup() {
     // const language_model = ref(null);
-    const user = useUserStore();
     const language_model = ref('C++');
     const language_options = ref(['C++', 'Java', 'Python3']);
     const problem_info = ref({});
@@ -526,7 +524,8 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;

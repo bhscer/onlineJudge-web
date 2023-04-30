@@ -4,7 +4,17 @@
       <div>{{ contest_info }}</div>
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
-          <q-input outlined v-model="contest_info.contestId" label="竞赛编号" />
+          <q-checkbox
+            v-if="this.$route.query.add === '1'"
+            v-model="use_custom_id"
+            label="自定编号"
+          ></q-checkbox>
+          <q-input
+            :readonly="this.$route.query.add === '1' && !use_custom_id"
+            outlined
+            v-model="contest_info.contestId"
+            label="竞赛编号"
+          />
           <q-input
             outlined
             v-model="contest_info.contestTitle"
@@ -85,7 +95,7 @@
         </div>
       </q-card>
 
-      <q-card class="q-pa-lg q-my-md">
+      <q-card class="q-pa-lg q-my-md" v-if="contest_info.permission">
         <div class="q-gutter-md">
           <q-checkbox
             dense
@@ -96,7 +106,7 @@
             v-if="contest_info.permission.needPwd"
             outlined
             dense
-            v-model="contest_info.pwdString"
+            v-model="contest_info.permission.pwdString"
             label="比赛密码"
           />
         </div>
@@ -261,6 +271,8 @@ export default {
     const tstatus = ref(0);
     const date_start = ref('2019-02-01 12:44');
     const date_end = ref('2019-02-01 12:44');
+    const use_custom_id = ref(false);
+
     const submitEdit = async () => {
       // submiting.value = true;
       // console.log('then',code_content)
@@ -277,11 +289,15 @@ export default {
         data: {
           type: this_route.query.add,
           data: contest_info.value,
+          customId: use_custom_id.value,
         },
       })
         .then((data) => {
           // submiting.value = false;
           console.log('submit Success:', data);
+          if (this_route.query.add === '1') {
+            this_router.replace(`/admin/editContest?add=0&&id=${data.data.id}`);
+          }
           $q.notify({
             type: 'positive',
             message: '提交成功',
@@ -293,20 +309,23 @@ export default {
           console.error('Error:', error);
           alert(error.response.data.detail);
           if (error.response.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
+            this_router.push('/userLogin?type=2');
           } else if (error.response.status === 400) {
-            // showFailToast('获取签到情况失败');
             $q.notify({
               type: 'negative',
               message: error.response.data.detail,
               progress: true,
             });
           } else {
+            var err_code_info = '';
+            try {
+              err_code_info = error.response.status;
+            } catch {
+              err_code_info = error.code;
+            }
             $q.notify({
               type: 'negative',
-              message: `网络错误,code=${error.response.status}`,
+              message: `网络错误,code=${err_code_info}`,
               progress: true,
             });
           }
@@ -436,57 +455,79 @@ export default {
         date_end.value = timeStampTostring(
           contest_info.value.contestTimeEndStamp
         );
-        show_loading.value = false;
-        return;
-      }
-      axios({
-        method: 'post',
-        url: '/admin/contest/getInfo',
-        data: {
-          id: this_route.query.id,
-        },
-      })
-        .then((data) => {
-          console.log('Success:', data);
-          if (data.data.status === 1) {
-            // 列表获取成功
-            console.log(data);
-            contest_info.value = data.data.data;
-            date_start.value = timeStampTostring(
-              contest_info.value.contestTimeBeginStamp
-            );
-            date_end.value = timeStampTostring(
-              contest_info.value.contestTimeEndStamp
-            );
-            show_loading.value = false;
-          } else {
-            // alert(data.msg)
-            // showFailToast(data.data.msg)
-          }
-          show_loading.value = false;
+
+        axios({
+          method: 'post',
+          url: '/admin/contest/getCnt',
         })
-        .catch((error) => {
-          show_loading.value = false;
-          console.error('Error:', error);
-          if (error.response.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else if (error.response.status === 400) {
-            // showFailToast('获取签到情况失败');
-            $q.notify({
-              type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            $q.notify({
-              type: 'negative',
-              message: `网络错误，code=${error.response.status}`,
-              progress: true,
-            });
-          }
-        });
+          .then((data) => {
+            console.log('Success:', data);
+            if (data.data.status === 1) {
+              console.log(data);
+              contest_info.value.contestId = data.data.contestId;
+              show_loading.value = false;
+            } else {
+              // alert(data.msg)
+              // showFailToast(data.data.msg)
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            if (error.response.status === 401) {
+              this_router.push({ path: '/userLogin' }).then(() => {
+                localStorage.removeItem('oj-auth-token');
+                $q.notify({
+                  type: 'negative',
+                  message: '请先登录',
+                  progress: true,
+                });
+              });
+            } else {
+              // showFailToast('获取签到情况失败');
+            }
+          });
+
+        show_loading.value = false;
+      } else {
+        axios({
+          method: 'post',
+          url: '/admin/contest/getInfo',
+          data: {
+            id: this_route.query.id,
+          },
+        })
+          .then((data) => {
+            console.log('Success:', data);
+            if (data.data.status === 1) {
+              // 列表获取成功
+              console.log(data);
+              contest_info.value = data.data.data;
+              date_start.value = timeStampTostring(
+                contest_info.value.contestTimeBeginStamp
+              );
+              date_end.value = timeStampTostring(
+                contest_info.value.contestTimeEndStamp
+              );
+              show_loading.value = false;
+            } else {
+              // alert(data.msg)
+              // showFailToast(data.data.msg)
+            }
+            show_loading.value = false;
+          })
+          .catch((error) => {
+            show_loading.value = false;
+            console.error('Error:', error);
+            try {
+              if (error.response.status === 401) user.back_login();
+              else if (error.response.status === 400)
+                err_msg.value = error.response.data.detail;
+              else err_msg.value = error.response.status;
+            } catch {
+              err_msg.value = error.code;
+            }
+          });
+      }
     };
     return {
       tab,
@@ -504,6 +545,7 @@ export default {
       date_end,
       changeProblemNo,
       submitEdit,
+      use_custom_id,
     };
   },
   mounted() {

@@ -14,6 +14,7 @@
             style="width: 100%"
             padding="xs xs"
             @click="this.$router.push(`/admin/editProblem?add=1`)"
+            href="/#/admin/editProblem?add=1"
           />
         </div>
 
@@ -57,8 +58,20 @@
                   "
                   :href="`/#/admin/editProblem?add=0&&id=${item.id}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
-                  >Edit</a
+                  >编辑</a
                 >
+                <q-btn
+                  outline
+                  color="red"
+                  label="删除"
+                  size="xs"
+                  padding="xs xs"
+                  class="q-ml-md"
+                  @click="
+                    showDeleteForm = true;
+                    deleteInfo = item;
+                  "
+                />
               </td>
             </tr>
           </tbody>
@@ -76,11 +89,40 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
+  <q-dialog v-model="showDeleteForm" v-if="deleteInfo">
+    <q-card class="q-pa-md">
+      <div class="text-h4">你确定要删除？</div>
+      <div>{{ deleteInfo.problemIdString }}</div>
+      <div class="text-h6">
+        <a
+          @click="
+            this.$router.push(
+              `/problem?type=0&&id=${deleteInfo.problemIdString}`
+            )
+          "
+          :href="`/#/problem?type=0&&id=${deleteInfo.problemIdString}`"
+          style="color: inherit; cursor: pointer; text-decoration: none"
+          >{{ deleteInfo.title }}</a
+        >
+      </div>
+      <q-btn
+        outline
+        :loading="deleteing"
+        color="red"
+        label="删除"
+        padding="xs xs"
+        style="width: 100%"
+        @click="deleteProblem(deleteInfo.id)"
+      >
+        <template v-slot:loading>
+          <q-spinner-hourglass class="on-left" />
+          删除中
+        </template>
+      </q-btn>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="js">
@@ -88,6 +130,7 @@ import { defineComponent, ref } from 'vue';
 import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import LoadingPage from '@/components/loadingPage.vue';
 
 export default defineComponent({
     name: 'editProblemList',
@@ -100,6 +143,11 @@ export default defineComponent({
         const current_page = ref(1);
         const maxPage = ref(1)
         const show_loading = ref(true)
+        const err_msg = ref('')
+        const showDeleteForm = ref(false)
+        const deleteInfo = ref({})
+        const deleteing = ref(false)
+
         const changePage = (newPage) => {
             this_router.push({
                 path: '/admin/editProblemList',
@@ -108,6 +156,53 @@ export default defineComponent({
                         page:newPage
                     }
             })
+        }
+
+        const deleteProblem = (id) => {
+          deleteing.value = true
+          axios({
+            method: 'post',
+            url: '/admin/problem/delete',
+            data: {
+              id:id
+            },
+          })
+            .then((data) => {
+              getProblemList();
+              deleteing.value = false
+              $q.notify({
+                type: 'positive',
+                message: '删除成功',
+                progress: true,
+              });
+              showDeleteForm.value = false
+            })
+            .catch((error) => {
+              // submiting.value = false;
+              console.error('Error:', error);
+              alert(error.response.data.detail);
+              if (error.response.status === 401) {
+                this_router.push('/userLogin?type=2')
+              } else if (error.response.status === 400) {
+                $q.notify({
+                  type: 'negative',
+                  message: error.response.data.detail,
+                  progress: true,
+                });
+              } else {
+                var err_code_info = ''
+                try {
+                  err_code_info = error.response.status;
+                } catch {
+                  err_code_info = error.code;
+                }
+                $q.notify({
+                  type: 'negative',
+                  message: `网络错误,code=${err_code_info}`,
+                  progress: true,
+                });
+              }
+            });
         }
         const getProblemList = () => {
           console.log(this_route.path)
@@ -147,25 +242,14 @@ export default defineComponent({
             })
                 .catch((error) => {
                     console.error('Error:', error);
-                    if (error.response.status === 401) {
-                        // localStorage.removeItem('Authorization');
-                        // showFailToast("登录状态失效，请重新登录")
-                        // router.push('/login');
-                    }  else if (error.response.status === 400) {
-                      // showFailToast('获取签到情况失败');
-                      $q.notify({
-                        type: 'negative',
-                        message: error.response.data.detail,
-                        progress: true,
-                      });
-                    }
-                    else
-                    {
-                      $q.notify({
-                        type: 'negative',
-                        message: `网络错误，code=${error.response.status}`,
-                        progress: true,
-                      });
+                    try {
+                      if (error.response.status === 401)
+                        this_router.push('/userLogin?type=2');
+                      else if (error.response.status === 400)
+                        err_msg.value = error.response.data.detail;
+                      else err_msg.value = error.response.status;
+                    } catch {
+                      err_msg.value = error.code;
                     }
                 });
         };
@@ -175,7 +259,12 @@ export default defineComponent({
             show_loading,
             maxPage,
             current_page,
-            problem_list
+            problem_list,
+            deleteInfo,
+            showDeleteForm,
+            deleteing,
+            deleteProblem,
+            err_msg
         };
     },
     watch:{
@@ -185,7 +274,9 @@ export default defineComponent({
     },
     mounted() {
         this.getProblemList()
-    }
+    },
+
+    components:{LoadingPage},
 });
 </script>
 <style>

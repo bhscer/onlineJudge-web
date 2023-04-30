@@ -9,7 +9,14 @@
       </div>
       <div class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
+          <q-checkbox
+            v-if="this.$route.query.add === '1'"
+            v-model="use_custom_id"
+            label="自定编号"
+          ></q-checkbox>
+          <!--新建题目的情况下出现选择是否自定（自定情况下出现编号修改），编辑时允许修改编号-->
           <q-input
+            :readonly="this.$route.query.add === '1' && !use_custom_id"
             outlined
             v-model="problem_info.problemIdString"
             label="题目编号"
@@ -237,6 +244,7 @@ export default defineComponent({
     const qmarkstyle = ref('');
     const submiting = ref(false);
     const tab = ref('problem');
+    const use_custom_id = ref(false);
 
     const submitEdit = async () => {
       submiting.value = true;
@@ -251,11 +259,15 @@ export default defineComponent({
         data: {
           type: this_route.query.add,
           data: problem_info.value,
+          customId: use_custom_id.value,
         },
       })
         .then((data) => {
           submiting.value = false;
           console.log('submit Success:', data);
+          if (this_route.query.add === '1') {
+            this_router.replace(`/admin/editContest?add=0&&id=${data.data.id}`);
+          }
           $q.notify({
             type: 'positive',
             message: '提交成功',
@@ -337,8 +349,6 @@ export default defineComponent({
       if (this_route.query.add === '1') {
         problem_info.value = {
           problemIdString: '',
-          autoGenPrefix: false,
-          prefixIdx: 0,
           public: true,
           privateRange: [],
           title: '',
@@ -363,43 +373,73 @@ export default defineComponent({
           samples: [],
         };
 
-        show_loading.value = false;
-        return;
-      }
-      axios({
-        method: 'post',
-        url: '/admin/problem/getInfo',
-        data: {
-          id: this_route.query.id,
-        },
-      })
-        .then((data) => {
-          console.log('Success:', data);
-          if (data.data.status === 1) {
-            // 列表获取成功
-            console.log(data);
-            problem_info.value = data.data.data;
-            show_loading.value = false;
-          } else {
-            // alert(data.msg)
-            // showFailToast(data.data.msg)
-          }
+        axios({
+          method: 'post',
+          url: '/admin/problem/getCnt',
         })
-        .catch((error) => {
-          console.error('Error:', error);
-          if (error.response.status === 401) {
-            this_router.push({ path: '/userLogin' }).then(() => {
-              localStorage.removeItem('oj-auth-token');
-              $q.notify({
-                type: 'negative',
-                message: '请先登录',
-                progress: true,
+          .then((data) => {
+            console.log('Success:', data);
+            if (data.data.status === 1) {
+              console.log(data);
+              problem_info.value.problemIdString = data.data.problemIdString;
+              show_loading.value = false;
+            } else {
+              // alert(data.msg)
+              // showFailToast(data.data.msg)
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            if (error.response.status === 401) {
+              this_router.push({ path: '/userLogin' }).then(() => {
+                localStorage.removeItem('oj-auth-token');
+                $q.notify({
+                  type: 'negative',
+                  message: '请先登录',
+                  progress: true,
+                });
               });
-            });
-          } else {
-            // showFailToast('获取签到情况失败');
-          }
-        });
+            } else {
+              // showFailToast('获取签到情况失败');
+            }
+          });
+        show_loading.value = false;
+      } else {
+        axios({
+          method: 'post',
+          url: '/admin/problem/getInfo',
+          data: {
+            id: this_route.query.id,
+          },
+        })
+          .then((data) => {
+            console.log('Success:', data);
+            if (data.data.status === 1) {
+              // 列表获取成功
+              console.log(data);
+              problem_info.value = data.data.data;
+              show_loading.value = false;
+            } else {
+              // alert(data.msg)
+              // showFailToast(data.data.msg)
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            if (error.response.status === 401) {
+              this_router.push({ path: '/userLogin' }).then(() => {
+                localStorage.removeItem('oj-auth-token');
+                $q.notify({
+                  type: 'negative',
+                  message: '请先登录',
+                  progress: true,
+                });
+              });
+            } else {
+              // showFailToast('获取签到情况失败');
+            }
+          });
+      }
     };
 
     return {
@@ -421,6 +461,7 @@ export default defineComponent({
       windowWidth,
       qmarkstyle,
       submiting,
+      use_custom_id,
     };
   },
   mounted() {

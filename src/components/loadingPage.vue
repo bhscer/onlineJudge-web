@@ -19,6 +19,6 @@ const props = defineProps<{
 
 <script lang="ts">
 export default {
-  name: 'loadingPage',
+  name: 'LoadingPage',
 };
 </script>

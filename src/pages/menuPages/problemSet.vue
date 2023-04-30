@@ -108,7 +108,6 @@ import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import LoadingPage from '@/components/loadingPage.vue';
-import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
     name: 'problemSet',
@@ -116,7 +115,6 @@ export default defineComponent({
     setup() {
         let this_route = useRoute();
         let this_router = useRouter();
-        const user = useUserStore();
         const $q = useQuasar();
         const problem_list = ref([{ 'Id': '0000', 'Title': 'test', 'Sovled': 6, 'Submited': 10, 'Rate': 6.6 }]);
         const current_page = ref(1);
@@ -170,7 +168,7 @@ export default defineComponent({
                 .catch((error) => {
                     console.error('Error:', error);
                     try{
-                      if (error.response.status === 401) user.back_login()
+                      if (error.response.status === 401) this_router.push('/userLogin?type=2')
                       else if (error.response.status === 400) err_msg.value = error.response.data.detail
                       else err_msg.value = error.response.status
                     }

@@ -62,12 +62,10 @@ import { $t } from '@/boot/i18n';
 import { api as axios } from '@/boot/axios';
 import * as monaco from 'monaco-editor';
 import loadingPage from '@/components/loadingPage.vue';
-import { useUserStore } from '@/stores/user';
 
 const $q = useQuasar();
-const router = useRouter();
+const this_router = useRouter();
 const this_route = useRoute();
-const user = useUserStore();
 const tab = ref('points');
 const show_loading = ref(true);
 const submission_info = ref({});
@@ -100,7 +98,8 @@ function getSubmissionInfo() {
     .catch((error) => {
       console.error('Error:', error);
       try {
-        if (error.response.status === 401) user.back_login();
+        if (error.response.status === 401)
+          this_router.push('/userLogin?type=2');
         else if (error.response.status === 400)
           err_msg.value = error.response.data.detail;
         else err_msg.value = error.response.status;

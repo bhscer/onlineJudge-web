@@ -156,7 +156,6 @@ import SubmissionList from '@/components/submissionList.vue';
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
-import { useUserStore } from '@/stores/user';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -180,7 +179,6 @@ export default {
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
-    const user = useUserStore();
     const contest_info = ref({});
     const show_loading = ref(true);
     const time_percent = ref(0);
@@ -289,7 +287,8 @@ export default {
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;

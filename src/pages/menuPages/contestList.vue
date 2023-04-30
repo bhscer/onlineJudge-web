@@ -152,7 +152,7 @@
               text-color="white"
               icon="event"
             >
-              {{ pwdFormInfo.contestTimeBeginStamp }}
+              {{ timeStampTostring(pwdFormInfo.contestTimeBeginStamp) }}
             </q-chip>
             <q-chip
               outline
@@ -196,13 +196,11 @@ import { api as axios } from '@/boot/axios';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import LoadingPage from '@/components/loadingPage.vue';
-import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   name: 'contestList',
   setup() {
     const $q = useQuasar();
-    const user = useUserStore();
     let this_route = useRoute();
     let this_router = useRouter();
     const contest_list = ref([]);
@@ -234,7 +232,8 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;
@@ -341,7 +340,8 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;

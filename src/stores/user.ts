@@ -82,6 +82,7 @@ export const useUserStore = defineStore('user', () => {
   // auth
   user.auth().then((d) => {
     info.value = d.data;
+    localStorage.setItem('oj-auth-token', d.data.token);
     users.push(d.data);
   });
   function user_auth() {

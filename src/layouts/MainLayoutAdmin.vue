@@ -85,6 +85,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    /*
     if (
       !this.user.exists ||
       (this.user.exists && this.user.info?.permission === 'user')
@@ -96,6 +97,7 @@ export default defineComponent({
         progress: true,
       });
     }
+    */
   },
 });
 </script>

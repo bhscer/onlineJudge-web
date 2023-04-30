@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/home',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '主页' },
     children: [
       { path: '', component: () => import('pages/menuPages/home.vue') },
     ],
@@ -15,6 +16,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/problemSet',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '题目' },
     children: [
       { path: '', component: () => import('pages/menuPages/problemSet.vue') },
     ],
@@ -22,6 +24,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/contestList',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '竞赛/作业列表' },
     children: [
       { path: '', component: () => import('pages/menuPages/contestList.vue') },
     ],
@@ -29,6 +32,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/status',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '评测状态' },
     children: [
       { path: '', component: () => import('pages/menuPages/status.vue') },
     ],
@@ -36,6 +40,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/rankList',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '排名' },
     children: [
       { path: '', component: () => import('pages/menuPages/rankList.vue') },
     ],
@@ -43,6 +48,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/faqs',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: 'faqs' },
     children: [
       { path: '', component: () => import('pages/menuPages/faqs.vue') },
     ],

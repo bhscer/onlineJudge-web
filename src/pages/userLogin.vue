@@ -120,10 +120,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { $t } from '@/boot/i18n';
 import { api as axios } from '@/boot/axios';
 import { useUserStore } from '@/stores/user';
@@ -131,6 +131,7 @@ import { useUserStore } from '@/stores/user';
 const user = useUserStore();
 const $q = useQuasar();
 const router = useRouter();
+const route = useRoute();
 const tab = ref('login');
 const username = ref('');
 const nickname = ref('');
@@ -193,22 +194,6 @@ const loginFun = () => {
         progress: true,
       });
       router.push('/');
-      // if (window.history.length <= 1)
-      // {
-      //   router.push('/')
-      // }
-      // else
-      // {
-      //   router.back();
-      // }
-      /*.then(() => {
-        $q.notify({
-          type: 'positive',
-          message: '登陆成功',
-          progress: true,
-        });
-      });
-      */
     })
     .catch((resp) => {
       $q.notify({
@@ -251,6 +236,33 @@ const registerFun = () => {
       });
     });
 };
+
+onMounted(() => {
+  if (route.query.type) {
+    user.logout();
+    if (user.info) {
+      if (route.query.type === '1') {
+        $q.notify({
+          type: 'positive',
+          message: '注销成功',
+          progress: true,
+        });
+      } else {
+        $q.notify({
+          type: 'negative',
+          message: '登录过期',
+          progress: true,
+        });
+      }
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: '请先登录',
+        progress: true,
+      });
+    }
+  }
+});
 </script>
 
 <style scoped></style>

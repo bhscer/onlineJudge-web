@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
-    <q-card>
-      <q-markup-table class="q-mt-md" v-show="!show_loading && !err_msg.length">
+    <q-card v-show="!show_loading">
+      <q-markup-table class="q-mt-md">
         <thead>
           <tr>
             <th class="text-left" style="width: 10%">NickName</th>
@@ -28,15 +28,15 @@ import { defineComponent, ref } from 'vue';
 import { api as axios } from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useUserStore } from '@/stores/user';
+import LoadingPage from '@/components/loadingPage.vue';
 
 export default defineComponent({
   name: 'rankList',
+  components: { LoadingPage },
   setup() {
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
-    const user = useUserStore();
 
     const current_page = ref(1);
     const maxPage = ref(1);
@@ -86,7 +86,8 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;
