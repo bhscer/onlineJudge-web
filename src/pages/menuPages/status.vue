@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center" style="flex-wrap: wrap; flex-direction: column">
     <submission-list
       style="width: 800px; height: fit-content"
     ></submission-list>

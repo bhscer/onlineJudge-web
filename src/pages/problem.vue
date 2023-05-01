@@ -283,6 +283,7 @@ export default defineComponent({
   },
   setup() {
     // const language_model = ref(null);
+    const { proxy } = getCurrentInstance()
     const language_model = ref('C++');
     const language_options = ref(['C++', 'Java', 'Python3']);
     const problem_info = ref({});
@@ -518,6 +519,7 @@ export default defineComponent({
           console.log(data);
           problem_info.value = data.data.data;
           language_options.value = data.data.data.language;
+          document.title= `${post_data.problemId}-${problem_info.value.title}-${proxy.$oj_name}`
           show_loading.value = false;
         })
         .catch((error) => {
@@ -578,6 +580,7 @@ export default defineComponent({
              type:0 非题目集 需要id
              type:1 题目集 cid && pid
             */
+    // document.title="问题加载中"
     this.getWindowInfo();
     this.getProblemInfo();
   },

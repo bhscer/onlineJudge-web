@@ -3,7 +3,7 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div v-show="!show_loading" style="width: 800px">
+    <div v-show="!show_loading" style="width: 900px">
       <div class="q-pa-md">
         <div style="display: flex" v-if="false">
           <p class="q-my-auto">搜索</p>
@@ -17,7 +17,7 @@
         <q-markup-table>
           <thead>
             <tr>
-              <th class="text-left" style="width: 5%">Status</th>
+              <th class="text-left" style="width: 3%">Status</th>
               <th class="text-left" style="width: 5%">Problem Id</th>
               <th class="text-left">Title</th>
               <th class="text-left">Sources</th>
@@ -28,21 +28,19 @@
           </thead>
           <tbody>
             <tr v-for="item in problem_list" :key="item">
-              <td>
+              <td class="q-ma-none q-pa-none">
                 <!--q-icon name="done" style="color: #00c853" size="md" class="q-mr-sm"></q-icon-->
                 <q-icon
                   v-if="item.userStatus === 2"
                   name="done"
                   style="color: #00c853"
                   size="md"
-                  class="q-mr-sm"
                 ></q-icon>
                 <q-icon
                   v-if="item.userStatus === 1"
                   name="close"
                   style="color: red"
                   size="md"
-                  class="q-mr-sm"
                 ></q-icon>
               </td>
               <td class="text-left">{{ item.problemIdString }}</td>

@@ -25,6 +25,7 @@ import 'font-awesome/css/font-awesome.css';
 export default boot(async ({ app }) => {
   inject();
   app.config.globalProperties.$md5 = md5;
+  app.config.globalProperties.$oj_name = 'online judge';
   VMdEditor.use(githubTheme, {
     Hljs: hljs,
   });
