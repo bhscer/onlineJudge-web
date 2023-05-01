@@ -239,21 +239,13 @@ const registerFun = () => {
 
 onMounted(() => {
   if (route.query.type) {
-    user.logout();
     if (user.info) {
-      if (route.query.type === '1') {
-        $q.notify({
-          type: 'positive',
-          message: '注销成功',
-          progress: true,
-        });
-      } else {
-        $q.notify({
-          type: 'negative',
-          message: '登录过期',
-          progress: true,
-        });
-      }
+      user.logout();
+      $q.notify({
+        type: 'negative',
+        message: '登录过期',
+        progress: true,
+      });
     } else {
       $q.notify({
         type: 'negative',
