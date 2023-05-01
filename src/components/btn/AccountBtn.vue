@@ -3,7 +3,17 @@
     <!--
     <avatar-btn v-if="user.exists" :id="user.info?.username"></avatar-btn>-->
 
-    <q-btn v-if="user.exists" flat rounded>
+    <q-btn v-if="user.auth_ing" flat rounded>
+      <q-skeleton
+        v-if="user.auth_ing"
+        :type="'QAvatar'"
+        size="32px"
+        class="q-mr-sm"
+      ></q-skeleton>
+      登录中
+    </q-btn>
+
+    <q-btn v-if="!user.auth_ing && user.exists" flat rounded>
       <user-avatar
         v-if="user.exists"
         :id="user.info?.username"
@@ -29,7 +39,7 @@
     </q-menu>
   </div>
 
-  <login-btn v-if="!user.exists"></login-btn>
+  <login-btn v-if="!user.auth_ing && !user.exists"></login-btn>
 </template>
 
 <script setup lang="ts">

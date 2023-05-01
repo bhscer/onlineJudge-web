@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', () => {
   // 其它配置项
   const info = ref<null | user.UserInfo>(null);
   const exists = computed(() => info.value !== null);
+  const auth_ing = ref(false);
   const loading_queue: any = {}; // uid=>bool 表示是否正在从服务器获取对应用户的info
   const router = useRouter();
   const $q = useQuasar();
@@ -80,21 +81,34 @@ export const useUserStore = defineStore('user', () => {
   const users = reactive<user.CommonUserInfo[]>([]);
 
   // auth
-  user.auth().then((d) => {
-    info.value = d.data;
-    localStorage.setItem('oj-auth-token', d.data.token);
-    users.push(d.data);
-  });
+  auth_ing.value = true;
+  user
+    .auth()
+    .then((d) => {
+      info.value = d.data;
+      localStorage.setItem('oj-auth-token', d.data.token);
+      users.push(d.data);
+      auth_ing.value = false;
+    })
+    .catch((error) => {
+      auth_ing.value = false;
+    });
+
   function user_auth() {
     return new Promise<user.UserInfo>((resolve, reject) => {
+      auth_ing.value = true;
       user
         .auth()
         .then((d) => {
+          auth_ing.value = false;
           info.value = d.data;
           users.push(d.data);
           resolve(info.value);
         })
-        .catch(reject);
+        .catch((error) => {
+          auth_ing.value = false;
+          reject(error);
+        });
     });
   }
 
@@ -140,5 +154,6 @@ export const useUserStore = defineStore('user', () => {
     get_info,
     user_auth,
     back_login,
+    auth_ing,
   };
 });
