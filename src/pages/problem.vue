@@ -367,18 +367,17 @@ export default defineComponent({
           submiting.value = false;
           // console.error('Error:', error);
           // alert(error.response.data.detail);
-          var err_msg_notify = ''
+          var err_msg_notify = '';
           try {
             if (error.response.status === 401)
               this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
-            err_msg_notify = error.response.data.detail;
-            else err_msg_notify = '错误码'+ error.response.status;
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
           } catch {
-            err_msg_notify = '错误码'+ error.code;
+            err_msg_notify = '错误码' + error.code;
           }
-          if (err_msg_notify!=='')
-          {
+          if (err_msg_notify !== '') {
             $q.notify({
               type: 'negative',
               message: err_msg_notify,

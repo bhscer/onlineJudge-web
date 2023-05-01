@@ -14,9 +14,6 @@
     </q-btn>
     <q-menu v-model="showing">
       <q-list style="min-width: 100px">
-        <q-item clickable v-close-popup @click="user.logout()">
-          <q-item-section>注销</q-item-section>
-        </q-item>
         <q-item
           v-if="user.info?.permission !== 'user'"
           clickable
@@ -24,6 +21,9 @@
           @click="$router.push('/admin')"
         >
           <q-item-section>管理</q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup dense @click="user.logout()">
+          <q-item-section>注销</q-item-section>
         </q-item>
       </q-list>
     </q-menu>

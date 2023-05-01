@@ -30,14 +30,11 @@
           </q-linear-progress>
         </div>
       </q-card>
-      <q-card
-        v-if="!tstatus"
-        class="q-py-lg"
-      >
-          <div class="text-h6" align="center">距离开始还有</div>
-          <div class="text-h4" align="center">
-            {{ countdown_text }}
-          </div>
+      <q-card v-if="!tstatus" class="q-py-lg">
+        <div class="text-h6" align="center">距离开始还有</div>
+        <div class="text-h4" align="center">
+          {{ countdown_text }}
+        </div>
       </q-card>
       <div
         class="q-mt-sm"
@@ -61,11 +58,11 @@
             outside-arrows
             mobile-arrows
           >
-            <q-tab name="description" label="description"/>
-            <q-tab name="problems" label="problems" v-if="tstatus"/>
-            <q-tab name="submissions" label="submissions" v-if="tstatus"/>
-            <q-tab name="rankList" label="rankList" v-if="tstatus"/>
-            <q-tab name="notes" label="notes" v-if="tstatus"/>
+            <q-tab name="description" label="description" />
+            <q-tab name="problems" label="problems" v-if="tstatus" />
+            <q-tab name="submissions" label="submissions" v-if="tstatus" />
+            <q-tab name="rankList" label="rankList" v-if="tstatus" />
+            <q-tab name="notes" label="notes" v-if="tstatus" />
           </q-tabs>
         </q-card>
         <q-card class="q-mt-md" :style="`width: 100%;${qmarkstyle};padding:0`">
@@ -123,7 +120,7 @@
                           cursor: pointer;
                           text-decoration: none;
                         "
-                        :href="`/#/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
+                        :href="`/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
                         >{{ item.problemName }}</a
                       >
                     </td>

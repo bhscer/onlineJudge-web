@@ -14,7 +14,7 @@
             style="width: 100%"
             padding="xs xs"
             @click="this.$router.push(`/admin/editProblem?add=1`)"
-            href="/#/admin/editProblem?add=1"
+            href="/admin/editProblem?add=1"
           />
         </div>
 
@@ -39,7 +39,7 @@
                       `/problem?type=0&&id=${item.problemIdString}`
                     )
                   "
-                  :href="`/#/problem?type=0&&id=${item.problemIdString}`"
+                  :href="`/problem?type=0&&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
                   >{{ item.title }}</a
                 >
@@ -56,7 +56,7 @@
                   @click="
                     this.$router.push(`/admin/editProblem?add=0&&id=${item.id}`)
                   "
-                  :href="`/#/admin/editProblem?add=0&&id=${item.id}`"
+                  :href="`/admin/editProblem?add=0&&id=${item.id}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
                   >编辑</a
                 >
@@ -102,7 +102,7 @@
               `/problem?type=0&&id=${deleteInfo.problemIdString}`
             )
           "
-          :href="`/#/problem?type=0&&id=${deleteInfo.problemIdString}`"
+          :href="`/problem?type=0&&id=${deleteInfo.problemIdString}`"
           style="color: inherit; cursor: pointer; text-decoration: none"
           >{{ deleteInfo.title }}</a
         >

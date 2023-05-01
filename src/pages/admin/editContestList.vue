@@ -39,7 +39,7 @@
                   width: max-content;
                 "
                 @click="this.$router.push(`/contest?cid=${item.contestId}`)"
-                :href="`/#/contest?cid=${item.contestId}`"
+                :href="`/contest?cid=${item.contestId}`"
               >
                 {{ item.contestTitle }}
               </a>
@@ -68,7 +68,7 @@
                 @click="
                   this.$router.push(`/admin/add=0&&editContest?id=${item.id}`)
                 "
-                :href="`/#/admin/editContest?add=0&&id=${item.id}`"
+                :href="`/admin/editContest?add=0&&id=${item.id}`"
               >
                 编辑
               </a>
@@ -121,7 +121,7 @@
               width: max-content;
             "
             @click="this.$router.push(`/contest?cid=${deleteInfo.contestId}`)"
-            :href="`/#/contest?cid=${deleteInfo.contestId}`"
+            :href="`/contest?cid=${deleteInfo.contestId}`"
           >
             {{ deleteInfo.contestTitle }}
           </a>

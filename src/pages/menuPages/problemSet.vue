@@ -53,7 +53,7 @@
                       `/problem?type=0&&id=${item.problemIdString}`
                     )
                   "
-                  :href="`/#/problem?type=0&&id=${item.problemIdString}`"
+                  :href="`/problem?type=0&&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
                   >{{ item.title }}</a
                 >
