@@ -3,12 +3,14 @@
   <q-page class="flex flex-center q-pa-lg q-ma-lg">
     <div style="width: 800px; flex-direction: column" v-show="!show_loading">
       <q-card class="q-pa-md">
-        <div>{{`提交用户昵称:${submission_info.userNickName}`}}</div>
-        <div>{{`提交时间:${timestampToTime(submission_info.submitTimeStamp)}`}}</div>
-        <div>{{`提交题目:${submission_info.sourceProblemId}`}}</div>
-        <div>{{`运行内存:${submission_info.submissionRunMem}KB`}}</div>
-        <div>{{`运行时间:${submission_info.submissionRunTime}ms`}}</div>
-        <div>{{`提交语言:${submission_info.submissionCodeLanguage}`}}</div>
+        <div>{{ `提交用户昵称:${submission_info.userNickName}` }}</div>
+        <div>
+          {{ `提交时间:${timestampToTime(submission_info.submitTimeStamp)}` }}
+        </div>
+        <div>{{ `提交题目:${submission_info.sourceProblemId}` }}</div>
+        <div>{{ `运行内存:${submission_info.submissionRunMem}KB` }}</div>
+        <div>{{ `运行时间:${submission_info.submissionRunTime}ms` }}</div>
+        <div>{{ `提交语言:${submission_info.submissionCodeLanguage}` }}</div>
       </q-card>
       <q-tabs
         v-model="tab"
@@ -31,22 +33,29 @@
         keep-alive
         @transition="tab_pannel_change"
       >
-        <q-tab-panel name="points"
-            style="display: flex;flex-direction: row;flex-wrap: wrap;">
+        <q-tab-panel
+          name="points"
+          style="display: flex; flex-direction: row; flex-wrap: wrap"
+        >
           <div
             v-for="point in submission_info.submissionResultDetail"
             :key="point"
             class="q-ma-sm"
           >
             <div
-              :style="`background-color:${statusCovernt(point.result)[0]} ;width:120px;height:120px;display:flex;flex-direction: column`"
+              :style="`background-color:${
+                statusCovernt(point.result)[0]
+              } ;width:120px;height:120px;display:flex;flex-direction: column`"
             >
-              <div class="text-h4 q-mt-md" style="text-align: center;">{{ statusCovernt(point.result)[1] }}</div>
+              <div class="text-h4 q-mt-md" style="text-align: center">
+                {{ statusCovernt(point.result)[1] }}
+              </div>
               <div class="q-ml-md">
-                <p class="q-pa-none q-ma-none">{{ `${parseInt(point.memory/1024)}KB` }}</p>
+                <p class="q-pa-none q-ma-none">
+                  {{ `${parseInt(point.memory / 1024)}KB` }}
+                </p>
                 <p class="q-pa-none q-ma-none">{{ `${point.time}ms` }}</p>
               </div>
-
             </div>
           </div>
         </q-tab-panel>
@@ -206,15 +215,18 @@ function statusCovernt(status) {
 }
 function timestampToTime(timestamp) {
   timestamp = timestamp ? timestamp : null;
-  let date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+  let date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
   let Y = date.getFullYear();
-  let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-  let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-  let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-  let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  let M =
+    date.getMonth() + 1 < 10
+      ? '0' + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+  let h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+  let m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
   let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
   // return Y + M + D + h + m + s;
-  return `${Y}-${M}-${D} ${h}:${m}:${s}`
+  return `${Y}-${M}-${D} ${h}:${m}:${s}`;
 }
 onMounted(() => {
   getSubmissionInfo();

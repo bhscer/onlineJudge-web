@@ -1,7 +1,6 @@
 <template>
   <div class="bg_div" v-show="!show_loading">
     <div class="content_main">
-      <div>{{ contest_info }}</div>
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
           <q-checkbox

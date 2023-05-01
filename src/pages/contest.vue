@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { ref,getCurrentInstance } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { api as axios } from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
@@ -182,7 +182,7 @@ export default {
   },
   setup() {
     const tab = ref('description');
-    const { proxy } = getCurrentInstance()
+    const { proxy } = getCurrentInstance();
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
@@ -323,7 +323,7 @@ export default {
             timerCountdown();
             cgTimeTimerCountdown = setInterval(timerCountdown, 1000);
           }
-          document.title= `${contest_info.value.contestId}-${contest_info.value.contestTitle}-${proxy.$oj_name}`
+          document.title = `${contest_info.value.contestId}-${contest_info.value.contestTitle}-${proxy.$oj_name}`;
           show_loading.value = false;
         })
         .catch((error) => {

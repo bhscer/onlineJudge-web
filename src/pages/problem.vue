@@ -7,6 +7,17 @@
           <div class="text-h2" style="font-weight: bold">
             {{ problem_info.title }}
           </div>
+          <a
+            v-if="user.info?.permission !== 'user'"
+            @click="
+              this.$router.push(
+                `/admin/editProblem?add=0&&id=${problem_info.id}`
+              )
+            "
+            :href="`/admin/editProblem?add=0&&id=${problem_info.id}`"
+            style="color: inherit; cursor: pointer; text-decoration: none"
+            >编辑</a
+          >
           <div style="display: flex; flex-wrap: wrap">
             <span class="q-mr-md">
               Time Limit
@@ -252,7 +263,9 @@
       </div>
     </div>
   </div>
-  <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  <q-page class="flex flex-center" v-if="show_loading">
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  </q-page>
 </template>
 
 <script>
@@ -269,6 +282,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import SubmissionList from '@/components/submissionList.vue';
 import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -283,7 +297,8 @@ export default defineComponent({
   },
   setup() {
     // const language_model = ref(null);
-    const { proxy } = getCurrentInstance()
+    const user = useUserStore();
+    const { proxy } = getCurrentInstance();
     const language_model = ref('C++');
     const language_options = ref(['C++', 'Java', 'Python3']);
     const problem_info = ref({});
@@ -519,7 +534,7 @@ export default defineComponent({
           console.log(data);
           problem_info.value = data.data.data;
           language_options.value = data.data.data.language;
-          document.title= `${post_data.problemId}-${problem_info.value.title}-${proxy.$oj_name}`
+          document.title = `${post_data.problemId}-${problem_info.value.title}-${proxy.$oj_name}`;
           show_loading.value = false;
         })
         .catch((error) => {
@@ -571,6 +586,7 @@ export default defineComponent({
       file_model,
       readCodeFromFile,
       err_msg,
+      user
     };
   },
   mounted() {

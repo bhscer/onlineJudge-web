@@ -81,8 +81,7 @@ export const useUserStore = defineStore('user', () => {
   const users = reactive<user.CommonUserInfo[]>([]);
 
   // auth
-  if (localStorage.getItem('oj-auth-token'))
-  {
+  if (localStorage.getItem('oj-auth-token')) {
     auth_ing.value = true;
     user
       .auth()
@@ -96,15 +95,13 @@ export const useUserStore = defineStore('user', () => {
         auth_ing.value = false;
         let err_msg = '';
         try {
-          if (error.response.status === 401 || error.response.status===400)
-          {
+          if (error.response.status === 401 || error.response.status === 400) {
             err_msg = error.response.data.detail;
-          }
-          else {
-            err_msg = '错误:'+error.response.status;
+          } else {
+            err_msg = '错误:' + error.response.status;
           }
         } catch {
-          err_msg = '错误:'+error.code;
+          err_msg = '错误:' + error.code;
         }
         $q.notify({
           type: 'negative',
