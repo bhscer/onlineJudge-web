@@ -231,14 +231,22 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
+          var err_msg_notify = '';
           try {
             if (error.response.status === 401)
               this_router.push('/userLogin?type=2');
             else if (error.response.status === 400)
-              err_msg.value = error.response.data.detail;
-            else err_msg.value = error.response.status;
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
           } catch {
-            err_msg.value = error.code;
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
+            $q.notify({
+              type: 'negative',
+              message: err_msg_notify,
+              progress: true,
+            });
           }
         });
     };
