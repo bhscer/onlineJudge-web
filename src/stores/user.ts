@@ -93,6 +93,7 @@ export const useUserStore = defineStore('user', () => {
       })
       .catch((error) => {
         auth_ing.value = false;
+        localStorage.removeItem('oj-auth-token')
         let err_msg = '';
         try {
           if (error.response.status === 401 || error.response.status === 400) {
