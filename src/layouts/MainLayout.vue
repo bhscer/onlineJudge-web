@@ -78,6 +78,12 @@ const linksList = [
     icon: 'question_answer',
     link: 'faqs',
   },
+  {
+    title: '游戏',
+    caption: '',
+    icon: 'casino',
+    link: 'game',
+  },
 ];
 
 export default defineComponent({

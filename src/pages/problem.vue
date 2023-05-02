@@ -586,7 +586,7 @@ export default defineComponent({
       file_model,
       readCodeFromFile,
       err_msg,
-      user
+      user,
     };
   },
   mounted() {
