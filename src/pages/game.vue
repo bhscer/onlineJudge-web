@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <q-page>
+  <q-page style="overscroll-behavior-y: contain;">
     <div id="header">
       <h1 class="title1">2048</h1>
       <!--
