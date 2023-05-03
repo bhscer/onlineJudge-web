@@ -1,0 +1,225 @@
+<template>
+  <q-page class="flex flex-center">
+    <div style="width: 80%">
+      <div style="display: flex; margin-bottom: 20px" class="q-mx-lg">
+        <q-select
+          rounded
+          outlined
+          v-model="language_model"
+          :options="language_options"
+          label="Select Your Language"
+          dense
+          options-dense
+          style="width: 200px"
+          @update:model-value="language_change"
+        />
+      </div>
+
+      <div
+        id="monaco_editor_container"
+        style="
+          height: 500px;
+          width: 99%;
+          margin-left: 0.5%;
+          resize: both;
+          overflow: hidden;
+        "
+      ></div>
+    </div>
+  </q-page>
+</template>
+
+<script>
+import { defineComponent, ref, getCurrentInstance } from 'vue';
+import { api as axios } from '@/boot/axios';
+// import VueMarkdownEditor from "@kangc/v-md-editor";
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+// import vuepressTheme from "@kangc/v-md-editor/lib/theme/vuepress.js";
+import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
+import * as monaco from 'monaco-editor';
+// import MonacoEditor from 'monaco-editor-vue';
+// import Prism from "prismjs";
+import { useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import SubmissionList from '@/components/submissionList.vue';
+import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
+
+export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'problem',
+  watch: {
+    $route(to, from) {
+      this.getProblemInfo();
+    },
+    '$q.dark.isActive'(to, from) {
+      monaco.editor.setTheme(to ? 'vs-dark' : 'vs-white');
+    },
+  },
+  setup() {
+    // const language_model = ref(null);
+    const user = useUserStore();
+    const { proxy } = getCurrentInstance();
+    const language_model = ref('C++');
+    const language_options = ref(['C++', 'Java', 'Python3']);
+    const problem_info = ref({});
+    const samplewidthTextLeft = ref('width:49%;margin-right:.5%');
+    const samplewidthTextRight = ref('width:49%;margin-left:.5%');
+    const sampledivStyle = ref('display: flex');
+    const languageType = ref('CPP');
+    let ITextModel = null;
+    const show_loading = ref(true);
+    let this_route = useRoute();
+    let this_router = useRouter();
+    const $q = useQuasar();
+    const miniMode = ref(false);
+    const windowWidth = ref(10);
+    const qmarkstyle = ref('');
+    const tab_inited = ref({});
+    const submiting = ref(false);
+    const file_model = ref(null);
+    let code_content = '';
+    const tab = ref('problem');
+    const err_msg = ref('');
+
+    const createEditor = () => {
+      ITextModel = monaco.editor.create(
+        document.getElementById('monaco_editor_container'),
+        {
+          value: '',
+          language: 'cpp',
+          // theme: 'vs-dark',
+          theme: $q.dark.isActive ? 'vs-dark' : 'vs-white',
+          editorOptions: {
+            automaticLayout: true,
+            autoIndent: true, //自动缩进
+          },
+          automaticLayout: true,
+        }
+      );
+    };
+
+    const language_change = (newtype) => {
+      console.log('new type is', newtype);
+      var true_type = '';
+      switch (newtype) {
+        case 'C++':
+          true_type = 'cpp';
+          break;
+        case 'Java':
+          true_type = 'java';
+          break;
+        case 'Python3':
+          true_type = 'python';
+          break;
+      }
+      languageType.value = newtype;
+      monaco.editor.setModelLanguage(ITextModel.getModel(), true_type);
+      ITextModel.IDim = 100;
+    };
+
+    const getWindowInfo = () => {
+      windowWidth.value = window.innerWidth;
+      if (window.innerWidth > 500) {
+        samplewidthTextLeft.value = 'width:49%;margin-right:.5%';
+        samplewidthTextRight.value = 'width:49%;margin-left:.5%';
+        // sampledivStyle.value = "display: flex"
+        // sampledivStyle.value = ""
+      } else {
+        samplewidthTextLeft.value = 'width:100%';
+        samplewidthTextRight.value = 'width:100%';
+        // sampledivStyle.value = ""
+      }
+      if (window.innerWidth > 850) miniMode.value = false;
+      else miniMode.value = true;
+
+      if (window.innerWidth > 850) {
+        qmarkstyle.value = '';
+      } else {
+        qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
+      }
+    };
+    const debounce = (fn, delay) => {
+      let timer;
+      return function () {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn();
+        }, delay);
+      };
+    };
+    const cancalDebounce = debounce(getWindowInfo, 500);
+
+    return {
+      tab,
+      languageType,
+      show_loading,
+      language_model,
+      language_options,
+      samplewidthTextLeft,
+      samplewidthTextRight,
+      sampledivStyle,
+      // cancalDebounce,
+      getWindowInfo,
+      miniMode,
+      windowWidth,
+      qmarkstyle,
+      tab_inited,
+      err_msg,
+      user,
+      createEditor,
+    };
+  },
+  mounted() {
+    // window.addEventListener('resize', this.cancalDebounce);
+    window.addEventListener('resize', this.getWindowInfo);
+    this.getWindowInfo();
+    this.createEditor();
+  },
+  beforeUnmount() {
+    // window.removeEventListener('resize', this.cancalDebounce);
+    window.removeEventListener('resize', this.getWindowInfo);
+  },
+});
+</script>
+<style>
+.content_main {
+  width: 800px;
+}
+
+.bg_div {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.card_title {
+  background-color: darkgrey;
+  border-radius: 10px;
+  padding-left: 10vh;
+  padding-right: 10vh;
+}
+
+.body--light .sample_box {
+  margin: 0.5em 0;
+  padding: 0.3em 0.5em;
+  border: #ddd solid 1px;
+  background: #f8f8f8;
+  border-radius: 3px;
+  overflow: auto;
+  font-size: 0.875em;
+  font-family: monospace;
+}
+.body--dark .sample_box {
+  margin: 0.5em 0;
+  padding: 0.3em 0.5em;
+  border: #ddd solid 1px;
+  background: #111111;
+  border-radius: 3px;
+  overflow: auto;
+  font-size: 0.875em;
+  font-family: monospace;
+}
+</style>

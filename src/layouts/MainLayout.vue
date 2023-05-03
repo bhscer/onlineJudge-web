@@ -79,6 +79,12 @@ const linksList = [
     link: 'faqs',
   },
   {
+    title: '编辑器',
+    caption: '',
+    icon: 'edit_note',
+    link: 'editor',
+  },
+  {
     title: '游戏',
     caption: '',
     icon: 'casino',
