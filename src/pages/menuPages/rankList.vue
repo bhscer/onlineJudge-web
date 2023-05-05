@@ -11,7 +11,14 @@
         </thead>
         <tbody>
           <tr v-for="item in total_rank_list" :key="item">
-            <td class="text-left">{{ item.nickname }}</td>
+            <td class="text-left">
+              <a
+                @click.prevent="$router.push(`/userInfo?uid=${item.userDBId}`)"
+                :href="`/userInfo?uid=${item.userDBId}`"
+                style="color: inherit; cursor: pointer; text-decoration: none"
+                >{{ item.nickname }}</a
+              >
+            </td>
             <td class="text-left">{{ item.solvedProblem }}</td>
             <td class="text-left">{{ item.triedProblem }}</td>
           </tr>

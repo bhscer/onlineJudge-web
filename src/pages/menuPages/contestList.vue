@@ -299,8 +299,6 @@ export default defineComponent({
       });
     };
     const getContestList = () => {
-      show_loading.value = false;
-      // return;
       show_loading.value = true;
       if (this_route.path.toLowerCase() !== '/contestList'.toLowerCase())
         return;

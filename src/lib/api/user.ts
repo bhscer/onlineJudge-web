@@ -9,6 +9,7 @@ export namespace user {
     emailMd5: string;
     token: string;
     permission: string;
+    userDBId: string;
   }
 
   const base = (key: string) => {

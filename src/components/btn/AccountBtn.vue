@@ -25,6 +25,13 @@
     <q-menu v-model="showing">
       <q-list style="min-width: 100px">
         <q-item
+          clickable
+          v-close-popup
+          @click="$router.push(`/userInfo?uid=${user.info?.userDBId}`)"
+        >
+          <q-item-section>个人中心</q-item-section>
+        </q-item>
+        <q-item
           v-if="user.info?.permission !== 'user'"
           clickable
           v-close-popup
