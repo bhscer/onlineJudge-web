@@ -24,7 +24,10 @@
                   style="display: flex; flex-direction: column; flex-wrap: wrap"
                 >
                   <a
-                    v-if="item.permission && !item.permission.needPwd"
+                    v-if="
+                      (item.permission && !item.permission.needPwd) ||
+                      (user.info && user.info.permission !== 'user')
+                    "
                     class=""
                     style="
                       margin: 0;
@@ -42,7 +45,11 @@
                     {{ item.contestTitle }}
                   </a>
                   <a
-                    v-if="item.permission && item.permission.needPwd"
+                    v-if="
+                      item.permission &&
+                      item.permission.needPwd &&
+                      (!user.info || user.info.permission === 'user')
+                    "
                     class=""
                     style="
                       margin: 0;
@@ -198,10 +205,12 @@ import { api as axios } from '@/boot/axios';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   name: 'contestList',
   setup() {
+    const user = useUserStore();
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
@@ -374,6 +383,7 @@ export default defineComponent({
       timeSecondToString,
       timeStampTostring,
       err_msg,
+      user,
     };
   },
   watch: {
