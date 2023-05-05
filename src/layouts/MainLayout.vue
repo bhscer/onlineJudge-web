@@ -73,12 +73,6 @@ const linksList = [
     link: 'rankList',
   },
   {
-    title: 'Q&A',
-    caption: '',
-    icon: 'question_answer',
-    link: 'faqs',
-  },
-  {
     title: '编辑器',
     caption: '',
     icon: 'edit_note',
@@ -89,6 +83,12 @@ const linksList = [
     caption: '',
     icon: 'casino',
     link: 'game',
+  },
+  {
+    title: 'Q&A',
+    caption: '',
+    icon: 'question_answer',
+    link: 'faqs',
   },
 ];
 

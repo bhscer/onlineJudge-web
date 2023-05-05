@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <div style="width: 80%">
+    <q-card class="q-pa-lg" style="width: 80%">
       <div style="display: flex; margin-bottom: 20px" class="q-mx-lg">
         <q-select
           rounded
@@ -25,7 +25,7 @@
           overflow: hidden;
         "
       ></div>
-    </div>
+    </q-card>
   </q-page>
 </template>
 
@@ -49,9 +49,6 @@ export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'problem',
   watch: {
-    $route(to, from) {
-      this.getProblemInfo();
-    },
     '$q.dark.isActive'(to, from) {
       monaco.editor.setTheme(to ? 'vs-dark' : 'vs-white');
     },
