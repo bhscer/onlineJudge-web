@@ -9,10 +9,8 @@
           </div>
           <a
             v-if="user.info?.permission !== 'user'"
-            @click="
-              this.$router.push(
-                `/admin/editProblem?add=0&&id=${problem_info.id}`
-              )
+            @click.prevent="
+              $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
             "
             :href="`/admin/editProblem?add=0&&id=${problem_info.id}`"
             style="color: inherit; cursor: pointer; text-decoration: none"

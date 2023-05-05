@@ -38,7 +38,7 @@
                   color: inherit;
                   width: max-content;
                 "
-                @click="this.$router.push(`/contest?cid=${item.contestId}`)"
+                @click.prevent="$router.push(`/contest?cid=${item.contestId}`)"
                 :href="`/contest?cid=${item.contestId}`"
               >
                 {{ item.contestTitle }}
@@ -65,8 +65,8 @@
                   color: inherit;
                   width: max-content;
                 "
-                @click="
-                  this.$router.push(`/admin/add=0&&editContest?id=${item.id}`)
+                @click.prevent="
+                  $router.push(`/admin/add=0&&editContest?id=${item.id}`)
                 "
                 :href="`/admin/editContest?add=0&&id=${item.id}`"
               >
@@ -120,7 +120,9 @@
               font-size: 20px;
               width: max-content;
             "
-            @click="this.$router.push(`/contest?cid=${deleteInfo.contestId}`)"
+            @click.prevent="
+              $router.push(`/contest?cid=${deleteInfo.contestId}`)
+            "
             :href="`/contest?cid=${deleteInfo.contestId}`"
           >
             {{ deleteInfo.contestTitle }}

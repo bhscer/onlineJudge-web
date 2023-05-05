@@ -151,6 +151,9 @@
                   <a
                     class="q-my-auto q-ml-md"
                     :style="`color:${item.boardColor}`"
+                    @click.prevent="
+                      $router.push(`/record?sid=${item.submissionId}`)
+                    "
                     :href="`/record?sid=${item.submissionId}`"
                   >
                     {{ item.boardText }}
@@ -158,12 +161,20 @@
                 </div>
               </td>
               <td class="text-left">
-                <a :href="`/problem?type=0&&id=${item.sourceProblemId}`">{{
-                  `${item.sourceProblemId}:${item.sourceProblemTitle}`
-                }}</a>
+                <a
+                  @click.prevent="
+                    $router.push(`/problem?type=0&&id=${item.sourceProblemId}`)
+                  "
+                  :href="`/problem?type=0&&id=${item.sourceProblemId}`"
+                  >{{ `${item.sourceProblemId}:${item.sourceProblemTitle}` }}</a
+                >
               </td>
               <td class="text-left">
-                <a :href="`/user?uid=${item.userDBId}`">{{ item.nickname }}</a>
+                <a
+                  @click.prevent="$router.push(`/user?uid=${item.userDBId}`)"
+                  :href="`/user?uid=${item.userDBId}`"
+                  >{{ item.nickname }}</a
+                >
               </td>
               <td class="text-left">{{ item.submissionRunMem + 'KB' }}</td>
               <td class="text-left">{{ item.submissionRunTime + 'MS' }}</td>

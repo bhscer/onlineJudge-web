@@ -110,7 +110,7 @@
                     <td class="text-left">{{ item.problemNo }}</td>
                     <td class="text-left">
                       <a
-                        @click="
+                        @click.prevent="
                           this.$router.push(
                             `/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
                           )

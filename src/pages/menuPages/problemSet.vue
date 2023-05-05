@@ -46,10 +46,8 @@
               <td class="text-left">{{ item.problemIdString }}</td>
               <td class="text-left">
                 <a
-                  @click="
-                    this.$router.push(
-                      `/problem?type=0&&id=${item.problemIdString}`
-                    )
+                  @click.prevent="
+                    $router.push(`/problem?type=0&&id=${item.problemIdString}`)
                   "
                   :href="`/problem?type=0&&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"

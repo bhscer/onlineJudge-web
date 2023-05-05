@@ -34,7 +34,9 @@
                       font-size: 20px;
                       width: max-content;
                     "
-                    @click="this.$router.push(`/contest?cid=${item.contestId}`)"
+                    @click.prevent="
+                      $router.push(`/contest?cid=${item.contestId}`)
+                    "
                     :href="`/contest?cid=${item.contestId}`"
                   >
                     {{ item.contestTitle }}
