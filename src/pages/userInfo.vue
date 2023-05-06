@@ -19,6 +19,7 @@
             <div class="text-h4">{{ user_info.nickname }}</div>
           </div>
           <q-btn
+            v-if="user_info.id == user.info?.userDBId"
             class="q-my-auto"
             outline
             color="primary"
@@ -57,6 +58,7 @@ import { useUserStore } from '@/stores/user';
 const $q = useQuasar();
 const this_router = useRouter();
 const this_route = useRoute();
+const user = useUserStore();
 const show_loading = ref(true);
 const err_msg = ref('');
 const user_info = ref({});

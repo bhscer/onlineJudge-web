@@ -4,7 +4,7 @@
     <div class="q-pa-md" style="width: 800px">
       <div v-if="false">{{ user_info }}</div>
       <q-card class="q-my-sm q-pa-md">
-        <div class="text-h6">修改密码</div>
+        <div class="text-h5 q-mb-lg">修改密码</div>
         <q-input
           outlined
           dense
@@ -62,14 +62,22 @@
         />
       </q-card>
       <q-card class="q-my-sm q-pa-md">
-        <div v-if="user_info.analyze">
-          <p style="margin: 0; padding: 0">
-            {{ `通过${user_info.analyze.solvedProblem}题` }}
-          </p>
-          <p style="margin: 0; padding: 0">
-            {{ `尝试${user_info.analyze.triedProblem}题` }}
-          </p>
-        </div>
+        <div class="text-h5 q-mb-lg">修改邮箱</div>
+        <q-input
+          outlined
+          dense
+          v-model="email"
+          type="email"
+          label="输入新的邮箱"
+          hint=""
+          :rules="[(val) => val.length || 'Please input this field']"
+        />
+        <q-btn
+          class="q-my-md"
+          color="primary"
+          label="修改"
+          @click="emailChange"
+        />
       </q-card>
     </div>
 
@@ -99,6 +107,12 @@ const passwordConfirm = ref('');
 const showPwdOld = ref(true);
 const showPwd = ref(true);
 const showPwdConfirm = ref(true);
+const email = ref('');
+
+function IsEmail(str) {
+  var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+  return reg.test(str);
+}
 
 function pwdChange() {
   if (
@@ -139,6 +153,53 @@ function pwdChange() {
         progress: true,
       });
       this_router.push('/userLogin?type=2');
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push('/userLogin?type=2');
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+
+function emailChange() {
+  if (!IsEmail(email.value)) {
+    $q.notify({
+      type: 'negative',
+      message: '邮箱格式错误',
+      progress: true,
+    });
+    return;
+  }
+  axios({
+    method: 'post',
+    url: '/user/setting/email',
+    data: {
+      email: email.value,
+    },
+  })
+    .then((data) => {
+      $q.notify({
+        type: 'positive',
+        message: '修改成功',
+        progress: true,
+      });
     })
     .catch((error) => {
       // submiting.value = false;
