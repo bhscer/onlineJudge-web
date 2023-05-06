@@ -1,27 +1,45 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <q-page class="flex flex-center q-pa-lg q-ma-lg">
-    <div v-if="false">{{ user_info }}</div>
-    <q-card v-if="user_info !== {}">
-      <div style="display: flex" class="q-gutter-md q-pa-md">
-        <q-avatar size="200px" color="secondary" text-color="white">
-          <img
-            :src="`https://cravatar.cn/avatar/${user_info.emailMd5}?d=mp&&s=400`"
-          />
-        </q-avatar>
-        <div class="q-my-auto">
-          <div class="text-h4">{{ user_info.nickname }}</div>
-          <div v-if="user_info.analyze">
-            <p style="margin: 0; padding: 0">
-              {{ `通过${user_info.analyze.solvedProblem}题` }}
-            </p>
-            <p style="margin: 0; padding: 0">
-              {{ `尝试${user_info.analyze.triedProblem}题` }}
-            </p>
+  <q-page class="flex flex-center">
+    <div class="q-pa-md" style="width: 800px">
+      <div v-if="false">{{ user_info }}</div>
+      <q-card class="q-my-sm" v-if="user_info !== {}">
+        <div style="display: flex" class="q-gutter-md q-pa-md">
+          <q-avatar
+            class="q-my-auto"
+            size="100px"
+            color="secondary"
+            text-color="white"
+          >
+            <img
+              :src="`https://cravatar.cn/avatar/${user_info.emailMd5}?d=mp&&s=100`"
+            />
+          </q-avatar>
+          <div class="q-my-auto">
+            <div class="text-h4">{{ user_info.nickname }}</div>
           </div>
+          <q-btn
+            class="q-my-auto"
+            outline
+            color="primary"
+            label="个人设置"
+            size="sm"
+            @click="this.$router.push(`/userSettings`)"
+          />
         </div>
-      </div>
-    </q-card>
+      </q-card>
+      <q-card class="q-my-sm q-pa-md">
+        <div v-if="user_info.analyze">
+          <p style="margin: 0; padding: 0">
+            {{ `通过${user_info.analyze.solvedProblem}题` }}
+          </p>
+          <p style="margin: 0; padding: 0">
+            {{ `尝试${user_info.analyze.triedProblem}题` }}
+          </p>
+        </div>
+      </q-card>
+    </div>
+
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>

@@ -1,0 +1,168 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<template>
+  <q-page class="flex flex-center">
+    <div class="q-pa-md" style="width: 800px">
+      <div v-if="false">{{ user_info }}</div>
+      <q-card class="q-my-sm q-pa-md">
+        <div class="text-h6">修改密码</div>
+        <q-input
+          outlined
+          dense
+          v-model="passwordOld"
+          label="输入原密码"
+          :type="showPwdOld ? 'password' : 'text'"
+          :rules="[(val) => val.length || 'Please input this field']"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="showPwdOld ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showPwdOld = !showPwdOld"
+            />
+          </template>
+        </q-input>
+        <q-input
+          outlined
+          dense
+          v-model="password"
+          label="输入新密码"
+          :type="showPwd ? 'password' : 'text'"
+          :rules="[(val) => val.length || 'Please input this field']"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="showPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showPwd = !showPwd"
+            />
+          </template>
+        </q-input>
+        <q-input
+          outlined
+          dense
+          v-model="passwordConfirm"
+          label="确认新密码"
+          :type="showPwdConfirm ? 'password' : 'text'"
+          hint=""
+          :rules="[(val) => val === password || '两次输入的密码不同']"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="showPwdConfirm ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showPwdConfirm = !showPwdConfirm"
+            />
+          </template>
+        </q-input>
+        <q-btn
+          class="q-my-md"
+          color="primary"
+          label="修改"
+          @click="pwdChange"
+        />
+      </q-card>
+      <q-card class="q-my-sm q-pa-md">
+        <div v-if="user_info.analyze">
+          <p style="margin: 0; padding: 0">
+            {{ `通过${user_info.analyze.solvedProblem}题` }}
+          </p>
+          <p style="margin: 0; padding: 0">
+            {{ `尝试${user_info.analyze.triedProblem}题` }}
+          </p>
+        </div>
+      </q-card>
+    </div>
+
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  </q-page>
+</template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import md5 from 'js-md5';
+import { useQuasar } from 'quasar';
+import { useRouter, useRoute } from 'vue-router';
+import { $t } from '@/boot/i18n';
+import { api as axios } from '@/boot/axios';
+import loadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
+
+const $q = useQuasar();
+const this_router = useRouter();
+const this_route = useRoute();
+const show_loading = ref(false);
+const err_msg = ref('');
+const user_info = ref({});
+const passwordOld = ref('');
+const password = ref('');
+const passwordConfirm = ref('');
+const showPwdOld = ref(true);
+const showPwd = ref(true);
+const showPwdConfirm = ref(true);
+
+function pwdChange() {
+  if (
+    !(
+      password.value.length &&
+      passwordOld.value.length &&
+      passwordConfirm.value.length
+    )
+  ) {
+    $q.notify({
+      type: 'negative',
+      message: '请填写所有表单项目',
+      progress: true,
+    });
+    return;
+  }
+  if (password.value !== passwordConfirm.value) {
+    $q.notify({
+      type: 'negative',
+      message: '两次输入的密码不一致',
+      progress: true,
+    });
+    return;
+  }
+
+  axios({
+    method: 'post',
+    url: '/user/setting/pwd',
+    data: {
+      oldPwd: md5(passwordOld.value),
+      newPwd: md5(password.value),
+    },
+  })
+    .then((data) => {
+      $q.notify({
+        type: 'positive',
+        message: '修改成功,请重新登录',
+        progress: true,
+      });
+      this_router.push('/userLogin?type=2');
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push('/userLogin?type=2');
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+</script>
+
+<style scoped></style>
