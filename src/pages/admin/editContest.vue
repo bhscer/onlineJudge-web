@@ -95,7 +95,12 @@
       </q-card>
 
       <q-card class="q-pa-lg q-my-md" v-if="contest_info.permission">
-        <div class="q-gutter-md">
+        <q-checkbox
+          dense
+          v-model="contest_info.permission.useInvigilator"
+          label="使用监考系统"
+        />
+        <div class="q-gutter-md" v-if="!contest_info.permission.useInvigilator">
           <q-checkbox
             dense
             v-model="contest_info.permission.needPwd"
@@ -423,6 +428,7 @@ export default {
           contestId: '',
           contestTitle: '',
           permission: {
+            useInvigilator: false,
             isPublic: true,
             needPwd: false,
             pwdString: '',

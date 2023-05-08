@@ -21,7 +21,10 @@
       ></user-avatar>
       {{ user.info?.nickname }}
     </q-btn>
-    <q-menu v-model="showing">
+    <q-menu
+      v-model="showing"
+      v-if="$route.path.toLowerCase().substring(0, 12) !== '/invigilator'"
+    >
       <q-list style="min-width: 100px">
         <q-item
           clickable

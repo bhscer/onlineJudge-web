@@ -130,6 +130,14 @@ const routes: RouteRecordRaw[] = [
         path: 'contestList',
         component: () => import('pages/invigilator/contestList.vue'),
       },
+      {
+        path: 'contest',
+        component: () => import('pages/invigilator/contest.vue'),
+      },
+      {
+        path: 'problem',
+        component: () => import('pages/problem.vue'),
+      },
     ],
   },
   // Always leave this as last one,

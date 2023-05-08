@@ -1,93 +1,119 @@
 <template>
-  <q-page
-    class="flex flex-center"
-    style="flex-wrap: wrap; flex-direction: column"
-  >
-    <div class="q-pa-md" v-show="!show_loading" style="width: 800px">
-      <div style="display: flex">
-        <q-btn
-          outline
-          color="primary"
-          label="新增"
-          size="lg"
-          style="width: 100%"
-          padding="xs xs"
-          @click="this.$router.push(`/admin/editContest?add=1`)"
-        />
+  <q-page class="flex flex-center">
+    <div class="q-pa-md" v-show="!show_loading" style="width: 1000px">
+      <div style="display: flex" v-if="false">
+        <p class="q-my-auto">搜索</p>
+        <q-input rounded outlined v-model="text" class="q-my-auto">
+          <template v-slot:prepend>
+            <q-icon name="search"></q-icon>
+          </template>
+        </q-input>
       </div>
 
       <q-markup-table>
-        <thead>
-          <th class="text-left" style="width: 5%">比赛编号</th>
-          <th class="text-left" style="width: 5%">比赛名称</th>
-          <th class="text-left" style="width: 5%">开始时间</th>
-          <th class="text-left" style="width: 5%">结束时间</th>
-          <th class="text-left" style="width: 5%">密码</th>
-          <th class="text-left" style="width: 5%">使用监考</th>
-          <th class="text-left" style="width: 5%">操作</th>
-        </thead>
         <tbody>
           <tr v-for="item in contest_list" :key="item">
-            <td>{{ item.contestId }}</td>
             <td>
-              <a
-                class=""
-                style="
-                  margin: 0;
-                  cursor: pointer;
-                  text-decoration: none;
-                  color: inherit;
-                  width: max-content;
-                "
-                @click.prevent="$router.push(`/contest?cid=${item.contestId}`)"
-                :href="`/contest?cid=${item.contestId}`"
-              >
-                {{ item.contestTitle }}
-              </a>
-            </td>
-            <td>{{ timeStampTostring(item.contestTimeBeginStamp) }}</td>
-            <td>
-              {{
-                timeStampTostring(
-                  item.contestTimeBeginStamp + item.contestLength
-                )
-              }}
-            </td>
-            <td>
-              {{ item.permission.pwdString }}
-            </td>
-            <td>
-              {{ item.permission.useInvigilator === 0 ? '否' : '是' }}
-            </td>
-            <td>
-              <a
-                class=""
-                style="
-                  margin: 0;
-                  cursor: pointer;
-                  text-decoration: none;
-                  color: inherit;
-                  width: max-content;
-                "
-                @click.prevent="
-                  $router.push(`/admin/editContest?add=0&&id=${item.id}`)
-                "
-                :href="`/admin/editContest?add=0&&id=${item.id}`"
-              >
-                编辑
-              </a>
-              <q-btn
-                outline
-                color="red"
-                label="删除"
-                size="xs"
-                padding="xs xs"
-                class="q-ml-md"
-                @click="
-                  showDeleteForm = true;
-                  deleteInfo = item;
-                "
-              />
+              <div style="display: flex; flex-wrap: wrap">
+                <div class="q-my-lg q-ml-lg q-mr-md">
+                  <q-icon color="primary" name="article" size="lg"></q-icon>
+                </div>
+
+                <div
+                  class="q-my-md"
+                  style="display: flex; flex-direction: column; flex-wrap: wrap"
+                >
+                  <a
+                    v-if="
+                      $route.path.toLowerCase().substring(0, 12) ===
+                        '/invigilator' ||
+                      (item.permission && !item.permission.needPwd) ||
+                      (user.info && user.info.permission !== 'user')
+                    "
+                    class=""
+                    style="
+                      margin: 0;
+                      cursor: pointer;
+                      text-decoration: none;
+                      color: inherit;
+                      font-size: 20px;
+                      width: max-content;
+                    "
+                    @click.prevent="
+                      $router.push(
+                        `${url_prefix}/contest?cid=${item.contestId}`
+                      )
+                    "
+                    :href="`${url_prefix}/contest?cid=${item.contestId}`"
+                  >
+                    {{ item.contestTitle }}
+                  </a>
+                  <a
+                    v-if="
+                      item.permission &&
+                      item.permission.needPwd &&
+                      (!user.info || user.info.permission === 'user')
+                    "
+                    class=""
+                    style="
+                      margin: 0;
+                      cursor: pointer;
+                      text-decoration: none;
+                      color: inherit;
+                      font-size: 20px;
+                      width: max-content;
+                    "
+                    @click="
+                      showPwdForm = true;
+                      pwdFormInfo = item;
+                    "
+                  >
+                    {{ item.contestTitle }}
+                  </a>
+
+                  <div style="display: flex; flex-wrap: wrap">
+                    <q-chip
+                      outline
+                      size="sm"
+                      color="primary"
+                      text-color="white"
+                      icon="event"
+                    >
+                      {{ timeStampTostring(item.contestTimeBeginStamp) }}
+                    </q-chip>
+                    <q-chip
+                      outline
+                      size="sm"
+                      color="primary"
+                      text-color="white"
+                      icon="schedule"
+                    >
+                      {{ timeSecondToString(item.contestLength) }}
+                    </q-chip>
+                    <q-chip
+                      v-if="item.permission && item.permission.needPwd"
+                      outline
+                      size="sm"
+                      color="primary"
+                      text-color="white"
+                      icon="lock"
+                    >
+                      Private
+                    </q-chip>
+                  </div>
+                </div>
+                <div class="q-my-auto q-mr-sm" style="margin-left: auto">
+                  <q-chip
+                    outline
+                    size="sm"
+                    color="primary"
+                    text-color="white"
+                    icon="info"
+                  >
+                    {{ ['Not start', 'Competing', 'Ended'][item.timeStatus] }}
+                  </q-chip>
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -106,10 +132,13 @@
 
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
-  <q-dialog v-model="showDeleteForm" v-if="deleteInfo">
-    <q-card class="q-pa-md">
-      <div class="text-h4">你确定要删除？</div>
+
+  <q-dialog v-model="showPwdForm" v-if="pwdFormInfo">
+    <q-card>
       <div style="display: flex">
+        <div class="q-my-lg q-ml-lg q-mr-md">
+          <q-icon color="primary" name="article" size="lg"></q-icon>
+        </div>
         <div
           class="q-my-md"
           style="display: flex; flex-direction: column; flex-wrap: wrap"
@@ -124,12 +153,8 @@
               font-size: 20px;
               width: max-content;
             "
-            @click.prevent="
-              $router.push(`/contest?cid=${deleteInfo.contestId}`)
-            "
-            :href="`/contest?cid=${deleteInfo.contestId}`"
           >
-            {{ deleteInfo.contestTitle }}
+            {{ pwdFormInfo.contestTitle }}
           </a>
 
           <div style="display: flex; flex-wrap: wrap">
@@ -140,7 +165,7 @@
               text-color="white"
               icon="event"
             >
-              {{ timeStampTostring(deleteInfo.contestTimeBeginStamp) }}
+              {{ timeStampTostring(pwdFormInfo.contestTimeBeginStamp) }}
             </q-chip>
             <q-chip
               outline
@@ -149,64 +174,62 @@
               text-color="white"
               icon="schedule"
             >
-              {{ timeSecondToString(deleteInfo.contestLength) }}
+              {{ timeSecondToString(pwdFormInfo.contestLength) }}
             </q-chip>
           </div>
         </div>
       </div>
-      <q-btn
-        outline
-        :loading="deleteing"
-        color="red"
-        label="删除"
-        padding="xs xs"
-        style="width: 100%"
-        @click="deleteContest(deleteInfo.id)"
+
+      <q-input
+        class="q-ma-md"
+        rounded
+        outlined
+        v-model="pwd_text"
+        style="width: 300px"
+        label="输入密码"
       >
-        <template v-slot:loading>
-          <q-spinner-hourglass class="on-left" />
-          删除中
+        <template v-slot:prepend>
+          <q-icon name="lock" />
         </template>
-      </q-btn>
+        <template v-slot:append>
+          <q-icon name="close" @click="pwd_text = ''" class="cursor-pointer" />
+        </template>
+        <template v-slot:after>
+          <q-btn round dense flat icon="send" @click="pwdVerifiy()" />
+        </template>
+      </q-input>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { api as axios } from '@/boot/axios';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
   name: 'contestList',
-  components: { LoadingPage },
-  setup() {
+  props: ['contestType'],
+  setup(props) {
+    const { contestType } = toRefs(props);
+    const user = useUserStore();
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
-    const contest_list = ref([
-      /*
-      {
-        contestId: 66,
-        contestTitle: '浙江财经大学新生赛',
-        contestTimeBegin: '2022-9-4 13:00',
-        contestLength: '1h',
-      },
-      */
-    ]);
+    const contest_list = ref([]);
     const current_page = ref(1);
     const maxPage = ref(1);
     const show_loading = ref(true);
-    const err_msg = ref('');
     const showPwdForm = ref(false);
     const pwdFormInfo = ref({});
     const pwd_text = ref('');
-    const showDeleteForm = ref(false);
-    const deleteInfo = ref({});
-    const deleteing = ref(false);
+    const err_msg = ref('');
+    const url_prefix = contestType.value == 1 ? '/invigilator' : '';
+    console.log('type', contestType.value);
 
     const pwdVerifiy = () => {
       axios({
@@ -215,6 +238,7 @@ export default defineComponent({
         data: {
           contestId: pwdFormInfo.value.contestId,
           pwd: md5(pwd_text.value),
+          type: contestType.value,
         },
       })
         .then((data) => {
@@ -227,21 +251,20 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error('Error:', error);
-          if (error.response.status === 401) {
-            // localStorage.removeItem('Authorization');
-            // showFailToast("登录状态失效，请重新登录")
-            // router.push('/login');
-          } else if (error.response.status === 400) {
-            // showFailToast('获取签到情况失败');
+          var err_msg_notify = '';
+          try {
+            if (error.response.status === 401)
+              this_router.push('/userLogin?type=2');
+            else if (error.response.status === 400)
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
+          } catch {
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
             $q.notify({
               type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            $q.notify({
-              type: 'negative',
-              message: '未知错误',
+              message: err_msg_notify,
               progress: true,
             });
           }
@@ -277,7 +300,7 @@ export default defineComponent({
     };
     const changePage = (newPage) => {
       this_router.push({
-        path: '/contestList',
+        path: `${url_prefix}/contestList`,
         // name: 'index',
         query: {
           page: newPage,
@@ -287,10 +310,12 @@ export default defineComponent({
     const getContestList = () => {
       show_loading.value = true;
       if (
-        this_route.path.toLowerCase() !== '/admin/editContestList'.toLowerCase()
+        this_route.path.toLowerCase() !==
+        `${url_prefix}/contestList`.toLowerCase()
       )
         return;
       let post_data = {};
+      console.log(post_data);
       if (this_route.query.page === undefined) {
         post_data = { page: 1 };
         current_page.value = 1;
@@ -299,13 +324,15 @@ export default defineComponent({
           post_data = { page: parseInt(this_route.query.page) };
           current_page.value = parseInt(this_route.query.page);
         } else {
+          show_loading.value = true;
           err_msg.value = '页码错误';
         }
       }
+      post_data['type'] = contestType.value;
       console.log(post_data);
       axios({
         method: 'post',
-        url: '/admin/contest/getList',
+        url: '/contest/getList',
         data: post_data,
       })
         .then((data) => {
@@ -354,52 +381,6 @@ export default defineComponent({
           }
         });
     };
-    const deleteContest = (id) => {
-      deleteing.value = true;
-      axios({
-        method: 'post',
-        url: '/admin/contest/delete',
-        data: {
-          id: id,
-        },
-      })
-        .then((data) => {
-          getContestList();
-          deleteing.value = false;
-          $q.notify({
-            type: 'positive',
-            message: '删除成功',
-            progress: true,
-          });
-          showDeleteForm.value = false;
-        })
-        .catch((error) => {
-          // submiting.value = false;
-          console.error('Error:', error);
-          alert(error.response.data.detail);
-          if (error.response.status === 401) {
-            this_router.push('/userLogin?type=2');
-          } else if (error.response.status === 400) {
-            $q.notify({
-              type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            var err_code_info = '';
-            try {
-              err_code_info = error.response.status;
-            } catch {
-              err_code_info = error.code;
-            }
-            $q.notify({
-              type: 'negative',
-              message: `网络错误,code=${err_code_info}`,
-              progress: true,
-            });
-          }
-        });
-    };
     return {
       showPwdForm,
       pwdFormInfo,
@@ -413,11 +394,9 @@ export default defineComponent({
       pwdVerifiy,
       timeSecondToString,
       timeStampTostring,
-      deleteInfo,
-      showDeleteForm,
-      deleteContest,
-      deleteing,
       err_msg,
+      user,
+      url_prefix,
     };
   },
   watch: {
@@ -428,5 +407,6 @@ export default defineComponent({
   mounted() {
     this.getContestList();
   },
+  components: { LoadingPage },
 });
 </script>

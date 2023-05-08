@@ -16,8 +16,15 @@ export namespace user {
     return `user/${key}`;
   };
 
-  export function auth() {
-    return request.post<UserInfo>(base('auth'));
+  export function auth(via: any) {
+    console.log('via is ', via);
+    return request<UserInfo>({
+      method: 'post',
+      url: base('auth'),
+      data: {
+        type: via,
+      },
+    });
   }
 
   export interface LoginForm {

@@ -158,7 +158,7 @@ export default defineComponent({
           getRankList()
         }
         const getRankList = () => {
-            if (!(this_route.path.toLowerCase() === '/rankList'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase())){
+            if (!(this_route.path.toLowerCase() === '/invigilator/contest'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase())){
               return;
             }
             // show_loading.value = true

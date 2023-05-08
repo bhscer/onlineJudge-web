@@ -2,7 +2,13 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense label="oj · invigilator" />
+        <q-btn
+          flat
+          dense
+          rounded
+          label="oj · invigilator"
+          @click="$router.push('/invigilator/contestList')"
+        />
 
         <q-toolbar-title></q-toolbar-title>
 
@@ -21,6 +27,9 @@ import { defineComponent, ref } from 'vue';
 // import { $t } from '@/boot/i18n';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';
+import { route } from 'quasar/wrappers';
+import router from '@/router';
+import ThemeOsDefaultIcon from '@/components/icons/theme-os-default-icon.vue';
 
 const linksList = [
   {
@@ -55,6 +64,19 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
+  },
+  mounted() {
+    if (
+      !localStorage.getItem('oj-auth-token') &&
+      this.$route.path !== '/invigilator/tokenLogin'
+    ) {
+      this.$router.push('/');
+      this.$q.notify({
+        type: 'negative',
+        message: '非法访问',
+        progress: true,
+      });
+    }
   },
 });
 </script>

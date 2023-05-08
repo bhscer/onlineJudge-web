@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { user } from '@/lib/api/user';
 import { ref, computed, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 
 // 第一个参数是应用程序中 store 的唯一 id
@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
   const auth_ing = ref(false);
   const loading_queue: any = {}; // uid=>bool 表示是否正在从服务器获取对应用户的info
   const router = useRouter();
+  const route = useRoute();
   const $q = useQuasar();
 
   function login(form: user.LoginForm) {
@@ -85,7 +86,7 @@ export const useUserStore = defineStore('user', () => {
   if (localStorage.getItem('oj-auth-token')) {
     auth_ing.value = true;
     user
-      .auth()
+      .auth(route.path.substring(0, 12) === '/invigilator' ? 1 : 0)
       .then((d) => {
         info.value = d.data;
         localStorage.setItem('oj-auth-token', d.data.token);
@@ -117,7 +118,7 @@ export const useUserStore = defineStore('user', () => {
     return new Promise<user.UserInfo>((resolve, reject) => {
       auth_ing.value = true;
       user
-        .auth()
+        .auth(route.path.substring(0, 12) === '/invigilator' ? 1 : 0)
         .then((d) => {
           auth_ing.value = false;
           info.value = d.data;

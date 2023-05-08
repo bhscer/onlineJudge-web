@@ -8,7 +8,10 @@
             {{ problem_info.title }}
           </div>
           <a
-            v-if="user.info?.permission !== 'user'"
+            v-if="
+              $route.path !== '/invigilator/problem' &&
+              user.info?.permission !== 'user'
+            "
             @click.prevent="
               $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
             "
@@ -65,7 +68,12 @@
               icon="reorder"
               @click="refreshSubmission()"
             />
-            <q-tab name="solution" label="题解" icon="code" />
+            <q-tab
+              name="solution"
+              label="题解"
+              icon="code"
+              v-if="$route.path !== '/invigilator/problem'"
+            />
           </q-tabs>
         </q-card>
         <q-card
@@ -261,6 +269,14 @@
       </div>
     </div>
   </div>
+  <q-dialog v-model="showSubmitResult">
+    <q-card>
+      <result-component
+        :sid="submissionId"
+        style="width: 100px"
+      ></result-component>
+    </q-card>
+  </q-dialog>
   <q-page class="flex flex-center" v-if="show_loading">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
@@ -281,6 +297,7 @@ import { useQuasar } from 'quasar';
 import SubmissionList from '@/components/submissionList.vue';
 import LoadingPage from '@/components/loadingPage.vue';
 import { useUserStore } from '@/stores/user';
+import ResultComponent from '@/components/resultComponent.vue';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -320,6 +337,8 @@ export default defineComponent({
     let code_content = '';
     const tab = ref('problem');
     const err_msg = ref('');
+    const showSubmitResult = ref(false);
+    const submissionId = ref('');
 
     const readCodeFromFile = async () => {
       var promise = new Promise((reslove) => {
@@ -368,14 +387,16 @@ export default defineComponent({
       })
         .then((data) => {
           submiting.value = false;
-          tab.value = 'submissions';
-          refreshSubmission();
+          // tab.value = 'submissions';
+          // refreshSubmission();
           console.log('submit Success:', data);
           $q.notify({
             type: 'positive',
             message: '提交成功',
             progress: true,
           });
+          showSubmitResult.value = true;
+          submissionId.value = data.data.submissionId;
         })
         .catch((error) => {
           submiting.value = false;
@@ -499,8 +520,13 @@ export default defineComponent({
     const getProblemInfo = () => {
       show_loading.value = true;
       // console.log(this_route)
-      // console.log(this_route.path)
-      if (this_route.path.toLowerCase() !== '/problem'.toLowerCase()) return;
+      console.log(this_route.path);
+      if (
+        this_route.path.toLowerCase() !== '/problem'.toLowerCase() &&
+        this_route.path.toLowerCase() !== '/invigilator/problem'.toLowerCase()
+      )
+        return;
+      console.log('jjjj');
       if (
         this_route.query.type === undefined ||
         (this_route.query.type === '0' && this_route.query.id === undefined) ||
@@ -585,6 +611,8 @@ export default defineComponent({
       readCodeFromFile,
       err_msg,
       user,
+      showSubmitResult,
+      submissionId,
     };
   },
   mounted() {
@@ -602,7 +630,7 @@ export default defineComponent({
     // window.removeEventListener('resize', this.cancalDebounce);
     window.removeEventListener('resize', this.getWindowInfo);
   },
-  components: { SubmissionList, LoadingPage },
+  components: { SubmissionList, LoadingPage, ResultComponent },
 });
 </script>
 <style>
