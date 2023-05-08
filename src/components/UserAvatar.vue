@@ -28,7 +28,7 @@ const props = defineProps<{
   size?: string;
 }>();
 
-defineEmits(['click']);
+// defineEmits(['click']);
 const user = useUserStore();
 const info = user.get_info(props.id as string);
 </script>

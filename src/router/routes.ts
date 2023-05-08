@@ -117,14 +117,21 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  // {
-  //   path: '/invigilator',
-  //   component: () => import('layouts/MainLayoutInvigilator.vue'),
-  //   children: [
-  //     { path: '', redirect:'/invigilator/tokenLogin' },
-  //     { path: 'tokenLogin', component: () => import('pages/invigilator/tokenLogin.vue') }
-  //   ],
-  // },
+  {
+    path: '/invigilator',
+    component: () => import('layouts/MainLayoutInvigilator.vue'),
+    children: [
+      { path: '', redirect: '/invigilator/tokenLogin' },
+      {
+        path: 'tokenLogin',
+        component: () => import('pages/invigilator/tokenLogin.vue'),
+      },
+      {
+        path: 'contestList',
+        component: () => import('pages/invigilator/contestList.vue'),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

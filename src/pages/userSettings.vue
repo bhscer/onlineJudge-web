@@ -43,7 +43,6 @@
           v-model="passwordConfirm"
           label="确认新密码"
           :type="showPwdConfirm ? 'password' : 'text'"
-          hint=""
           :rules="[(val) => val === password || '两次输入的密码不同']"
         >
           <template v-slot:append>
@@ -69,7 +68,6 @@
           v-model="email"
           type="email"
           label="输入新的邮箱"
-          hint=""
           :rules="[(val) => val.length || 'Please input this field']"
         />
         <q-btn

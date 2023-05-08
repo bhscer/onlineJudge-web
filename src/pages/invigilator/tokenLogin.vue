@@ -24,7 +24,7 @@ export default defineComponent({
         user
           .user_auth()
           .then((result) => {
-            router.push('/');
+            router.push('/invigilator/contestList');
           })
           .catch((err) => {
             console.log(err);

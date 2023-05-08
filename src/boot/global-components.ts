@@ -26,6 +26,8 @@ export default boot(async ({ app }) => {
   inject();
   app.config.globalProperties.$md5 = md5;
   app.config.globalProperties.$oj_name = 'online judge';
+  app.config.globalProperties.$bar_name = 'online judge';
+
   VMdEditor.use(githubTheme, {
     Hljs: hljs,
   });

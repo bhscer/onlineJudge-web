@@ -21,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
         .then((d) => {
           const user = d.data;
           info.value = user;
+          users.push(user);
           localStorage.setItem('oj-auth-token', d.data.token);
           resolve(user);
         })

@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Online Judge </q-toolbar-title>
+        <q-toolbar-title>{{ $root.bar_text }}</q-toolbar-title>
 
         <toolbar-btn-group></toolbar-btn-group>
       </q-toolbar>
@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { inject } from 'vue';
 import { $t } from '@/boot/i18n';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';

@@ -17,7 +17,6 @@
       <user-avatar
         v-if="user.exists"
         :id="user.info?.username"
-        :size="undefined"
         class="q-mr-sm"
       ></user-avatar>
       {{ user.info?.nickname }}
