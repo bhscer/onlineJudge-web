@@ -240,7 +240,7 @@ export default defineComponent({
                     console.error('Error:', error);
                     try {
                       if (error.response.status === 401)
-                        this_router.push('/userLogin?type=2');
+              this_router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
                       else if (error.response.status === 400)
                         err_msg.value = error.response.data.detail;
                       else err_msg.value = error.response.status;

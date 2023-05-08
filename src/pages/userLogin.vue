@@ -241,18 +241,12 @@ onMounted(() => {
   if (route.query.type) {
     if (user.info) {
       user.logout();
-      $q.notify({
-        type: 'negative',
-        message: '登录过期',
-        progress: true,
-      });
-    } else {
-      $q.notify({
-        type: 'negative',
-        message: '请先登录',
-        progress: true,
-      });
     }
+    $q.notify({
+      type: 'negative',
+      message: route.query.err ? route.query.err.toString() : '登录异常',
+      progress: true,
+    });
   }
 });
 </script>

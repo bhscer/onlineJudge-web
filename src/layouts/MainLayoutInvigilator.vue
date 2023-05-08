@@ -30,6 +30,7 @@ import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';
 import { route } from 'quasar/wrappers';
 import router from '@/router';
 import ThemeOsDefaultIcon from '@/components/icons/theme-os-default-icon.vue';
+import { useUserStore } from '@/stores/user';
 
 const linksList = [
   {
@@ -56,6 +57,7 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
+    const user = useUserStore();
 
     return {
       essentialLinks: linksList,
@@ -63,6 +65,7 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      user,
     };
   },
   mounted() {

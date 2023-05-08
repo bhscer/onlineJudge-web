@@ -254,7 +254,9 @@ export default defineComponent({
           var err_msg_notify = '';
           try {
             if (error.response.status === 401)
-              this_router.push('/userLogin?type=2');
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;
             else err_msg_notify = '错误码' + error.response.status;
@@ -328,7 +330,7 @@ export default defineComponent({
           err_msg.value = '页码错误';
         }
       }
-      post_data['type'] = contestType.value;
+      post_data['urlType'] = contestType.value;
       console.log(post_data);
       axios({
         method: 'post',
@@ -372,7 +374,9 @@ export default defineComponent({
           console.error('Error:', error);
           try {
             if (error.response.status === 401)
-              this_router.push('/userLogin?type=2');
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;

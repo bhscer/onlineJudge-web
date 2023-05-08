@@ -405,7 +405,9 @@ export default defineComponent({
           var err_msg_notify = '';
           try {
             if (error.response.status === 401)
-              this_router.push('/userLogin?type=2');
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;
             else err_msg_notify = '错误码' + error.response.status;
@@ -539,12 +541,25 @@ export default defineComponent({
       }
       var post_data;
       if (this_route.query.type === '0') {
-        post_data = { type: '0', problemId: this_route.query.id };
+        post_data = {
+          type: '0',
+          problemId: this_route.query.id,
+          urlType:
+            this_route.path.toLowerCase() ===
+            '/invigilator/problem'.toLowerCase()
+              ? 1
+              : 0,
+        };
       } else {
         post_data = {
           type: '1',
           contestId: this_route.query.cid,
           problemId: this_route.query.pid,
+          urlType:
+            this_route.path.toLowerCase() ===
+            '/invigilator/problem'.toLowerCase()
+              ? 1
+              : 0,
         };
       }
       console.log(post_data);
@@ -565,7 +580,9 @@ export default defineComponent({
           console.error('Error:', error);
           try {
             if (error.response.status === 401)
-              this_router.push('/userLogin?type=2');
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;

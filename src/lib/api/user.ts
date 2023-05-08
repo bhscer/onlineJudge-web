@@ -10,6 +10,7 @@ export namespace user {
     token: string;
     permission: string;
     userDBId: string;
+    loginType: number;
   }
 
   const base = (key: string) => {
