@@ -1,5 +1,19 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
+  <!-- <loading-page :loading="show_loading" :message="err_msg"></loading-page> -->
+  <q-page class="flex flex-center" v-if="show_loading">
+    <div v-if="show_loading && !err_msg?.length">
+      <q-spinner-gears size="50px" color="primary" />
+      <p>loading...</p>
+    </div>
+    <div v-if="err_msg?.length">
+      <h2 style="padding: 0; margin: 0"><strong>:(</strong></h2>
+      <h5 style="padding-top: 30px; margin: 0">出错了</h5>
+      <p>{{ err_msg }}</p>
+    </div>
+  </q-page>
+
+
   <q-card
     class="q-gutter-sm"
     style="flex-direction: column; height: 100%"
@@ -163,7 +177,6 @@
       </div>
     </div>
   </q-card>
-  <loading-page :loading="show_loading" :message="err_msg"></loading-page>
 </template>
 
 <script setup>
