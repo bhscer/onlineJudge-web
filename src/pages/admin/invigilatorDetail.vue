@@ -235,12 +235,6 @@ export default {
               contest_info.value.contestUser[0]['username'];
           if (userDetail_dict.value === {})
             userDetail_dict.value = contest_info.value.contestUser[0];
-          // date_start.value = timeStampTostring(
-          //   contest_info.value.contestTimeBeginStamp
-          // );
-          // date_end.value = timeStampTostring(
-          //   contest_info.value.contestTimeEndStamp
-          // );
           if (
             contest_info.value['contestTimeBeginStamp'] >=
             Date.now() / 1000
