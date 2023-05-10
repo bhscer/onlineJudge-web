@@ -296,6 +296,7 @@ function queryUserImgList() {
     })
     .catch((error) => {
       console.error('Error:', error);
+      show_loading.value = true;
       try {
         if (error.response.status === 401)
           this_router.push(

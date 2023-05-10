@@ -204,6 +204,7 @@ export default {
     };
     const getContestInfo = () => {
       show_loading_mini.value = true;
+      if (autoRefreshInfoTimer !== null) clearInterval(autoRefreshInfoTimer);
       // show_loading.value = true;
       // console.log(this_route)
       // console.log(this_route.path)
@@ -259,8 +260,12 @@ export default {
         })
         .catch((error) => {
           console.error('Error:', error);
+          show_loading.value = true;
           try {
-            if (error.response.status === 401) user.back_login();
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;
@@ -268,6 +273,7 @@ export default {
             err_msg.value = error.code;
           }
         });
+      autoRefreshInfoTimer = setInterval(getContestInfo, 5 * 1000);
     };
     return {
       tab,
@@ -297,7 +303,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.getWindowInfo);
-    this.autoRefreshInfoTimer = setInterval(this.getContestInfo, 5 * 1000);
+    // this.autoRefreshInfoTimer = setInterval(this.getContestInfo, 5 * 1000);
     this.getWindowInfo();
     this.getContestInfo();
   },
