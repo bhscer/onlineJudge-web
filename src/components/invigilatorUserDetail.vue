@@ -13,7 +13,6 @@
     </div>
   </q-page>
 
-
   <q-card
     class="q-gutter-sm"
     style="flex-direction: column; height: 100%"
@@ -358,6 +357,7 @@ function sendMsg() {
 }
 function getUserImg() {
   if (screenImgLoading.value) return;
+  screenImgLoading.value = true;
   axios({
     method: 'post',
     url: '/admin/invigilator/actions/getScreenImg',
@@ -379,6 +379,7 @@ function getUserImg() {
     })
     .catch((error) => {
       console.error('Error:', error);
+      screenImgLoading.value = false;
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)
