@@ -1,0 +1,442 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<template>
+  <q-card
+    class="q-gutter-sm"
+    style="flex-direction: column; height: 100%"
+    v-show="!show_loading"
+  >
+    <div class="q-pa-md">
+      <div class="text-h5 q-mb-md">信息</div>
+      <p class="q-ma-none q-pa-none">
+        {{ `账号:${user_detail_info.username}` }}
+      </p>
+      <p class="q-ma-none q-pa-none">
+        {{ `${props.userContestInfo.userOnline ? '在线' : '离线'}` }}
+      </p>
+    </div>
+
+    <q-separator />
+    <div class="q-pa-md">
+      <div class="text-h5 q-mb-md">操作</div>
+
+      <div class="q-gutter-sm">
+        <q-input
+          outlined
+          v-model="send_msg_text"
+          label="发送消息"
+          :loading="msg_sending"
+          :readonly="msg_sending"
+          dense
+        >
+          <template v-slot:after>
+            <q-btn
+              round
+              dense
+              flat
+              icon="send"
+              :loading="msg_sending"
+              @click="sendMsg"
+            >
+              <template v-slot:loading>
+                <q-spinner-hourglass class="on-left" />
+              </template>
+            </q-btn>
+          </template>
+        </q-input>
+        <q-btn
+          outline
+          color="primary"
+          @click="getUserImg()"
+          :loading="screenImgLoading"
+          dense
+        >
+          立即截图
+          <template v-slot:loading>
+            <q-spinner-hourglass class="on-left" />
+            截图中
+          </template>
+        </q-btn>
+        <!-- <q-btn
+        outline
+        color="primary"
+        label="获取近四张"
+        size="lg"
+        padding="xs xs"
+        @click="queryUserImgList()"
+      /> -->
+      </div>
+    </div>
+
+    <q-separator />
+    <div class="q-pa-md">
+      <div class="text-h5 q-pb-md">截图</div>
+      <table style="width: 100%">
+        <tbody v-viewer>
+          <tr>
+            <td v-if="img_list[0]">
+              <q-img
+                :src="`${$api_url}/admin/invigilator/query/screenImgFile/name/${img_list[0]['file_name']}/token/${user.info.token}`"
+              >
+                <q-tooltip>
+                  {{
+                    `${props.contestId} ${props.username} ${timeStampTostring(
+                      img_list[0]['time']
+                    )}`
+                  }}
+                </q-tooltip>
+              </q-img>
+            </td>
+            <td v-if="img_list[1]">
+              <q-img
+                :src="`${$api_url}/admin/invigilator/query/screenImgFile/name/${img_list[1]['file_name']}/token/${user.info.token}`"
+              >
+                <q-tooltip>
+                  {{
+                    `${props.contestId} ${props.username} ${timeStampTostring(
+                      img_list[1]['time']
+                    )}`
+                  }}
+                </q-tooltip>
+              </q-img>
+            </td>
+          </tr>
+          <tr>
+            <td v-if="img_list[2]">
+              <q-img
+                :src="`${$api_url}/admin/invigilator/query/screenImgFile/name/${img_list[2]['file_name']}/token/${user.info.token}`"
+              >
+                <q-tooltip>
+                  {{
+                    `${props.contestId} ${props.username} ${timeStampTostring(
+                      img_list[2]['time']
+                    )}`
+                  }}
+                </q-tooltip>
+              </q-img>
+            </td>
+            <td v-if="img_list[3]">
+              <q-img
+                :src="`${$api_url}/admin/invigilator/query/screenImgFile/name/${img_list[3]['file_name']}/token/${user.info.token}`"
+              >
+                <q-tooltip>
+                  {{
+                    `${props.contestId} ${props.username} ${timeStampTostring(
+                      img_list[3]['time']
+                    )}`
+                  }} </q-tooltip
+                >>
+              </q-img>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div style="display: flex;flex-wrap: wrap;">
+        <q-img v-for="item in img_list" :key="item" :src="`${$api_url}/admin/invigilator/query/screenImgFile/name/${item.file_name}/token/${user.info.token}`">
+          <div class="absolute-bottom text-subtitle1 text-center">
+            {{ `${props.contestId} ${props.username} ${timeStampTostring(item.time)}` }}
+          </div>
+        </q-img>
+      </div> -->
+    <q-separator />
+    <div>
+      <div class="text-h5 q-pt-md q-pl-md">日志</div>
+      <div
+        class="q-mt-md"
+        v-show="
+          !empty_content &&
+          !show_loading &&
+          !show_loading_mini &&
+          !err_msg.length
+        "
+        style="height: 200px; overflow: scroll"
+      >
+        <div
+          v-for="(log, idx) in user_detail_info.userLogs"
+          :key="idx"
+          class="q-pl-md"
+        >
+          <p class="q-my-none q-py-none">
+            {{ `${timestampToTime(log.time)} ${log.msg}` }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </q-card>
+  <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+</template>
+
+<script setup>
+import { onMounted, ref, defineProps, getCurrentInstance, watch } from 'vue';
+import md5 from 'js-md5';
+import { useQuasar } from 'quasar';
+import { useRouter, useRoute } from 'vue-router';
+import { $t } from '@/boot/i18n';
+import { api as axios } from '@/boot/axios';
+import * as monaco from 'monaco-editor';
+import loadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
+import 'viewerjs/dist/viewer.css';
+import { component as Viewer } from 'v-viewer';
+
+const user = useUserStore();
+const $q = useQuasar();
+const this_router = useRouter();
+const this_route = useRoute();
+const tab = ref('points');
+const show_loading = ref(true);
+const user_detail_info = ref({});
+const err_msg = ref('');
+const img_list = ref([]);
+const msg_sending = ref(false);
+const send_msg_text = ref('');
+
+const props = defineProps(['username', 'contestId', 'userContestInfo']);
+const { proxy } = getCurrentInstance();
+let waitImgUploadedTimer = null;
+const screenImgLoading = ref(false);
+
+// function showfullScreenImg(url)
+// {
+//   proxy.$viewerApi({
+//     images: url,
+//   })
+// }
+watch(
+  () => props.username,
+  (newVal) => {
+    user_detail_info.value = {};
+    img_list.value = [];
+    getSubmissionInfo();
+    queryUserImgList();
+  }
+);
+
+watch(
+  () => props.contestId,
+  (newVal) => {
+    user_detail_info.value = {};
+    img_list.value = [];
+    getSubmissionInfo();
+    queryUserImgList();
+  }
+);
+
+function timeStampTostring(tim) {
+  var timestamp = tim ? tim : null;
+  let date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+  let Y = date.getFullYear();
+  let M =
+    date.getMonth() + 1 < 10
+      ? '0' + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+  let h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+  let m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+  let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+  // return Y + M + D + h + m + s;
+  return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+}
+function waitImgUploaded() {
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/query/newScreenImgUploaded',
+    data: {
+      contestId: props.contestId,
+      username: props.username,
+      time: img_list.value[0]['time'],
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      clearInterval(waitImgUploadedTimer);
+      screenImgLoading.value = false;
+      queryUserImgList();
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        // else if (error.response.status === 400)
+        // err_msg.value = error.response.data.detail;
+        // else err_msg.value = error.response.status;
+      } catch {
+        // err_msg.value = error.code;
+      }
+    });
+}
+function queryUserImgList() {
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/query/screenImgList',
+    data: {
+      contestId: props.contestId,
+      username: props.username,
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      img_list.value = data.data;
+      show_loading.value = false;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg.value = error.response.data.detail;
+        else err_msg.value = error.response.status;
+      } catch {
+        err_msg.value = error.code;
+      }
+    });
+}
+function sendMsg() {
+  if (msg_sending.value) return;
+  msg_sending.value = true;
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/actions/sendMsg',
+    data: {
+      contestId: props.contestId,
+      username: props.username,
+      msg: send_msg_text.value,
+    },
+  })
+    .then((data) => {
+      msg_sending.value = false;
+      send_msg_text.value = '';
+      console.log('Success:', data);
+      $q.notify({
+        type: 'positive',
+        message: '请求成功',
+        progress: true,
+      });
+    })
+    .catch((error) => {
+      msg_sending.value = false;
+      console.error('Error:', error);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+function getUserImg() {
+  if (screenImgLoading.value) return;
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/actions/getScreenImg',
+    data: {
+      contestId: props.contestId,
+      username: props.username,
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      $q.notify({
+        type: 'positive',
+        message: '请求成功',
+        progress: true,
+      });
+      screenImgLoading.value = true;
+      waitImgUploadedTimer = setInterval(waitImgUploaded, 5 * 1000);
+      waitImgUploaded();
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+function getSubmissionInfo() {
+  console.log(props);
+  show_loading.value = true;
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/getUserDetail',
+    data: {
+      contestId: props.contestId,
+      username: props.username,
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      user_detail_info.value = data.data;
+      show_loading.value = false;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg.value = error.response.data.detail;
+        else err_msg.value = error.response.status;
+      } catch {
+        err_msg.value = error.code;
+      }
+    });
+}
+function timestampToTime(timestamp) {
+  timestamp = timestamp ? timestamp : null;
+  let date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+  let Y = date.getFullYear();
+  let M =
+    date.getMonth() + 1 < 10
+      ? '0' + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+  let h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+  let m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+  let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+  // return Y + M + D + h + m + s;
+  return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+}
+onMounted(() => {
+  getSubmissionInfo();
+  queryUserImgList();
+});
+</script>
+
+<style scoped></style>

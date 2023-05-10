@@ -24,7 +24,7 @@
           <th class="text-left" style="width: 5%">结束时间</th>
           <th class="text-left" style="width: 5%">密码</th>
           <th class="text-left" style="width: 5%">使用监考</th>
-          <th class="text-left" style="width: 5%">操作</th>
+          <th class="text-left" style="width: 10%">操作</th>
         </thead>
         <tbody>
           <tr v-for="item in contest_list" :key="item">
@@ -57,7 +57,7 @@
               {{ item.permission.pwdString }}
             </td>
             <td>
-              {{ item.permission.useInvigilator === 0 ? '否' : '是' }}
+              {{ item.permission.useInvigilator ? '是' : '否' }}
             </td>
             <td>
               <a
@@ -88,6 +88,23 @@
                   deleteInfo = item;
                 "
               />
+              <a
+                class=""
+                v-if="item.permission.useInvigilator"
+                style="
+                  margin: 0;
+                  cursor: pointer;
+                  text-decoration: none;
+                  color: inherit;
+                  width: max-content;
+                "
+                @click.prevent="
+                  $router.push(`/admin/invigilatorDetail?id=${item.id}`)
+                "
+                :href="`/admin/invigilatorDetail?id=${item.id}`"
+              >
+                监考
+              </a>
             </td>
           </tr>
         </tbody>

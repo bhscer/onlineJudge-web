@@ -24,7 +24,7 @@ export default defineComponent({
         user
           .user_auth()
           .then((result) => {
-            router.push('/invigilator/contestList');
+            router.push(`/invigilator/contest?cid=${route.query.cid}`);
           })
           .catch((err) => {
             console.log(err);

@@ -36,7 +36,7 @@
           !show_loading_mini &&
           !err_msg.length
         "
-        style="height: 200px"
+        style="height: 200px; overflow: scroll"
       >
         <thead>
           <tr>

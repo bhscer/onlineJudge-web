@@ -115,6 +115,10 @@ const routes: RouteRecordRaw[] = [
         path: 'editContestList',
         component: () => import('pages/admin/editContestList.vue'),
       },
+      {
+        path: 'invigilatorDetail',
+        component: () => import('pages/admin/invigilatorDetail.vue'),
+      },
     ],
   },
   {

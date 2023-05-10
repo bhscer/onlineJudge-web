@@ -6,7 +6,8 @@ const SAVED_KEY = 'theme';
 
 export const useThemeStore = defineStore('theme', () => {
   const behavior = ref<Theme>(
-    isNaN(localStorage.getItem(SAVED_KEY) as any as number)
+    !localStorage.getItem(SAVED_KEY) ||
+      isNaN(localStorage.getItem(SAVED_KEY) as any as number)
       ? Theme.FollowSys
       : Number.parseInt(localStorage.getItem(SAVED_KEY) as string)
   );

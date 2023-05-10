@@ -100,6 +100,50 @@
           v-model="contest_info.permission.useInvigilator"
           label="使用监考系统"
         />
+        <div
+          style="height: 400px; overflow: scroll; margin-top: 5px"
+          v-if="contest_info.permission.useInvigilator"
+        >
+          <q-btn
+            outline
+            color="primary"
+            label="在前方插入"
+            size="xs"
+            padding="xs xs"
+            @click="contest_info.contestProblem.splice(0, 0, '')"
+          />
+          <div
+            v-for="(item, idx) in contest_info.permission.stuRange"
+            :key="idx"
+            style="padding-top: 20px"
+          >
+            <div>
+              <strong>{{ `第${idx + 1}人` }}</strong>
+              <q-btn
+                outline
+                color="red"
+                label="删除"
+                size="xs"
+                padding="xs xs"
+                @click="contest_info.permission.stuRange.splice(idx, 1)"
+              />
+              <q-btn
+                outline
+                color="primary"
+                label="在前方插入"
+                size="xs"
+                padding="xs xs"
+                @click="contest_info.permission.stuRange.splice(idx, 0, '')"
+              />
+            </div>
+            <q-input
+              outlined
+              dense
+              v-model="contest_info.permission.stuRange[idx]"
+              label="用户名"
+            />
+          </div>
+        </div>
         <div class="q-gutter-md" v-if="!contest_info.permission.useInvigilator">
           <q-checkbox
             dense
@@ -227,10 +271,9 @@
       />
     </div>
   </div>
-  <q-inner-loading :showing="show_loading">
-    <q-spinner-gears size="50px" color="primary" />
-    <p>loading...</p>
-  </q-inner-loading>
+  <q-page v-if="show_loading" class="flex flex-center">
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  </q-page>
 </template>
 
 <script>
@@ -246,7 +289,6 @@ import SubmissionList from '@/components/submissionList.vue';
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
-
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
   dateStr = dateStr.replace(/-/g, '/');
@@ -269,6 +311,7 @@ export default {
     let this_router = useRouter();
     const contest_info = ref({});
     const show_loading = ref(true);
+    const err_msg = ref('');
     const time_percent = ref(0);
     const qmarkstyle = ref('');
     const showPwdForm = ref(true);
@@ -276,7 +319,6 @@ export default {
     const date_start = ref('2019-02-01 12:44');
     const date_end = ref('2019-02-01 12:44');
     const use_custom_id = ref(false);
-
     const submitEdit = async () => {
       // submiting.value = true;
       // console.log('then',code_content)
@@ -420,7 +462,8 @@ export default {
         this_route.query.add === undefined ||
         (this_route.query.add === '0' && this_route.query.id === undefined)
       ) {
-        alert('参数不完整');
+        // alert('参数不完整');
+        err_msg.value = '参数不完整';
         return;
       }
       if (this_route.query.add === '1') {
@@ -443,15 +486,15 @@ export default {
           contestTimeEndStamp: parseInt(Date.now() / 1000 / 60) * 60,
           contestProblem: [
             /*
-                    {
-                      'problemNo':'',
-                      'data':{
-                        "sourceProblemId":"",
-                        "isCustomTitle":false,
-                        "customTitle":"",
-                      }
-                    }
-                    */
+                            {
+                              'problemNo':'',
+                              'data':{
+                                "sourceProblemId":"",
+                                "isCustomTitle":false,
+                                "customTitle":"",
+                              }
+                            }
+                            */
           ],
         };
         date_start.value = timeStampTostring(
@@ -460,7 +503,6 @@ export default {
         date_end.value = timeStampTostring(
           contest_info.value.contestTimeEndStamp
         );
-
         axios({
           method: 'post',
           url: '/admin/contest/getCnt',
@@ -491,7 +533,6 @@ export default {
               // showFailToast('获取签到情况失败');
             }
           });
-
         show_loading.value = false;
       } else {
         axios({
@@ -551,6 +592,7 @@ export default {
       changeProblemNo,
       submitEdit,
       use_custom_id,
+      err_msg,
     };
   },
   mounted() {
@@ -564,6 +606,7 @@ export default {
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
   },
+  components: { LoadingPage },
 };
 </script>
 

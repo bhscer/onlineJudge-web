@@ -1,6 +1,6 @@
 <template>
-  <q-page style="display: flex; justify-content: center">
-    <div style="width: 1000px">
+  <q-page style="display: flex; height: 100%" v-if="!show_loading">
+    <div style="width: 70%">
       <q-card class="q-pa-md" :style="qmarkstyle">
         <div style="display: flex">
           <div class="text-h4" style="font-weight: bold">
@@ -15,105 +15,58 @@
           <q-badge outline color="primary" class="q-mt-auto q-ml-md">{{
             countdown_text
           }}</q-badge>
+          <div
+            v-if="show_loading_mini"
+            style="display: flex"
+            class="q-mt-auto q-ml-md"
+          >
+            <q-spinner-gears size="20px" color="primary" />
+            <p class="q-ma-none q-pa-none">刷新中</p>
+          </div>
         </div>
       </q-card>
-      <q-card :style="`width: 100%;${qmarkstyle};padding:0`">
-        <q-tabs
-          v-model="tab"
-          dense
-          class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
-          align="left"
-          narrow-indicator
-          outside-arrows
-          mobile-arrows
+      <div style="display: flex; flex-wrap: wrap" class="q-ma-md">
+        <div
+          v-for="(item, idx) in contest_info.contestUser"
+          :key="idx"
+          class="q-pa-sm q-ma-sm"
+          style="border-radius: 5px; width: 100px; cursor: default"
+          :style="`background-color:${
+            item.userOnline ? (item.userStatusErr ? 'red' : 'green') : 'grey'
+          }`"
+          @click="
+            showUserDetail = true;
+            userDetail_username = item.username;
+            userDetail_dict = contest_info.contestUser[idx];
+          "
         >
-          <q-tab name="description" label="description" />
-          <q-tab name="problems" label="problems" v-if="tstatus" />
-          <q-tab name="submissions" label="submissions" v-if="tstatus" />
-          <q-tab name="rankList" label="rankList" v-if="tstatus" />
-          <q-tab name="notes" label="notes" v-if="tstatus" />
-        </q-tabs>
-        <q-tab-panels
-          class="q-pa-sm"
-          v-model="tab"
-          animated
-          @transition="tab_pannel_change"
-          keep-alive
-        >
-          <q-tab-panel name="description" class="q-pa-none">
-            <v-md-preview :text="contest_info.descriptionMd" />
-          </q-tab-panel>
-          <q-tab-panel name="problems" style="padding: 0; margin: 0">
-            <q-markup-table style="margin: 0" flat bordered>
-              <thead>
-                <tr>
-                  <th class="text-left" style="width: 8%">Status</th>
-                  <th class="text-left" style="width: 8%">ProblemId</th>
-                  <th class="text-left">Title</th>
-                  <th class="text-left" style="width: 5%">Solved</th>
-                  <th class="text-left" style="width: 5%">Submitted</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in contest_info.contestProblem" :key="item">
-                  <td>
-                    <!--q-icon name="done" style="color: #00c853" size="md" class="q-mr-sm"></q-icon-->
-                    <q-icon
-                      v-if="item.userStatus === 2"
-                      name="done"
-                      style="color: #00c853"
-                      size="md"
-                      class="q-mr-sm"
-                    ></q-icon>
-                    <q-icon
-                      v-if="item.userStatus === 1"
-                      name="close"
-                      style="color: red"
-                      size="md"
-                      class="q-mr-sm"
-                    ></q-icon>
-                  </td>
-                  <td class="text-left">{{ item.problemNo }}</td>
-                  <td class="text-left">
-                    <a
-                      @click.prevent="
-                        this.$router.push(
-                          `/invigilator/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
-                        )
-                      "
-                      style="
-                        color: #0d47a1;
-                        cursor: pointer;
-                        text-decoration: none;
-                      "
-                      :href="`/invigilator/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
-                      >{{ item.problemName }}</a
-                    >
-                  </td>
-                  <td class="text-left">{{ item.accpetCnt }}</td>
-                  <td class="text-left">{{ item.submitCnt }}</td>
-                </tr>
-              </tbody>
-            </q-markup-table>
-          </q-tab-panel>
-          <q-tab-panel name="submissions" style="padding: 0; margin: 0">
-            <submission-list></submission-list>
-          </q-tab-panel>
-          <q-tab-panel name="rankList">
-            <rank-list-component
-              :contestInfo="contest_info"
-              style="width: fit-content"
-            ></rank-list-component>
-          </q-tab-panel>
-          <q-tab-panel name="notes"></q-tab-panel>
-        </q-tab-panels>
-      </q-card>
+          <div class="text-h5" align="center">
+            {{ item.username }}
+          </div>
+          <p align="center">{{ item.userOnline ? '在线' : '离线' }}</p>
+          <p align="center">{{ item.userStatusErr ? '异常' : '正常' }}</p>
+        </div>
+      </div>
     </div>
-
+    <div style="width: 30%; margin-left: auto">
+      <InvigilatorUserDetail
+        :username="userDetail_username"
+        :contestId="userDetail_contestId"
+        :userContestInfo="userDetail_dict"
+      ></InvigilatorUserDetail>
+    </div>
+  </q-page>
+  <q-page class="flex flex-center" v-if="show_loading">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
+  <!-- <q-dialog v-model="showUserDetail">
+    <q-card style="width: 600px">
+      <InvigilatorUserDetail
+        :username="userDetail_username"
+        :contestId="userDetail_contestId"
+      ></InvigilatorUserDetail>
+    </q-card>
+  </q-dialog> -->
 </template>
 
 <script>
@@ -129,6 +82,7 @@ import SubmissionList from '@/components/submissionList.vue';
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
+import InvigilatorUserDetail from '@/components/invigilatorUserDetail.vue';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -139,7 +93,6 @@ function dateStrChangeTimeTamp(dateStr) {
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'contest',
-  components: { SubmissionList, RankListComponent, LoadingPage },
   watch: {
     $route(to, from) {
       console.log(to);
@@ -147,44 +100,37 @@ export default {
     },
   },
   setup() {
-    const tab = ref('description');
     const { proxy } = getCurrentInstance();
+    const tab = ref('description');
     const $q = useQuasar();
     let this_route = useRoute();
     let this_router = useRouter();
     const contest_info = ref({});
     const show_loading = ref(true);
+    const err_msg = ref('');
     const time_percent = ref(0);
     const qmarkstyle = ref('');
     const showPwdForm = ref(true);
     const tstatus = ref(0);
-    const err_msg = ref('');
-    const countdown_text = ref('00:00:00');
-    let cgTimeTimer = null;
+    const date_start = ref('2019-02-01 12:44');
+    const date_end = ref('2019-02-01 12:44');
+    const countdown_text = ref('');
+    const use_custom_id = ref(false);
     let cgTimeTimerCountdown = null;
+    const showUserDetail = ref('false');
+    const userDetail_contestId = ref('');
+    const userDetail_username = ref('');
+    const show_loading_mini = ref(false);
+    const userDetail_dict = ref({});
+
+    let autoRefreshInfoTimer = null;
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
-      if (window.innerWidth > 580) {
+      if (window.innerWidth > 850) {
         qmarkstyle.value = '';
       } else {
         qmarkstyle.value = `max-width:${window.innerWidth}px`;
-      }
-    };
-    const changeTimePercent = () => {
-      var timeL = contest_info.value.contestTimeBeginStamp * 1000;
-      var timeR = contest_info.value.contestTimeEndStamp * 1000;
-      var curr = Date.now();
-      var lenth = timeR - timeL + 1;
-      // console.log(timeL,timeR,curr,lenth)
-      if (timeL <= curr && curr <= timeR) {
-        time_percent.value = (curr - timeL) / lenth;
-        tstatus.value = 1;
-      }
-      if (curr > timeR) {
-        time_percent.value = 1;
-        tstatus.value = 2;
-        clearInterval(cgTimeTimer);
       }
     };
     const timerCountdown = () => {
@@ -226,6 +172,7 @@ export default {
         clearInterval(cgTimeTimerCountdown);
       }
     };
+
     const timeSecondToString = (tim) => {
       var s = '';
       console.log(tim);
@@ -256,34 +203,44 @@ export default {
       return `${Y}-${M}-${D} ${h}:${m}:${s}`;
     };
     const getContestInfo = () => {
-      show_loading.value = true;
-      if (cgTimeTimer !== null) {
-        clearInterval(cgTimeTimer);
-      }
+      show_loading_mini.value = true;
+      // show_loading.value = true;
       // console.log(this_route)
       // console.log(this_route.path)
       if (
-        this_route.path.toLowerCase() !== '/invigilator/contest'.toLowerCase()
+        this_route.path.toLowerCase() !==
+        '/admin/invigilatorDetail'.toLowerCase()
       )
         return;
-      if (this_route.query.cid === undefined) {
-        alert('参数不完整');
+      if (this_route.query.id === undefined) {
+        err_msg.value = '参数不完整';
         return;
       }
       axios({
         method: 'post',
-        url: '/contest/getInfo',
+        url: '/admin/invigilator/getInfo',
         data: {
-          contestId: this_route.query.cid,
-          pwd: this_route.query.pwd ? this_route.query.pwd : '',
-          urlType: 0,
+          id: this_route.query.id,
         },
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           // 列表获取成功
-          console.log(data);
-          contest_info.value = data.data.data;
+          // console.log(data);
+          contest_info.value = data.data;
+          if (userDetail_contestId.value === '')
+            userDetail_contestId.value = contest_info.value.contestId;
+          if (userDetail_username.value === '')
+            userDetail_username.value =
+              contest_info.value.contestUser[0]['username'];
+          if (userDetail_dict.value === {})
+            userDetail_dict.value = contest_info.value.contestUser[0];
+          // date_start.value = timeStampTostring(
+          //   contest_info.value.contestTimeBeginStamp
+          // );
+          // date_end.value = timeStampTostring(
+          //   contest_info.value.contestTimeEndStamp
+          // );
           if (
             contest_info.value['contestTimeBeginStamp'] >=
             Date.now() / 1000
@@ -304,14 +261,12 @@ export default {
 
           document.title = `${contest_info.value.contestId}-${contest_info.value.contestTitle}-${proxy.$oj_name}`;
           show_loading.value = false;
+          show_loading_mini.value = false;
         })
         .catch((error) => {
           console.error('Error:', error);
           try {
-            if (error.response.status === 401)
-              this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
-              );
+            if (error.response.status === 401) user.back_login();
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;
             else err_msg.value = error.response.status;
@@ -332,26 +287,36 @@ export default {
       timeSecondToString,
       timeStampTostring,
       tstatus,
+      date_start,
+      date_end,
+      use_custom_id,
       err_msg,
       timerCountdown,
-      cgTimeTimerCountdown,
       countdown_text,
+      showUserDetail,
+      userDetail_contestId,
+      userDetail_username,
+      show_loading_mini,
+      autoRefreshInfoTimer,
+      userDetail_dict,
     };
   },
   mounted() {
     window.addEventListener('resize', this.getWindowInfo);
+    this.autoRefreshInfoTimer = setInterval(this.getContestInfo, 5 * 1000);
     this.getWindowInfo();
     this.getContestInfo();
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
   },
+  components: { LoadingPage, InvigilatorUserDetail },
 };
 </script>
 
 <style scoped>
 .content_main {
-  width: 1000px;
+  width: 800px;
 }
 
 .bg_div {

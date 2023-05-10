@@ -294,6 +294,7 @@ export default {
         data: {
           contestId: this_route.query.cid,
           pwd: this_route.query.pwd ? this_route.query.pwd : '',
+          urlType: 0,
         },
       })
         .then((data) => {
