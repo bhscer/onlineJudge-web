@@ -32,7 +32,7 @@
           class="q-pa-sm q-ma-sm"
           style="border-radius: 5px; width: 100px; cursor: default"
           :style="`background-color:${
-            item.userOnline ? (item.userStatusErr ? 'red' : 'green') : 'grey'
+            item.userStatusErr ? 'red' : item.userOnline ? 'green' : 'grey'
           }`"
           @click="
             showUserDetail = true;
@@ -203,6 +203,11 @@ export default {
       return `${Y}-${M}-${D} ${h}:${m}:${s}`;
     };
     const getContestInfo = () => {
+      if (
+        this_route.path.toLowerCase() !==
+        '/admin/invigilatorDetail'.toLowerCase()
+      )
+        return;
       show_loading_mini.value = true;
       if (autoRefreshInfoTimer !== null) clearInterval(autoRefreshInfoTimer);
       // show_loading.value = true;

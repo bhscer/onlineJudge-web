@@ -19,12 +19,25 @@
     v-show="!show_loading"
   >
     <div class="q-pa-md">
-      <div class="text-h5 q-mb-md">信息</div>
+      <div style="display: flex">
+        <div class="text-h5 q-mb-md">信息</div>
+        <div
+          v-if="show_loading_mini"
+          style="display: flex"
+          class="q-pt-auto q-pl-sm"
+        >
+          <q-spinner-gears size="20px" color="primary" />
+          <p class="q-ma-none q-pa-none">刷新中</p>
+        </div>
+      </div>
       <p class="q-ma-none q-pa-none">
         {{ `账号:${user_detail_info.username}` }}
       </p>
       <p class="q-ma-none q-pa-none">
         {{ `${props.userContestInfo.userOnline ? '在线' : '离线'}` }}
+      </p>
+      <p class="q-ma-none q-pa-none">
+        {{ `${props.userContestInfo.userStatusErr ? '异常' : '正常'}` }}
       </p>
     </div>
 
@@ -169,9 +182,47 @@
           :key="idx"
           class="q-pl-md"
         >
-          <p class="q-my-none q-py-none">
-            {{ `${timestampToTime(log.time)} ${log.msg}` }}
-          </p>
+          <div class="q-my-none q-py-none" style="cursor: pointer">
+            <q-icon
+              name="label"
+              :style="`color: ${
+                log.type === 0 ? 'green' : log.type === 1 ? 'yellow' : 'red'
+              };`"
+            ></q-icon>
+            {{ `${timestampToTime(log.time)} ${log.summary}` }}
+            <p
+              class="q-ma-none q-pa-none"
+              style="word-wrap: break-word; word-break: normal"
+              v-if="log.detail"
+            >
+              {{ `${log.detail}` }}
+            </p>
+            <div v-if="log.type !== 0">
+              <q-btn
+                outline
+                color="primary"
+                @click="
+                  changeLogType(log.id);
+                  log.type = 3 - log.type;
+                "
+                :loading="changeLogTypeLoading"
+                dense
+              >
+                {{ `${log.type === 1 ? '重新报警' : '解除报警'}` }}
+                <template v-slot:loading>
+                  <q-spinner-hourglass class="on-left" />
+                  更改中
+                </template>
+              </q-btn>
+            </div>
+            <q-img
+              style="width: 50%"
+              v-viewer
+              v-if="log.withScreenImg"
+              :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${log.screenFileName}/token/${user.info.token}`"
+            />
+          </div>
+          <q-separator></q-separator>
         </div>
       </div>
     </div>
@@ -207,6 +258,9 @@ const props = defineProps(['username', 'contestId', 'userContestInfo']);
 const { proxy } = getCurrentInstance();
 let waitImgUploadedTimer = null;
 const screenImgLoading = ref(false);
+const changeLogTypeLoading = ref(false);
+const show_loading_mini = ref(true);
+let queryDetailTimer = null;
 
 // function showfullScreenImg(url)
 // {
@@ -250,6 +304,10 @@ function timeStampTostring(tim) {
   return `${Y}-${M}-${D} ${h}:${m}:${s}`;
 }
 function waitImgUploaded() {
+  if (
+    this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
+  )
+    return;
   axios({
     method: 'post',
     url: '/admin/invigilator/query/newScreenImgUploaded',
@@ -356,6 +414,54 @@ function sendMsg() {
       }
     });
 }
+
+function changeLogType(dbId) {
+  if (
+    this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
+  )
+    return;
+  if (changeLogTypeLoading.value) return;
+  changeLogTypeLoading.value = true;
+  axios({
+    method: 'post',
+    url: '/admin/invigilator/actions/changeLogType',
+    data: {
+      id: dbId,
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      $q.notify({
+        type: 'positive',
+        message: '请求成功',
+        progress: true,
+      });
+      changeLogTypeLoading.value = false;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      changeLogTypeLoading.value = false;
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
 function getUserImg() {
   if (screenImgLoading.value) return;
   screenImgLoading.value = true;
@@ -402,9 +508,9 @@ function getUserImg() {
       }
     });
 }
-function getSubmissionInfo() {
-  console.log(props);
-  show_loading.value = true;
+function getUserDetailInfo() {
+  if (queryDetailTimer !== null) clearInterval(queryDetailTimer);
+  show_loading_mini.value = true;
   axios({
     method: 'post',
     url: '/admin/invigilator/getUserDetail',
@@ -417,6 +523,8 @@ function getSubmissionInfo() {
       console.log('Success:', data);
       user_detail_info.value = data.data;
       show_loading.value = false;
+      show_loading_mini.value = false;
+      queryUserImgList();
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -432,6 +540,7 @@ function getSubmissionInfo() {
         err_msg.value = error.code;
       }
     });
+  queryDetailTimer = setInterval(getUserDetailInfo, 5 * 1000);
 }
 function timestampToTime(timestamp) {
   timestamp = timestamp ? timestamp : null;
@@ -449,7 +558,7 @@ function timestampToTime(timestamp) {
   return `${Y}-${M}-${D} ${h}:${m}:${s}`;
 }
 onMounted(() => {
-  getSubmissionInfo();
+  getUserDetailInfo();
   queryUserImgList();
 });
 </script>
