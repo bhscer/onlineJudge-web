@@ -3,9 +3,9 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <submission-list
-      style="width: 800px; height: fit-content"
-    ></submission-list>
+    <div style="width: 800px">
+      <submission-list></submission-list>
+    </div>
   </q-page>
 </template>
 

@@ -191,7 +191,7 @@
             </tr>
           </tbody>
         </q-markup-table>
-        <q-card class="q-mt-md q-pa-md">
+        <q-card class="q-mt-md q-pa-md" v-if="err_msg.length">
           <p class="q-ma-none q-pa-none">{{ err_msg }}</p>
         </q-card>
       </div>

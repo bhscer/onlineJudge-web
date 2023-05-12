@@ -264,6 +264,7 @@
             <q-tab-panel name="submissions" style="padding: 0; margin: 0">
               <submission-list ref="submissionRef"></submission-list>
             </q-tab-panel>
+            <q-tab-panel name="solution">尽请期待</q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>

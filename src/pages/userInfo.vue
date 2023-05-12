@@ -37,6 +37,9 @@
           <p style="margin: 0; padding: 0">
             {{ `尝试${user_info.analyze.triedProblem}题` }}
           </p>
+          <p style="margin: 0; padding: 0" v-if="user_info.analyze.cf_rating">
+            {{ `Codeforces Rating:${user_info.analyze.cf_rating}` }}
+          </p>
         </div>
       </q-card>
     </div>
