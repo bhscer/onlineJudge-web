@@ -48,7 +48,13 @@
     </q-menu>
   </div>
 
-  <login-btn v-if="!user.auth_ing && !user.exists"></login-btn>
+  <login-btn
+    v-if="
+      !user.auth_ing &&
+      !user.exists &&
+      $route.path.toLowerCase().substring(0, 12) !== '/invigilator'
+    "
+  ></login-btn>
 </template>
 
 <script setup lang="ts">

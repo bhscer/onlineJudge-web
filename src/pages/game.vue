@@ -1,41 +1,46 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <q-page>
-    <div id="header">
-      <h1 class="title1">2048</h1>
-      <!--
+  <q-page
+    class="flex flex-center"
+    style="flex-wrap: wrap; flex-direction: column"
+  >
+    <div>
+      <div id="header">
+        <h1 class="title1">2048</h1>
+        <!--
       <h3 class="title2">Created by Cheng Xiao Gang</h3>
       -->
-      <div class="wrapper">
-        <div class="score-wrapper">
-          <span id="txt">score:</span>
-          <span id="score">0</span>
-        </div>
-        <div class="newgame-wrapper">
-          <a @click="newgame()" id="newGame">New Game</a>
+        <div class="wrapper">
+          <div class="score-wrapper">
+            <span id="txt">score:</span>
+            <span id="score">0</span>
+          </div>
+          <div class="newgame-wrapper">
+            <a @click="newgame()" id="newGame">New Game</a>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="grid-container">
-      <div class="grid-cell" id="grid-cell-0-0"></div>
-      <div class="grid-cell" id="grid-cell-0-1"></div>
-      <div class="grid-cell" id="grid-cell-0-2"></div>
-      <div class="grid-cell" id="grid-cell-0-3"></div>
+      <div id="grid-container">
+        <div class="grid-cell" id="grid-cell-0-0"></div>
+        <div class="grid-cell" id="grid-cell-0-1"></div>
+        <div class="grid-cell" id="grid-cell-0-2"></div>
+        <div class="grid-cell" id="grid-cell-0-3"></div>
 
-      <div class="grid-cell" id="grid-cell-1-0"></div>
-      <div class="grid-cell" id="grid-cell-1-1"></div>
-      <div class="grid-cell" id="grid-cell-1-2"></div>
-      <div class="grid-cell" id="grid-cell-1-3"></div>
+        <div class="grid-cell" id="grid-cell-1-0"></div>
+        <div class="grid-cell" id="grid-cell-1-1"></div>
+        <div class="grid-cell" id="grid-cell-1-2"></div>
+        <div class="grid-cell" id="grid-cell-1-3"></div>
 
-      <div class="grid-cell" id="grid-cell-2-0"></div>
-      <div class="grid-cell" id="grid-cell-2-1"></div>
-      <div class="grid-cell" id="grid-cell-2-2"></div>
-      <div class="grid-cell" id="grid-cell-2-3"></div>
+        <div class="grid-cell" id="grid-cell-2-0"></div>
+        <div class="grid-cell" id="grid-cell-2-1"></div>
+        <div class="grid-cell" id="grid-cell-2-2"></div>
+        <div class="grid-cell" id="grid-cell-2-3"></div>
 
-      <div class="grid-cell" id="grid-cell-3-0"></div>
-      <div class="grid-cell" id="grid-cell-3-1"></div>
-      <div class="grid-cell" id="grid-cell-3-2"></div>
-      <div class="grid-cell" id="grid-cell-3-3"></div>
+        <div class="grid-cell" id="grid-cell-3-0"></div>
+        <div class="grid-cell" id="grid-cell-3-1"></div>
+        <div class="grid-cell" id="grid-cell-3-2"></div>
+        <div class="grid-cell" id="grid-cell-3-3"></div>
+      </div>
     </div>
   </q-page>
 </template>

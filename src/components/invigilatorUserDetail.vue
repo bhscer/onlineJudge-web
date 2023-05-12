@@ -34,6 +34,12 @@
         {{ `账号:${user_detail_info.username}` }}
       </p>
       <p class="q-ma-none q-pa-none">
+        {{ `姓名:${props.userContestInfo.userRealName}` }}
+      </p>
+      <p class="q-ma-none q-pa-none">
+        {{ `座位:${props.userContestInfo.userSeatNo}` }}
+      </p>
+      <p class="q-ma-none q-pa-none">
         {{ `${props.userContestInfo.userOnline ? '在线' : '离线'}` }}
       </p>
       <p class="q-ma-none q-pa-none">
@@ -273,7 +279,7 @@ watch(
   (newVal) => {
     user_detail_info.value = {};
     img_list.value = [];
-    getSubmissionInfo();
+    getUserDetailInfo();
     queryUserImgList();
   }
 );
@@ -528,14 +534,17 @@ function getUserDetailInfo() {
     })
     .catch((error) => {
       console.error('Error:', error);
+      show_loading.value = true;
       try {
         if (error.response.status === 401)
           this_router.push(
             `/userLogin?type=2&&err=${error.response.data.detail}`
           );
-        else if (error.response.status === 400)
+        else if (error.response.status === 400) {
           err_msg.value = error.response.data.detail;
-        else err_msg.value = error.response.status;
+        } else {
+          err_msg.value = error.response.status;
+        }
       } catch {
         err_msg.value = error.code;
       }

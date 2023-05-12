@@ -29,7 +29,7 @@
         <div
           v-for="(item, idx) in contest_info.contestUser"
           :key="idx"
-          class="q-pa-sm q-ma-sm"
+          class="q-pa-md q-ma-sm"
           style="border-radius: 5px; width: 100px; cursor: default"
           :style="`background-color:${
             item.userStatusErr ? 'red' : item.userOnline ? 'green' : 'grey'
@@ -41,10 +41,17 @@
           "
         >
           <div class="text-h5" align="center">
-            {{ item.username }}
+            {{ item.userRealName }}
           </div>
-          <p align="center">{{ item.userOnline ? '在线' : '离线' }}</p>
-          <p align="center">{{ item.userStatusErr ? '异常' : '正常' }}</p>
+          <div class="text-h5" align="center">
+            {{ item.userSeatNo }}
+          </div>
+          <p align="center" class="q-ma-none q-pa-none">
+            {{ item.userOnline ? '在线' : '离线' }}
+          </p>
+          <p align="center" class="q-ma-none q-pa-none">
+            {{ item.userStatusErr ? '异常' : '正常' }}
+          </p>
         </div>
       </div>
     </div>

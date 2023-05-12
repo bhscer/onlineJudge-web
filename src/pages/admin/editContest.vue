@@ -100,49 +100,74 @@
           v-model="contest_info.permission.useInvigilator"
           label="使用监考系统"
         />
+        <div v-if="contest_info.permission.useInvigilator">
+          <p>使用监考系统需要导入名单以生成相应的账号密码</p>
+          <p>
+            请在
+            <a :href="`${$api_url}files/public/监考系统导入名单样例.xlsx`"
+              >此处</a
+            >
+            下载通用模板更改后上传解析
+          </p>
+          <q-file
+            filled
+            bottom-slots
+            v-model="file_xlsx_model"
+            label="选择文件"
+            counter
+            max-files="1"
+            accept=".xlsx"
+          >
+            <template v-slot:append>
+              <q-icon
+                v-if="file_xlsx_model !== null"
+                name="close"
+                @click.stop.prevent="file_xlsx_model = null"
+                class="cursor-pointer"
+              />
+            </template>
+
+            <template v-slot:after>
+              <q-btn
+                round
+                dense
+                flat
+                icon="send"
+                @click="getXlsxResolvedList"
+              />
+            </template>
+          </q-file>
+        </div>
         <div
-          style="height: 400px; overflow: scroll; margin-top: 5px"
+          style="margin-top: 5px"
           v-if="contest_info.permission.useInvigilator"
         >
-          <q-btn
-            outline
-            color="primary"
-            label="在前方插入"
-            size="xs"
-            padding="xs xs"
-            @click="contest_info.contestProblem.splice(0, 0, '')"
-          />
-          <div
-            v-for="(item, idx) in contest_info.permission.stuRange"
-            :key="idx"
-            style="padding-top: 20px"
+          <!-- <div v-for="(item, idx) in contest_info.invigilatorList" :key="idx">
+            {{ item }}
+          </div> -->
+          <q-markup-table
+            class="q-mt-md"
+            style="max-height: 400px; overflow: scroll"
           >
-            <div>
-              <strong>{{ `第${idx + 1}人` }}</strong>
-              <q-btn
-                outline
-                color="red"
-                label="删除"
-                size="xs"
-                padding="xs xs"
-                @click="contest_info.permission.stuRange.splice(idx, 1)"
-              />
-              <q-btn
-                outline
-                color="primary"
-                label="在前方插入"
-                size="xs"
-                padding="xs xs"
-                @click="contest_info.permission.stuRange.splice(idx, 0, '')"
-              />
-            </div>
-            <q-input
-              outlined
-              dense
-              v-model="contest_info.permission.stuRange[idx]"
-              label="用户名"
-            />
-          </div>
+            <thead>
+              <tr>
+                <th class="text-left">学生账号</th>
+                <th class="text-left">学生姓名</th>
+                <th class="text-left">座位号</th>
+                <th class="text-left">考试账号</th>
+                <th class="text-left">考试密码</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in contest_info.invigilatorList" :key="item">
+                <td class="text-left">{{ item.username }}</td>
+                <td class="text-left">{{ item.userRealName }}</td>
+                <td class="text-left">{{ item.userSeatNo }}</td>
+                <td class="text-left">{{ item.contestAccount }}</td>
+                <td class="text-left">{{ item.contestPwd }}</td>
+              </tr>
+            </tbody>
+          </q-markup-table>
         </div>
         <div class="q-gutter-md" v-if="!contest_info.permission.useInvigilator">
           <q-checkbox
@@ -319,6 +344,8 @@ export default {
     const date_start = ref('2019-02-01 12:44');
     const date_end = ref('2019-02-01 12:44');
     const use_custom_id = ref(false);
+    const file_xlsx_model = ref(null);
+
     const submitEdit = async () => {
       // submiting.value = true;
       // console.log('then',code_content)
@@ -396,6 +423,53 @@ export default {
           contest_info.value.contestProblem[i].problemNo = i + 1;
         }
       }
+    };
+    const getXlsxResolvedList = () => {
+      if (file_xlsx_model.value === null) {
+        $q.notify({
+          type: 'negative',
+          message: '文件未选择',
+          progress: true,
+        });
+
+        return;
+      }
+
+      let formData = new FormData();
+      formData.append('file', file_xlsx_model.value);
+
+      // 直接使用axios上传
+      axios
+        .post(
+          `/admin/invigilator/genAccountList/contest/${contest_info.value.contestId}`,
+          formData
+        )
+        .then((data) => {
+          console.log('Success:', data);
+          contest_info.value.invigilatorList = data.data.data;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          var err_msg_notify = '';
+          try {
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
+            else if (error.response.status === 400)
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
+          } catch {
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
+            $q.notify({
+              type: 'negative',
+              message: err_msg_notify,
+              progress: true,
+            });
+          }
+        });
     };
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
@@ -481,6 +555,7 @@ export default {
             languageLimit: false,
             languageList: [],
           },
+          invigilatorList: [],
           descriptionMd: '',
           contestTimeBeginStamp: parseInt(Date.now() / 1000 / 60) * 60,
           contestTimeEndStamp: parseInt(Date.now() / 1000 / 60) * 60,
@@ -593,6 +668,8 @@ export default {
       submitEdit,
       use_custom_id,
       err_msg,
+      file_xlsx_model,
+      getXlsxResolvedList,
     };
   },
   mounted() {
