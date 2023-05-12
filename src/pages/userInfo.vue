@@ -25,7 +25,7 @@
             color="primary"
             label="个人设置"
             size="sm"
-            @click="this.$router.push(`/userSettings`)"
+            @click="$router.push(`/userSettings`)"
           />
         </div>
       </q-card>
