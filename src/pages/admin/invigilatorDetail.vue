@@ -246,7 +246,7 @@ export default {
           if (userDetail_username.value === '')
             userDetail_username.value =
               contest_info.value.contestUser[0]['username'];
-          if (userDetail_dict.value === {})
+          if (Object.keys(userDetail_dict.value).length === 0)
             userDetail_dict.value = contest_info.value.contestUser[0];
           if (
             contest_info.value['contestTimeBeginStamp'] >=

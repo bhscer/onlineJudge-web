@@ -102,6 +102,7 @@
     <q-separator />
     <div class="q-pa-md">
       <div class="text-h5 q-pb-md">截图</div>
+      <p v-if="img_list.length === 0" class="q-pa-none q-ma-none">暂无截图</p>
       <table style="width: 100%">
         <tbody v-viewer>
           <tr>
