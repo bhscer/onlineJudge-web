@@ -119,6 +119,10 @@ const routes: RouteRecordRaw[] = [
         path: 'invigilatorDetail',
         component: () => import('pages/admin/invigilatorDetail.vue'),
       },
+      {
+        path: 'editProblemTestData',
+        component: () => import('pages/admin/editProblemTestData.vue'),
+      },
     ],
   },
   {

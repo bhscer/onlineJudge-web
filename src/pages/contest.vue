@@ -124,7 +124,7 @@
                           )
                         "
                         style="
-                          color: #0d47a1;
+                          color: inherit;
                           cursor: pointer;
                           text-decoration: none;
                         "

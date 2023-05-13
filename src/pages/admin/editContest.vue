@@ -505,6 +505,7 @@ export default {
         .then((data) => {
           console.log('Success:', data);
           contest_info.value.invigilatorList = data.data.data;
+          file_xlsx_model.value = null;
         })
         .catch((error) => {
           console.error('Error:', error);

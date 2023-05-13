@@ -49,7 +49,17 @@
               </td>
               <td class="text-left">{{ item.accepted }}</td>
               <td class="text-left">{{ item.submitted }}</td>
-              <td>
+              <td class="q-gutter-md">
+                <a
+                  @click.prevent="
+                    $router.push(
+                      `/admin/editProblemTestData?id=${item.problemIdString}`
+                    )
+                  "
+                  :href="`/admin/editProblemTestData?id=${item.problemIdString}`"
+                  style="color: inherit; cursor: pointer; text-decoration: none"
+                  >测试点管理</a
+                >
                 <a
                   @click.prevent="
                     $router.push(`/admin/editProblem?add=0&&id=${item.id}`)
@@ -64,7 +74,6 @@
                   label="删除"
                   size="xs"
                   padding="xs xs"
-                  class="q-ml-md"
                   @click="
                     showDeleteForm = true;
                     deleteInfo = item;

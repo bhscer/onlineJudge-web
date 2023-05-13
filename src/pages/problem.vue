@@ -271,11 +271,8 @@
     </div>
   </div>
   <q-dialog v-model="showSubmitResult">
-    <q-card>
-      <result-component
-        :sid="submissionId"
-        style="width: 100px"
-      ></result-component>
+    <q-card style="width: 600px">
+      <result-component :sid="submissionId"></result-component>
     </q-card>
   </q-dialog>
   <q-page class="flex flex-center" v-if="show_loading">
