@@ -4,7 +4,7 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div class="q-pa-md" style="width: 800px">
+    <div class="q-pa-md" style="width: 800px" v-if="!show_loading">
       <div class="text-h5">测试点管理</div>
       <p class="q-ma-none q-pa-none">
         请注意，这里只显示文件，并不显示文件夹以及由系统自动生成的配置文件
@@ -55,7 +55,7 @@
             <td>
               <a
                 style="color: inherit; cursor: pointer; text-decoration: none"
-                :href="`${$api_url}admin/testCase/problem/${$route.query.id}/file/${item}/token/${user.info.token}`"
+                :href="`${$api_url}admin/testCase/problem/${$route.query.id}/file/${item}/token/${user.info?.token}`"
                 >{{ item }}</a
               >
             </td>
@@ -134,7 +134,7 @@ const $q = useQuasar();
 const this_router = useRouter();
 const this_route = useRoute();
 const user = useUserStore();
-const show_loading = ref(false);
+const show_loading = ref(true);
 const err_msg = ref('');
 const file_list = ref([]);
 const showRenameForm = ref(false);
@@ -334,6 +334,7 @@ function getFileList() {
     },
   })
     .then((data) => {
+      show_loading.value = false;
       file_list.value = data.data;
     })
     .catch((error) => {
@@ -352,13 +353,14 @@ function getFileList() {
       } catch {
         err_msg_notify = '错误码' + error.code;
       }
-      if (err_msg_notify !== '') {
-        $q.notify({
-          type: 'negative',
-          message: err_msg_notify,
-          progress: true,
-        });
-      }
+      // if (err_msg_notify !== '') {
+      //   $q.notify({
+      //     type: 'negative',
+      //     message: err_msg_notify,
+      //     progress: true,
+      //   });
+      // }
+      err_msg.value = err_msg_notify;
     });
 }
 onMounted(() => {

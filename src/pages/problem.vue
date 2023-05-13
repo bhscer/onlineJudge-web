@@ -7,17 +7,36 @@
           <div class="text-h2" style="font-weight: bold">
             {{ problem_info.title }}
           </div>
-          <a
-            v-if="
-              $route.path !== '/invigilator/problem' &&
-              user.info?.permission !== 'user'
-            "
-            @click.prevent="
-              $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
-            "
-            :href="`/admin/editProblem?add=0&&id=${problem_info.id}`"
-            style="color: inherit; cursor: pointer; text-decoration: none"
-            >编辑</a
+
+          <q-badge color="primary"
+            ><a
+              v-if="
+                $route.path !== '/invigilator/problem' &&
+                user.info?.permission !== 'user'
+              "
+              @click.prevent="
+                $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
+              "
+              :href="`/admin/editProblem?add=0&&id=${problem_info.id}`"
+              style="color: inherit; cursor: pointer; text-decoration: none"
+              >编辑</a
+            ></q-badge
+          >
+          <q-badge color="teal"
+            ><a
+              v-if="
+                $route.path !== '/invigilator/problem' &&
+                user.info?.permission !== 'user'
+              "
+              @click.prevent="
+                $router.push(
+                  `/admin/editProblemTestData?id=${problem_info.problemIdString}`
+                )
+              "
+              :href="`/admin/editProblemTestData?id=${problem_info.problemIdString}`"
+              style="color: inherit; cursor: pointer; text-decoration: none"
+              >测试数据</a
+            ></q-badge
           >
           <div style="display: flex; flex-wrap: wrap">
             <span class="q-mr-md">
