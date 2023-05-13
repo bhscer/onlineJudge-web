@@ -21,6 +21,10 @@
             v-model="problem_info.problemIdString"
             label="题目编号"
           />
+          <q-checkbox v-model="problem_info.public" label="公开"></q-checkbox>
+          <p class="q-my-none q-py-none">
+            如果你选择公开，那么可以以题目编号直接访问，否则只能从比赛中访问
+          </p>
 
           <q-input outlined v-model="problem_info.title" label="题目名称" />
 
@@ -40,6 +44,7 @@
           </div>
         </div>
       </div>
+
       <div class="q-gutter-sm">
         <q-radio v-model="problem_info.uiType" val="html" label="html" />
         <q-radio

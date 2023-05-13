@@ -47,7 +47,16 @@
               <td class="text-left">
                 <a
                   @click.prevent="
-                    $router.push(`/problem?type=0&&id=${item.problemIdString}`)
+                    item.public ||
+                    (user.info && user.info.permission !== 'user')
+                      ? $router.push(
+                          `/problem?type=0&&id=${item.problemIdString}`
+                        )
+                      : $q.notify({
+                          type: 'negative',
+                          message: '题目未公开',
+                          progress: true,
+                        })
                   "
                   :href="`/problem?type=0&&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
@@ -104,6 +113,7 @@ import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
     name: 'problemSet',
@@ -117,6 +127,8 @@ export default defineComponent({
         const maxPage = ref(1)
         const show_loading = ref(true)
         const err_msg = ref('')
+        const user = useUserStore();
+
         const changePage = (newPage) => {
             this_router.push({
                 path: '/problemSet',
@@ -180,7 +192,8 @@ export default defineComponent({
             maxPage,
             current_page,
             problem_list,
-            err_msg
+            err_msg,
+            user
         };
     },
     watch:{

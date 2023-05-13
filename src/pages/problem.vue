@@ -542,9 +542,11 @@ export default defineComponent({
       }
       var post_data;
       if (this_route.query.type === '0') {
+        // 按题目编号
         post_data = {
           type: '0',
           problemId: this_route.query.id,
+          pwd: this_route.query.pwd,
           urlType:
             this_route.path.toLowerCase() ===
             '/invigilator/problem'.toLowerCase()
@@ -556,6 +558,7 @@ export default defineComponent({
           type: '1',
           contestId: this_route.query.cid,
           problemId: this_route.query.pid,
+          pwd: this_route.query.pwd,
           urlType:
             this_route.path.toLowerCase() ===
             '/invigilator/problem'.toLowerCase()

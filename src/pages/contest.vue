@@ -112,7 +112,15 @@
                       <a
                         @click.prevent="
                           this.$router.push(
-                            `/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
+                            `/problem?type=1&&cid=${
+                              contest_info.contestId
+                            }&&pid=${item.problemNo}${
+                              contest_info.permission.needPwd
+                                ? this.$route.query.pwd
+                                  ? '&&pwd=' + this.$route.query.pwd
+                                  : ''
+                                : ''
+                            }`
                           )
                         "
                         style="
@@ -120,7 +128,15 @@
                           cursor: pointer;
                           text-decoration: none;
                         "
-                        :href="`/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
+                        :href="`/problem?type=1&&cid=${
+                          contest_info.contestId
+                        }&&pid=${item.problemNo}${
+                          contest_info.permission.needPwd
+                            ? this.$route.query.pwd
+                              ? '&&pwd=' + this.$route.query.pwd
+                              : ''
+                            : ''
+                        }`"
                         >{{ item.problemName }}</a
                       >
                     </td>
