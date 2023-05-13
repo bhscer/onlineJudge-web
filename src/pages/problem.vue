@@ -321,7 +321,7 @@ export default defineComponent({
     const samplewidthTextLeft = ref('width:49%;margin-right:.5%');
     const samplewidthTextRight = ref('width:49%;margin-left:.5%');
     const sampledivStyle = ref('display: flex');
-    const languageType = ref('CPP');
+    const languageType = ref('C++');
     let ITextModel = null;
     let firstTimeToSubmit = true;
     const show_loading = ref(true);

@@ -13,6 +13,9 @@
     <div style="padding: 0; margin: 0">
       <div v-if="hideMsg.length">{{ hideMsg }}</div>
       <div v-if="!hideMsg.length">
+        <p class="q-my-none q-pa-sm">
+          {{ rank_type === 1 ? '已封榜' : '实时排名' }}
+        </p>
         <div class="q-pa-md" style="padding: 0; margin: 0">
           <q-markup-table
             class="q-mt-md"
@@ -69,21 +72,27 @@
                         ? '#e87272'
                         : itemrs.status === 2
                         ? '#60e760'
-                        : ''
+                        : '#d6c1ed'
                     };`"
                   >
                     <p style="padding: 0; margin-bottom: 0">
                       {{
                         itemrs.status === 2
                           ? parseInt(itemrs.timeCost / 60)
-                          : ''
+                          : '&ensp;'
                       }}
                     </p>
 
                     <p style="margin-top: 6px; margin-bottom: 0">
                       {{
-                        `${itemrs.tryCnt} ${
-                          itemrs.tryCnt <= 1 ? 'try' : 'tries'
+                        `${itemrs.tryCnt}${
+                          itemrs.tryCntAftFrozen
+                            ? '+' + itemrs.tryCntAftFrozen
+                            : ''
+                        }${
+                          itemrs.tryCnt + itemrs.tryCntAftFrozen <= 1
+                            ? 'try'
+                            : 'tries'
                         }`
                       }}
                     </p>
@@ -100,7 +109,7 @@
           </q-card>
         </div>
 
-        <div class="q-pa-lg">
+        <!-- <div class="q-pa-lg">
           <q-pagination
             v-model="current_page"
             :max="maxPage"
@@ -108,11 +117,11 @@
             direction-links
             @update:model-value="changePage"
           />
-        </div>
+        </div> -->
       </div>
     </div>
   </q-page>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center" v-if="show_loading">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
@@ -133,6 +142,7 @@ export default defineComponent({
         const $q = useQuasar();
 
         const rank_list = ref([{ 'Id': '0000', 'Title': 'test', 'Sovled': 6, 'Submited': 10, 'Rate': 6.6 }]);
+        const rank_type = ref(0)
         const current_page = ref(1);
         const maxPage = ref(1)
         const show_loading = ref(true)
@@ -181,6 +191,7 @@ export default defineComponent({
                 {
                     console.log(data);
                     maxPage.value = data.data.maxPage;
+                    rank_type.value = data.data.type
                     rank_list.value = [];
                     for (var i=0;i<data.data.data.length;i++)
                     {
@@ -250,7 +261,8 @@ export default defineComponent({
             need_update,
             show_loading_mini,
             err_msg,
-            hideMsg
+            hideMsg,
+            rank_type
         };
 
 

@@ -91,6 +91,60 @@
               </q-icon>
             </template>
           </q-input>
+
+          <q-checkbox dense v-model="contest_info.needFroze" label="需要封榜" />
+          <q-checkbox
+            v-if="contest_info.needFroze"
+            dense
+            v-model="contest_info.showRealRankAftContest"
+            label="结束后立即公布榜单"
+          />
+          <p>
+            请注意，如果你在比赛后一段时间后决定公布榜单，在那时将”结束后立即公布榜单“设成是即可
+          </p>
+
+          <q-input
+            filled
+            v-model="date_froze"
+            label="封榜时间"
+            v-if="contest_info.needFroze"
+          >
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="date_froze" mask="YYYY-MM-DD HH:mm">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-time
+                    v-model="date_froze"
+                    mask="YYYY-MM-DD HH:mm"
+                    format24h
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
       </q-card>
 
@@ -341,8 +395,9 @@ export default {
     const qmarkstyle = ref('');
     const showPwdForm = ref(true);
     const tstatus = ref(0);
-    const date_start = ref('2019-02-01 12:44');
-    const date_end = ref('2019-02-01 12:44');
+    const date_start = ref('2023-01-01 12:00');
+    const date_end = ref('2023-01-01 17:00');
+    const date_froze = ref('2023-01-01 16:00');
     const use_custom_id = ref(false);
     const file_xlsx_model = ref(null);
 
@@ -355,6 +410,9 @@ export default {
       );
       contest_info.value.contestTimeEndStamp = parseInt(
         dateStrChangeTimeTamp(date_end.value) / 1000
+      );
+      contest_info.value.contestFrozeTimeStamp = parseInt(
+        dateStrChangeTimeTamp(date_froze.value) / 1000
       );
       axios({
         method: 'post',
@@ -558,7 +616,11 @@ export default {
           invigilatorList: [],
           descriptionMd: '',
           contestTimeBeginStamp: parseInt(Date.now() / 1000 / 60) * 60,
-          contestTimeEndStamp: parseInt(Date.now() / 1000 / 60) * 60,
+          contestTimeEndStamp: parseInt(Date.now() / 1000 / 60) * 60 + 3600 * 5,
+          needFroze: false,
+          showRealRankAftContest: false,
+          contestFrozeTimeStamp:
+            parseInt(Date.now() / 1000 / 60) * 60 + 3600 * 4,
           contestProblem: [
             /*
                             {
@@ -577,6 +639,9 @@ export default {
         );
         date_end.value = timeStampTostring(
           contest_info.value.contestTimeEndStamp
+        );
+        date_froze.value = timeStampTostring(
+          contest_info.value.contestFrozeTimeStamp
         );
         axios({
           method: 'post',
@@ -629,6 +694,9 @@ export default {
               date_end.value = timeStampTostring(
                 contest_info.value.contestTimeEndStamp
               );
+              date_froze.value = timeStampTostring(
+                contest_info.value.contestFrozeTimeStamp
+              );
               show_loading.value = false;
             } else {
               // alert(data.msg)
@@ -670,6 +738,7 @@ export default {
       err_msg,
       file_xlsx_model,
       getXlsxResolvedList,
+      date_froze,
     };
   },
   mounted() {
