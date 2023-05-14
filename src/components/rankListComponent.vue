@@ -90,7 +90,9 @@
                             ? '+' + itemrs.tryCntAftFrozen
                             : ''
                         }${
-                          itemrs.tryCnt + itemrs.tryCntAftFrozen <= 1
+                          itemrs.tryCnt + itemrs.tryCntAftFrozen
+                            ? itemrs.tryCntAftFrozen
+                            : 0 <= 1
                             ? 'try'
                             : 'tries'
                         }`

@@ -102,9 +102,21 @@
             v-model="contest_info.showRealRankAftContest"
             label="结束后立即公布榜单"
           />
-          <p>
+          <p v-if="contest_info.needFroze">
             请注意，如果你在比赛后一段时间后决定公布榜单，在那时将”结束后立即公布榜单“设成是即可
           </p>
+          <p v-if="contest_info.needFroze && $route.query.add !== '1'">
+            不推荐您在比赛开始后修改封榜时间！如果您执意修改，请在修改提交后点击下方重构榜单选项
+          </p>
+          <q-btn
+            v-if="$route.query.add !== '1'"
+            outline
+            color="primary"
+            label="重构榜单"
+            size="lg"
+            padding="xs xs"
+            @click="rebuildRank()"
+          />
 
           <q-input
             filled
@@ -664,17 +676,13 @@ export default {
           })
           .catch((error) => {
             console.error('Error:', error);
-            if (error.response.status === 401) {
-              this_router.push({ path: '/userLogin' }).then(() => {
-                localStorage.removeItem('oj-auth-token');
-                $q.notify({
-                  type: 'negative',
-                  message: '请先登录',
-                  progress: true,
-                });
-              });
-            } else {
-              // showFailToast('获取签到情况失败');
+            try {
+              if (error.response.status === 401) user.back_login();
+              else if (error.response.status === 400)
+                err_msg.value = error.response.data.detail;
+              else err_msg.value = error.response.status;
+            } catch {
+              err_msg.value = error.code;
             }
           });
         show_loading.value = false;
@@ -722,6 +730,45 @@ export default {
           });
       }
     };
+    const rebuildRank = () => {
+      axios({
+        method: 'post',
+        url: '/admin/contest/rebuildRank',
+        data: {
+          contestId: contest_info.value.contestId,
+        },
+      })
+        .then((data) => {
+          console.log('Success:', data);
+          $q.notify({
+            type: 'positive',
+            message: '重构成功',
+            progress: true,
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          var err_msg_notify = '';
+          try {
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
+            else if (error.response.status === 400)
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
+          } catch {
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
+            $q.notify({
+              type: 'negative',
+              message: err_msg_notify,
+              progress: true,
+            });
+          }
+        });
+    };
     return {
       tab,
       show_loading,
@@ -743,6 +790,7 @@ export default {
       file_xlsx_model,
       getXlsxResolvedList,
       date_froze,
+      rebuildRank,
     };
   },
   mounted() {
