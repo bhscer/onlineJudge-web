@@ -123,6 +123,10 @@ const routes: RouteRecordRaw[] = [
         path: 'editProblemTestData',
         component: () => import('pages/admin/editProblemTestData.vue'),
       },
+      {
+        path: 'viewRank',
+        component: () => import('pages/admin/viewRank.vue'),
+      },
     ],
   },
   {

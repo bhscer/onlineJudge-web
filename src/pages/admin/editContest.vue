@@ -9,7 +9,10 @@
             label="自定编号"
           ></q-checkbox>
           <q-input
-            :readonly="this.$route.query.add === '1' && !use_custom_id"
+            :readonly="
+              this.$route.query.add === '0' ||
+              (this.$route.query.add === '1' && !use_custom_id)
+            "
             outlined
             v-model="contest_info.contestId"
             label="竞赛编号"

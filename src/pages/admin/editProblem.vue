@@ -16,7 +16,10 @@
           ></q-checkbox>
           <!--新建题目的情况下出现选择是否自定（自定情况下出现编号修改），编辑时允许修改编号-->
           <q-input
-            :readonly="this.$route.query.add === '1' && !use_custom_id"
+            :readonly="
+              this.$route.query.add === '0' ||
+              (this.$route.query.add === '1' && !use_custom_id)
+            "
             outlined
             v-model="problem_info.problemIdString"
             label="题目编号"

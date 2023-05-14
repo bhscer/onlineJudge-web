@@ -110,7 +110,11 @@
                     text-color="white"
                     icon="info"
                   >
-                    {{ ['Not start', 'Competing', 'Ended'][item.timeStatus] }}
+                    {{
+                      ['Not start', 'Competing', 'Frozen', 'Ended'][
+                        item.timeStatus
+                      ]
+                    }}
                   </q-chip>
                 </div>
               </div>
@@ -358,8 +362,15 @@ export default defineComponent({
                   Date.now() / 1000
                 ) {
                   tstatus = 1; // 比赛中
+                  if (
+                    contest_list.value[i]['needFroze'] &&
+                    contest_list.value[i]['contestFrozeTimeStamp'] <=
+                      Date.now() / 1000
+                  ) {
+                    tstatus = 2;
+                  }
                 } else {
-                  tstatus = 2;
+                  tstatus = 3;
                 }
               }
               contest_list.value[i]['timeStatus'] = tstatus;

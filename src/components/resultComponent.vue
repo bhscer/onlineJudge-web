@@ -82,7 +82,7 @@
       ></div>
     </q-card>
   </div>
-  <q-page style="flex flex-center">
+  <q-page style="flex flex-center" v-if="show_loading">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>

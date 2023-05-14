@@ -60,22 +60,65 @@
               {{ item.permission.useInvigilator ? '是' : '否' }}
             </td>
             <td>
-              <a
-                class=""
-                style="
-                  margin: 0;
-                  cursor: pointer;
-                  text-decoration: none;
-                  color: inherit;
-                  width: max-content;
-                "
-                @click.prevent="
-                  $router.push(`/admin/editContest?add=0&&id=${item.id}`)
-                "
-                :href="`/admin/editContest?add=0&&id=${item.id}`"
+              <q-badge outline color="primary">
+                <a
+                  class=""
+                  style="
+                    margin: 0;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                    width: max-content;
+                  "
+                  @click.prevent="
+                    $router.push(`/admin/viewRank?cid=${item.contestId}`)
+                  "
+                  :href="`/admin/viewRank?cid=${item.contestId}`"
+                >
+                  查看排名
+                </a>
+              </q-badge>
+              <q-badge outline color="primary">
+                <a
+                  class=""
+                  style="
+                    margin: 0;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                    width: max-content;
+                  "
+                  @click.prevent="
+                    $router.push(`/admin/editContest?add=0&&id=${item.id}`)
+                  "
+                  :href="`/admin/editContest?add=0&&id=${item.id}`"
+                >
+                  编辑
+                </a>
+              </q-badge>
+              <q-badge
+                outline
+                v-if="item.permission.useInvigilator"
+                color="primary"
               >
-                编辑
-              </a>
+                <a
+                  class=""
+                  style="
+                    margin: 0;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                    width: max-content;
+                  "
+                  @click.prevent="
+                    $router.push(`/admin/invigilatorDetail?id=${item.id}`)
+                  "
+                  :href="`/admin/invigilatorDetail?id=${item.id}`"
+                >
+                  监考
+                </a>
+              </q-badge>
+
               <q-btn
                 outline
                 color="red"
@@ -88,23 +131,6 @@
                   deleteInfo = item;
                 "
               />
-              <a
-                class=""
-                v-if="item.permission.useInvigilator"
-                style="
-                  margin: 0;
-                  cursor: pointer;
-                  text-decoration: none;
-                  color: inherit;
-                  width: max-content;
-                "
-                @click.prevent="
-                  $router.push(`/admin/invigilatorDetail?id=${item.id}`)
-                "
-                :href="`/admin/invigilatorDetail?id=${item.id}`"
-              >
-                监考
-              </a>
             </td>
           </tr>
         </tbody>

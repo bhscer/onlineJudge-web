@@ -152,7 +152,7 @@ export default defineComponent({
         const need_update = ref('false');
         const err_msg = ref('')
         const hideMsg = ref('')
-        const {contestInfo} = toRefs(props)
+        const {contestInfo,queryType} = toRefs(props)
 
         const getWindowInfo = () => {
           if (window.innerWidth > 500) {
@@ -168,7 +168,7 @@ export default defineComponent({
           getRankList()
         }
         const getRankList = () => {
-            if (!(this_route.path.toLowerCase() === '/invigilator/contest'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase())){
+            if (!(this_route.path.toLowerCase() === '/invigilator/contest'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase() || this_route.path.toLowerCase() === '/admin/viewRank'.toLowerCase())){
               return;
             }
             // show_loading.value = true
@@ -178,8 +178,8 @@ export default defineComponent({
             var post_data = {}
             post_data = { 'page': current_page.value };
 
-            post_data['contestId'] = this_route.query.cid?this_route.query.cid:'All'
-
+            post_data['contestId'] = contestInfo.value.contestId // this_route.query.cid?this_route.query.cid:'All'
+            post_data['queryType'] = queryType.value
             console.log(post_data)
             axios({
                 method: 'post',
@@ -303,9 +303,20 @@ export default defineComponent({
       // window.removeEventListener('resize', this.cancalDebounce);
       window.removeEventListener('resize', this.getWindowInfo);
     },
-    props:[
-      'contestInfo'
-    ]
+    watch:{
+      queryType (to,from){
+        console.log(from,'->',to)
+        this.getRankList()
+      }
+    },
+    props:{
+      'contestInfo':{
+        require:true
+      },
+      'queryType':{
+        default:0
+      }
+    }
 });
 </script>
 <style>

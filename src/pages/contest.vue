@@ -7,9 +7,9 @@
             {{ contest_info.contestTitle }}
           </div>
           <div style="display: flex; flex-wrap: wrap">
-            <q-badge color="primary">public</q-badge>
+            <q-badge color="primary">Public</q-badge>
             <q-badge color="orange">{{
-              ['Not start', 'Competing', 'Ended'][tstatus]
+              ['Not start', 'Competing', 'Frozen', 'Ended'][tstatus]
             }}</q-badge>
           </div>
           <div style="display: flex; justify-content: space-between">
@@ -22,7 +22,7 @@
             v-if="tstatus"
             size="15px"
             :value="time_percent"
-            color="primary"
+            :color="`${tstatus === 2 ? 'light-blue-7' : 'primary'}`"
             class="q-my-sm"
             stripe
             style="text-align: center"
@@ -223,6 +223,7 @@ export default {
     };
     const changeTimePercent = () => {
       var timeL = contest_info.value.contestTimeBeginStamp * 1000;
+      var timeFrozen = contest_info.value.contestFrozeTimeStamp * 1000;
       var timeR = contest_info.value.contestTimeEndStamp * 1000;
       var curr = Date.now();
       var lenth = timeR - timeL + 1;
@@ -230,10 +231,13 @@ export default {
       if (timeL <= curr && curr <= timeR) {
         time_percent.value = (curr - timeL) / lenth;
         tstatus.value = 1;
+        if (contest_info.value.needFroze && curr >= timeFrozen) {
+          tstatus.value = 2;
+        }
       }
       if (curr > timeR) {
         time_percent.value = 1;
-        tstatus.value = 2;
+        tstatus.value = 3;
         clearInterval(cgTimeTimer);
       }
     };
@@ -329,8 +333,14 @@ export default {
               Date.now() / 1000
             ) {
               tstatus.value = 1; // 比赛中
+              if (
+                contest_info.value['needFroze'] &&
+                contest_info.value['contestFrozeTimeStamp'] <= Date.now() / 1000
+              ) {
+                tstatus.value = 2;
+              }
             } else {
-              tstatus.value = 2;
+              tstatus.value = 3;
             }
           }
           if (tstatus.value) {
