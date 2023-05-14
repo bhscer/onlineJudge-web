@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div v-if="!show_loading">
-    <div class="text-h5">CodeForce近期比赛</div>
+    <div class="text-h5">Codeforces近期比赛</div>
     <!-- <div>{{ cf_contest_list }}</div> -->
     <q-markup-table>
       <thead>
