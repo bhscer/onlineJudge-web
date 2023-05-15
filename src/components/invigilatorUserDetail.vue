@@ -237,7 +237,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, defineProps, getCurrentInstance, watch } from 'vue';
+import {
+  onMounted,
+  ref,
+  defineProps,
+  getCurrentInstance,
+  watch,
+  onUnmounted,
+} from 'vue';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
@@ -315,6 +322,9 @@ function waitImgUploaded() {
     this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
   )
     return;
+  if (waitImgUploadedTimer !== null) {
+    clearInterval(waitImgUploadedTimer);
+  }
   axios({
     method: 'post',
     url: '/admin/invigilator/query/newScreenImgUploaded',
@@ -337,15 +347,21 @@ function waitImgUploaded() {
           this_router.push(
             `/userLogin?type=2&&err=${error.response.data.detail}`
           );
+        else waitImgUploadedTimer = setInterval(waitImgUploaded, 5 * 1000);
         // else if (error.response.status === 400)
         // err_msg.value = error.response.data.detail;
         // else err_msg.value = error.response.status;
       } catch {
         // err_msg.value = error.code;
+        waitImgUploadedTimer = setInterval(waitImgUploaded, 5 * 1000);
       }
     });
 }
 function queryUserImgList() {
+  if (
+    this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
+  )
+    return;
   axios({
     method: 'post',
     url: '/admin/invigilator/query/screenImgList',
@@ -376,6 +392,10 @@ function queryUserImgList() {
     });
 }
 function sendMsg() {
+  if (
+    this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
+  )
+    return;
   if (msg_sending.value) return;
   msg_sending.value = true;
   axios({
@@ -470,6 +490,10 @@ function changeLogType(dbId) {
     });
 }
 function getUserImg() {
+  if (
+    this_route.path.toLowerCase() !== '/admin/invigilatorDetail'.toLowerCase()
+  )
+    return;
   if (screenImgLoading.value) return;
   screenImgLoading.value = true;
   axios({
@@ -570,6 +594,10 @@ function timestampToTime(timestamp) {
 onMounted(() => {
   getUserDetailInfo();
   queryUserImgList();
+});
+onUnmounted(() => {
+  if (queryDetailTimer !== null) clearInterval(queryDetailTimer);
+  if (waitImgUploadedTimer !== null) clearInterval(waitImgUploadedTimer);
 });
 </script>
 

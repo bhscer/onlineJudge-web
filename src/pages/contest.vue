@@ -393,6 +393,8 @@ export default {
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
+    if (cgTimeTimerCountdown !== null) clearInterval(cgTimeTimerCountdown);
+    if (cgTimeTimer !== null) clearInterval(cgTimeTimer);
   },
 };
 </script>

@@ -321,6 +321,8 @@ export default {
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
+    if (autoRefreshInfoTimer !== null) clearInterval(autoRefreshInfoTimer);
+    if (cgTimeTimerCountdown !== null) clearInterval(cgTimeTimerCountdown);
   },
   components: { LoadingPage, InvigilatorUserDetail },
 };

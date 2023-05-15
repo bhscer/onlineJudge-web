@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page class="flex flex-center">
-    <div class="q-pa-md" style="width: 800px">
+    <div class="q-pa-md" style="width: 800px" v-if="!show_loading">
       <div v-if="false">{{ user_info }}</div>
       <q-card class="q-my-sm" v-if="user_info !== {}">
         <div style="display: flex" class="q-gutter-md q-pa-md">
