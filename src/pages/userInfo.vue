@@ -66,6 +66,42 @@ const show_loading = ref(true);
 const err_msg = ref('');
 const user_info = ref({});
 
+function getUserCfRating() {
+  if (this_route.path.toLowerCase() !== '/userInfo'.toLowerCase()) return;
+  let post_data = {};
+  if (this_route.query.uid === undefined) {
+    err_msg.value = '参数缺失';
+    return;
+  }
+
+  console.log(post_data);
+  axios({
+    method: 'post',
+    url: '/user/getUserCfRating',
+    data: {
+      id: this_route.query.uid,
+    },
+  })
+    .then((data) => {
+      console.log('Success:', data);
+      console.log(data);
+      user_info.value.analyze.cf_rating = data.data.cf_rating;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        // else if (error.response.status === 400)
+        //   err_msg.value = error.response.data.detail;
+        // else err_msg.value = error.response.status;
+      } catch {
+        // err_msg.value = error.code;
+      }
+    });
+}
 function getUserInfo() {
   show_loading.value = true;
   if (this_route.path.toLowerCase() !== '/userInfo'.toLowerCase()) return;
@@ -112,6 +148,7 @@ function getUserInfo() {
 }
 onMounted(() => {
   getUserInfo();
+  getUserCfRating();
 });
 </script>
 

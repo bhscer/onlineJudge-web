@@ -335,7 +335,7 @@ function getFileList() {
   })
     .then((data) => {
       file_list.value = data.data;
-      file_list.value.sort((a,b)=>a.localeCompare(b,'zh-CN'))
+      file_list.value.sort((a, b) => a.localeCompare(b, 'zh-CN'));
       show_loading.value = false;
     })
     .catch((error) => {

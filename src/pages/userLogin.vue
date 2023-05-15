@@ -195,12 +195,24 @@ const loginFun = () => {
       });
       router.push('/');
     })
-    .catch((resp) => {
-      $q.notify({
-        type: 'negative',
-        message: resp.response.data.detail,
-        progress: true,
-      });
+    .catch((error) => {
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
     });
 };
 const registerFun = () => {
@@ -228,12 +240,24 @@ const registerFun = () => {
         progress: true,
       });
     })
-    .catch((resp) => {
-      $q.notify({
-        type: 'negative',
-        message: resp.response.data.detail,
-        progress: true,
-      });
+    .catch((error) => {
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
     });
 };
 
