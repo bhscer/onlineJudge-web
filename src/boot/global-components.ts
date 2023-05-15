@@ -27,8 +27,8 @@ import VueViewer from 'v-viewer';
 export default boot(async ({ app }) => {
   inject();
   app.config.globalProperties.$md5 = md5;
-  app.config.globalProperties.$oj_name = 'online judge';
-  app.config.globalProperties.$bar_name = 'online judge';
+  app.config.globalProperties.$oj_name = 'Online Judge';
+  app.config.globalProperties.$bar_name = 'Online Judge';
 
   VMdEditor.use(githubTheme, {
     Hljs: hljs,

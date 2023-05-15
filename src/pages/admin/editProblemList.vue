@@ -3,7 +3,7 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div v-show="!show_loading" style="width: 800px">
+    <div v-show="!show_loading" style="width: fit-content">
       <div class="q-pa-md">
         <div style="display: flex">
           <q-btn
@@ -49,26 +49,40 @@
               </td>
               <td class="text-left">{{ item.accepted }}</td>
               <td class="text-left">{{ item.submitted }}</td>
-              <td class="q-gutter-md">
-                <a
-                  @click.prevent="
-                    $router.push(
-                      `/admin/editProblemTestData?id=${item.problemIdString}`
-                    )
-                  "
-                  :href="`/admin/editProblemTestData?id=${item.problemIdString}`"
-                  style="color: inherit; cursor: pointer; text-decoration: none"
-                  >测试点管理</a
-                >
-                <a
-                  @click.prevent="
-                    $router.push(`/admin/editProblem?add=0&&id=${item.id}`)
-                  "
-                  :href="`/admin/editProblem?add=0&&id=${item.id}`"
-                  style="color: inherit; cursor: pointer; text-decoration: none"
-                  >编辑</a
-                >
+              <td>
+                <q-badge color="primary" outline>
+                  <a
+                    @click.prevent="
+                      $router.push(
+                        `/admin/editProblemTestData?id=${item.problemIdString}`
+                      )
+                    "
+                    :href="`/admin/editProblemTestData?id=${item.problemIdString}`"
+                    style="
+                      color: inherit;
+                      cursor: pointer;
+                      text-decoration: none;
+                    "
+                    >测试点管理</a
+                  >
+                </q-badge>
+                <q-badge color="primary" outline class="q-ml-sm">
+                  <a
+                    @click.prevent="
+                      $router.push(`/admin/editProblem?add=0&&id=${item.id}`)
+                    "
+                    :href="`/admin/editProblem?add=0&&id=${item.id}`"
+                    style="
+                      color: inherit;
+                      cursor: pointer;
+                      text-decoration: none;
+                    "
+                    >编辑</a
+                  >
+                </q-badge>
+
                 <q-btn
+                  class="q-my-auto q-ml-sm"
                   outline
                   color="red"
                   label="删除"

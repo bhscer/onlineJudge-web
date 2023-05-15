@@ -3,7 +3,7 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div class="q-pa-md" v-show="!show_loading" style="width: 800px">
+    <div class="q-pa-md" v-show="!show_loading" style="width: fit-content">
       <div style="display: flex">
         <q-btn
           outline
@@ -54,10 +54,36 @@
               }}
             </td>
             <td>
-              {{ item.permission.pwdString }}
+              {{
+                item.permission.pwdString.length
+                  ? item.permission.pwdString
+                  : '无密码'
+              }}
             </td>
             <td>
-              {{ item.permission.useInvigilator ? '是' : '否' }}
+              <!-- {{ item.permission.useInvigilator ? '是' : '否' }} -->
+              <q-badge
+                outline
+                v-if="item.permission.useInvigilator"
+                color="primary"
+              >
+                <a
+                  class=""
+                  style="
+                    margin: 0;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                    width: max-content;
+                  "
+                  @click.prevent="
+                    $router.push(`/admin/invigilatorDetail?id=${item.id}`)
+                  "
+                  :href="`/admin/invigilatorDetail?id=${item.id}`"
+                >
+                  进入监考
+                </a>
+              </q-badge>
             </td>
             <td>
               <q-badge outline color="primary">
@@ -78,7 +104,7 @@
                   查看排名
                 </a>
               </q-badge>
-              <q-badge outline color="primary">
+              <q-badge outline color="primary" class="q-ml-sm">
                 <a
                   class=""
                   style="
@@ -96,28 +122,6 @@
                   编辑
                 </a>
               </q-badge>
-              <q-badge
-                outline
-                v-if="item.permission.useInvigilator"
-                color="primary"
-              >
-                <a
-                  class=""
-                  style="
-                    margin: 0;
-                    cursor: pointer;
-                    text-decoration: none;
-                    color: inherit;
-                    width: max-content;
-                  "
-                  @click.prevent="
-                    $router.push(`/admin/invigilatorDetail?id=${item.id}`)
-                  "
-                  :href="`/admin/invigilatorDetail?id=${item.id}`"
-                >
-                  监考
-                </a>
-              </q-badge>
 
               <q-btn
                 outline
@@ -125,7 +129,7 @@
                 label="删除"
                 size="xs"
                 padding="xs xs"
-                class="q-ml-md"
+                class="q-ml-sm"
                 @click="
                   showDeleteForm = true;
                   deleteInfo = item;
