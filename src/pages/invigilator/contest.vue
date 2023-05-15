@@ -1,6 +1,6 @@
 <template>
-  <q-page style="display: flex; justify-content: center">
-    <div style="width: 1000px" v-if="!show_loading">
+  <q-page style="display: flex; justify-content: center" v-if="!show_loading">
+    <div style="width: 1000px">
       <q-card class="q-pa-md" :style="qmarkstyle">
         <div style="display: flex">
           <div class="text-h4" style="font-weight: bold">
@@ -111,6 +111,9 @@
         </q-tab-panels>
       </q-card>
     </div>
+
+  </q-page>
+  <q-page v-if="show_loading" class="flex flex-center">
 
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
