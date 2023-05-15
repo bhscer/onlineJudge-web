@@ -22,7 +22,17 @@
         label="应用更改"
         @click="genConfig"
       />
-      <q-file
+
+      <q-uploader
+        class="q-my-md"
+        :url="`${$api_url}admin/testCase/upload/problem/${$route.query.id}`"
+        :headers="[{ name: 'Authorization', value: user.info?.token }]"
+        style="max-width: 400px"
+        multiple
+        field-name="file"
+      />
+
+      <!-- <q-file
         class="q-my-md"
         filled
         bottom-slots
@@ -44,7 +54,7 @@
         <template v-slot:after>
           <q-btn round dense flat icon="send" @click="fileUpload" />
         </template>
-      </q-file>
+      </q-file> -->
       <q-markup-table>
         <thead>
           <th class="text-left" style="width: 95%">文件名</th>
@@ -142,57 +152,62 @@ const renameFileName = ref('');
 const renameFileNameNew = ref('');
 const files_model = ref(null);
 
-function fileUpload() {
-  if (files_model.value === null) {
-    $q.notify({
-      type: 'negative',
-      message: '文件未选择',
-      progress: true,
-    });
+// function fileUpload() {
+//   if (files_model.value === null) {
+//     $q.notify({
+//       type: 'negative',
+//       message: '文件未选择',
+//       progress: true,
+//     });
 
-    return;
-  }
-  let formData = new FormData();
-  // formData.append('file', file_xlsx_model.value);
-  console.log(files_model.value);
-  files_model.value.forEach((file) => {
-    formData.append('files', file);
-  });
-  axios
-    .post(`/admin/testCase/upload/problem/${this_route.query.id}`, formData)
-    .then((data) => {
-      console.log('Success:', data);
-      files_model.value = null;
-      $q.notify({
-        type: 'positive',
-        message: '上传成功',
-        progress: true,
-      });
-      getFileList();
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      var err_msg_notify = '';
-      try {
-        if (error.response.status === 401)
-          this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
-          );
-        else if (error.response.status === 400)
-          err_msg_notify = error.response.data.detail;
-        else err_msg_notify = '错误码' + error.response.status;
-      } catch {
-        err_msg_notify = '错误码' + error.code;
-      }
-      if (err_msg_notify !== '') {
-        $q.notify({
-          type: 'negative',
-          message: err_msg_notify,
-          progress: true,
-        });
-      }
-    });
-}
+//     return;
+//   }
+//   $q.notify({
+//     type: 'positive',
+//     message: '此操作需要较久时间，请稍后',
+//     progress: true,
+//   });
+//   let formData = new FormData();
+//   // formData.append('file', file_xlsx_model.value);
+//   console.log(files_model.value);
+//   files_model.value.forEach((file) => {
+//     formData.append('file', file);
+//   });
+//   axios
+//     .post(`/admin/testCase/upload/problem/${this_route.query.id}`, formData)
+//     .then((data) => {
+//       console.log('Success:', data);
+//       files_model.value = null;
+//       $q.notify({
+//         type: 'positive',
+//         message: '上传成功',
+//         progress: true,
+//       });
+//       getFileList();
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error);
+//       var err_msg_notify = '';
+//       try {
+//         if (error.response.status === 401)
+//           this_router.push(
+//             `/userLogin?type=2&&err=${error.response.data.detail}`
+//           );
+//         else if (error.response.status === 400)
+//           err_msg_notify = error.response.data.detail;
+//         else err_msg_notify = '错误码' + error.response.status;
+//       } catch {
+//         err_msg_notify = '错误码' + error.code;
+//       }
+//       if (err_msg_notify !== '') {
+//         $q.notify({
+//           type: 'negative',
+//           message: err_msg_notify,
+//           progress: true,
+//         });
+//       }
+//     });
+// }
 function renameFileFun(oldName, newName) {
   axios({
     method: 'post',
