@@ -1,5 +1,5 @@
 <template>
-  <q-inner-loading :showing="props.loading && !message?.length">
+  <q-inner-loading :showing="props.loading && !message?.length" style="background-color: inherit;">
     <q-spinner-gears size="50px" color="primary" />
     <p>{{ loading_msg || 'loading...' }}</p>
   </q-inner-loading>
