@@ -1,5 +1,11 @@
 <template>
-  <div>{{ message }}</div>
+  <q-page class="flex flex-center">
+    <loading-page
+      :loading="show_loading"
+      :message="err_msg"
+      :loading_msg="message"
+    ></loading-page>
+  </q-page>
 </template>
 
 <script lang="ts">
@@ -8,6 +14,7 @@ import { api as axios } from '@/boot/axios';
 import { useUserStore } from '@/stores/user';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
+import LoadingPage from '@/components/loadingPage.vue';
 
 export default defineComponent({
   name: 'tokenLogin',
@@ -16,8 +23,10 @@ export default defineComponent({
     const $q = useQuasar();
     const router = useRouter();
     const route = useRoute();
-    const message = ref('登录中');
+    const show_loading = ref(true);
 
+    const message = ref('登录中');
+    const err_msg = ref('');
     const token_login = () => {
       if (route.query.token) {
         localStorage.setItem('oj-auth-token', route.query.token.toString());
@@ -27,16 +36,19 @@ export default defineComponent({
             router.push(`/invigilator/contest?cid=${route.query.cid}`);
           })
           .catch((err) => {
+            err_msg.value = '出现错误';
             console.log(err);
           });
       } else {
-        message.value = 'token不存在，无法登录。';
+        err_msg.value = 'token不存在，无法登录。';
       }
     };
     return {
       message,
       user,
       token_login,
+      err_msg,
+      show_loading,
     };
   },
   mounted() {
@@ -44,5 +56,6 @@ export default defineComponent({
     this.user.logout();
     this.token_login();
   },
+  components: { LoadingPage },
 });
 </script>

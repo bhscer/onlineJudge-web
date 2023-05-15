@@ -335,6 +335,7 @@ export default {
       err_msg,
       timerCountdown,
       cgTimeTimerCountdown,
+      cgTimeTimer,
       countdown_text,
     };
   },
@@ -345,8 +346,9 @@ export default {
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
-    if (cgTimeTimerCountdown !== null) clearInterval(cgTimeTimerCountdown);
-    if (cgTimeTimer !== null) clearInterval(cgTimeTimer);
+    if (this.cgTimeTimerCountdown !== null)
+      clearInterval(this.cgTimeTimerCountdown);
+    if (this.cgTimeTimer !== null) clearInterval(this.cgTimeTimer);
   },
 };
 </script>

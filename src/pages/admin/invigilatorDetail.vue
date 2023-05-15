@@ -310,6 +310,7 @@ export default {
       userDetail_username,
       show_loading_mini,
       autoRefreshInfoTimer,
+      cgTimeTimerCountdown,
       userDetail_dict,
     };
   },
@@ -321,9 +322,14 @@ export default {
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);
-    if (autoRefreshInfoTimer !== null) clearInterval(autoRefreshInfoTimer);
-    if (cgTimeTimerCountdown !== null) clearInterval(cgTimeTimerCountdown);
+    if (this.autoRefreshInfoTimer !== null)
+      clearInterval(this.autoRefreshInfoTimer);
+    if (this.cgTimeTimerCountdown !== null)
+      clearInterval(this.cgTimeTimerCountdown);
   },
+  // beforeUnmount(){
+
+  // },
   components: { LoadingPage, InvigilatorUserDetail },
 };
 </script>
