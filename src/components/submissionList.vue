@@ -1,10 +1,7 @@
 <template>
-  <q-page v-if="show_loading">
-    <q-inner-loading :showing="show_loading">
-      <q-spinner-gears size="50px" color="primary" />
-      <p>loading...</p>
-    </q-inner-loading>
-  </q-page>
+  <div v-if="show_loading" style="width: 200px; height: 272px">
+    <loading-page :loading="show_loading" :message="err_msg"></loading-page>
+  </div>
   <div
     v-if="!show_loading"
     style="
@@ -221,6 +218,7 @@ import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import ResultComponent from './resultComponent.vue';
+import LoadingPage from '@/components/loadingPage.vue';
 
 export default defineComponent({
     name: "submissionList",
@@ -466,7 +464,7 @@ export default defineComponent({
         // window.removeEventListener('resize', this.cancalDebounce);
         window.removeEventListener("resize", this.getWindowInfo);
     },
-    components: { ResultComponent }
+    components: { ResultComponent, LoadingPage }
 });
 </script>
 <style>

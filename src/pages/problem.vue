@@ -99,6 +99,7 @@
           :style="`width: ${miniMode ? '100%' : '78%'};${qmarkstyle};${
             miniMode ? 'margin-top:15px' : ''
           }`"
+          style="height: fit-content"
         >
           <q-tab-panels
             class="q-pa-sm"
@@ -106,6 +107,7 @@
             animated
             :vertical="!miniMode"
             @transition="tab_pannel_change"
+            style="height: fit-content"
             keep-alive
           >
             <q-tab-panel name="problem">
