@@ -98,7 +98,7 @@
                       text-color="white"
                       icon="lock"
                     >
-                      Private
+                      需要密码
                     </q-chip>
                   </div>
                 </div>
@@ -111,7 +111,7 @@
                     icon="info"
                   >
                     {{
-                      ['Not start', 'Competing', 'Frozen', 'Ended'][
+                      ['未开始', '比赛中', '已封榜', '已结束'][
                         item.timeStatus
                       ]
                     }}

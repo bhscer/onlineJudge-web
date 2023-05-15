@@ -7,9 +7,11 @@
             {{ contest_info.contestTitle }}
           </div>
           <div style="display: flex; flex-wrap: wrap">
-            <q-badge color="primary">Public</q-badge>
+            <q-badge color="primary">{{
+              `${contest_info.permission.needPwd ? '需要密码' : '公开'}`
+            }}</q-badge>
             <q-badge color="orange">{{
-              ['Not start', 'Competing', 'Frozen', 'Ended'][tstatus]
+              ['未开始', '比赛中', '已封榜', '已结束'][tstatus]
             }}</q-badge>
           </div>
           <div style="display: flex; justify-content: space-between">

@@ -1,6 +1,6 @@
 <template>
   <q-page style="display: flex; justify-content: center">
-    <div style="width: 1000px">
+    <div style="width: 1000px" v-if="!show_loading">
       <q-card class="q-pa-md" :style="qmarkstyle">
         <div style="display: flex">
           <div class="text-h4" style="font-weight: bold">
@@ -10,7 +10,7 @@
             color="orange"
             class="q-mt-auto q-ml-md"
             style="height: fit-content"
-            >{{ ['Not start', 'Competing', 'Ended'][tstatus] }}</q-badge
+            >{{ ['未开始', '比赛中', '已封榜', '已结束'][tstatus] }}</q-badge
           >
           <q-badge outline color="primary" class="q-mt-auto q-ml-md">{{
             countdown_text
@@ -180,10 +180,13 @@ export default {
       if (timeL <= curr && curr <= timeR) {
         time_percent.value = (curr - timeL) / lenth;
         tstatus.value = 1;
+        if (contest_info.value.needFroze && curr >= timeFrozen) {
+          tstatus.value = 2;
+        }
       }
       if (curr > timeR) {
         time_percent.value = 1;
-        tstatus.value = 2;
+        tstatus.value = 3;
         clearInterval(cgTimeTimer);
       }
     };
@@ -295,8 +298,14 @@ export default {
               Date.now() / 1000
             ) {
               tstatus.value = 1; // 比赛中
+              if (
+                contest_info.value['needFroze'] &&
+                contest_info.value['contestFrozeTimeStamp'] <= Date.now() / 1000
+              ) {
+                tstatus.value = 2;
+              }
             } else {
-              tstatus.value = 2;
+              tstatus.value = 3;
             }
           }
           timerCountdown();

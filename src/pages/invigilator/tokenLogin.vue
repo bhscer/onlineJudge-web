@@ -35,9 +35,22 @@ export default defineComponent({
           .then((result) => {
             router.push(`/invigilator/contest?cid=${route.query.cid}`);
           })
-          .catch((err) => {
-            err_msg.value = '出现错误';
-            console.log(err);
+          .catch((error) => {
+            // err_msg.value = '出现错误';
+            // console.log(err);
+            var err_msg_notify = '';
+            try {
+              if (error.response.status === 401)
+                router.push(
+                  `/userLogin?type=2&&err=${error.response.data.detail}`
+                );
+              else if (error.response.status === 400)
+                err_msg_notify = error.response.data.detail;
+              else err_msg_notify = '错误码' + error.response.status;
+            } catch {
+              err_msg_notify = '错误码' + error.code;
+            }
+            err_msg.value = err_msg_notify
           });
       } else {
         err_msg.value = 'token不存在，无法登录。';

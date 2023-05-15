@@ -4,9 +4,9 @@
       <q-markup-table class="q-mt-md">
         <thead>
           <tr>
-            <th class="text-left" style="width: 10%">NickName</th>
-            <th class="text-left" style="width: 8%">Solved Problem</th>
-            <th class="text-left" style="width: 8%">Tried Problem</th>
+            <th class="text-left" style="width: 10%">昵称</th>
+            <th class="text-left" style="width: 8%">通过的问题数</th>
+            <th class="text-left" style="width: 8%">尝试的问题数</th>
           </tr>
         </thead>
         <tbody>
