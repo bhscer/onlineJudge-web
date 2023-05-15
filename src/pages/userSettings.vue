@@ -321,7 +321,7 @@ function nicknameChange() {
 function cfAccountChange() {
   axios({
     method: 'post',
-    url: '/user/setting/cf',
+    url: '/user/setting/cfBindStatus',
     data: {
       cfAccount: cfAccount.value,
     },
@@ -362,7 +362,7 @@ function cfAccountChange() {
 function getCurrentUserCfAccount() {
   axios({
     method: 'post',
-    url: '/user/query/cf',
+    url: '/user/query/cfBindStatus',
   })
     .then((data) => {
       cf_status.value = data.data;
