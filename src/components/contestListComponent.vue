@@ -111,9 +111,7 @@
                     icon="info"
                   >
                     {{
-                      ['未开始', '比赛中', '已封榜', '已结束'][
-                        item.timeStatus
-                      ]
+                      ['未开始', '比赛中', '已封榜', '已结束'][item.timeStatus]
                     }}
                   </q-chip>
                 </div>

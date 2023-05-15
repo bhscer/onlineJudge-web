@@ -111,10 +111,8 @@
         </q-tab-panels>
       </q-card>
     </div>
-
   </q-page>
   <q-page v-if="show_loading" class="flex flex-center">
-
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>

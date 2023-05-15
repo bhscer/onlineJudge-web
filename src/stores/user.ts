@@ -83,7 +83,10 @@ export const useUserStore = defineStore('user', () => {
   const users = reactive<user.CommonUserInfo[]>([]);
 
   // auth
-  if (localStorage.getItem('oj-auth-token')) {
+  if (
+    localStorage.getItem('oj-auth-token') &&
+    route.path.substring(0, 12) !== '/invigilator'
+  ) {
     auth_ing.value = true;
     user
       .auth(route.path.substring(0, 12) === '/invigilator' ? 1 : 0)

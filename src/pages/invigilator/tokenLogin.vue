@@ -5,6 +5,7 @@
       :message="err_msg"
       :loading_msg="message"
     ></loading-page>
+    <p>{{ err_detail }}</p>
   </q-page>
 </template>
 
@@ -24,6 +25,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const show_loading = ref(true);
+    const err_detail = ref('');
 
     const message = ref('登录中');
     const err_msg = ref('');
@@ -50,7 +52,8 @@ export default defineComponent({
             } catch {
               err_msg_notify = '错误码' + error.code;
             }
-            err_msg.value = err_msg_notify
+            err_msg.value = err_msg_notify;
+            err_detail.value = error;
           });
       } else {
         err_msg.value = 'token不存在，无法登录。';
@@ -62,6 +65,7 @@ export default defineComponent({
       token_login,
       err_msg,
       show_loading,
+      err_detail,
     };
   },
   mounted() {
