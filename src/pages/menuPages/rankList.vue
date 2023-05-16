@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <q-card v-show="!show_loading">
-      <q-markup-table class="q-mt-md">
+      <q-markup-table>
         <thead>
           <tr>
             <th class="text-left" style="width: 10%">昵称</th>

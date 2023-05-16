@@ -82,7 +82,7 @@
                     <q-badge
                       color="white"
                       text-color="primary"
-                      :label="item.acPercent + '%'"
+                      :label="parseInt(item.acPercent) + '%'"
                     />
                   </div>
                 </q-linear-progress>
