@@ -8,7 +8,7 @@
           </div>
           <div style="display: flex; flex-wrap: wrap">
             <q-badge color="primary">{{
-              `${contest_info.permission.needPwd ? '需要密码' : '公开'}`
+              `${contest_info.permission?.needPwd ? '需要密码' : '公开'}`
             }}</q-badge>
             <q-badge color="orange">{{
               ['未开始', '比赛中', '已封榜', '已结束'][tstatus]

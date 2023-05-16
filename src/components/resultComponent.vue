@@ -36,7 +36,7 @@
           !show_loading_mini &&
           !err_msg.length
         "
-        style="height: 200px; overflow: scroll"
+        style="height: 200px; overflow: auto"
       >
         <thead>
           <tr>
@@ -82,7 +82,7 @@
       ></div>
     </q-card>
   </div>
-  <q-page style="flex flex-center" v-if="show_loading">
+  <q-page class="flex flex-center" v-if="show_loading">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>
@@ -115,6 +115,11 @@ function getSubmissionInfo() {
     url: '/submission/getInfo',
     data: {
       submissionId: props.sid,
+      via:
+        this_route.path === '/status' ||
+        (this_route.path === '/problem' && this_route.query.type === '0')
+          ? 0
+          : 1,
     },
   })
     .then((data) => {
@@ -141,7 +146,7 @@ function getSubmissionInfo() {
 function createEditor() {
   var true_type = '';
   switch (submission_info.value.submissionCodeLanguage) {
-    case 'CPP':
+    case 'C++':
       true_type = 'cpp';
       break;
     case 'Java':

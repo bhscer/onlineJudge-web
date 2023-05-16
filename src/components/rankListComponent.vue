@@ -67,13 +67,14 @@
                   <div
                     v-if="itemrs.status"
                     align="center"
-                    :style="`width: 60px;height:50px;margin:0;background-color:${
+                    :style="`width: 60px;height:50px;margin:0;`"
+                    :class="`bg-${
                       itemrs.status === 1
-                        ? '#e87272'
+                        ? 'red-6'
                         : itemrs.status === 2
-                        ? '#60e760'
-                        : '#d6c1ed'
-                    };`"
+                        ? 'green-6'
+                        : 'deep-purple-3'
+                    }`"
                   >
                     <p style="padding: 0; margin-bottom: 0">
                       {{
@@ -82,17 +83,18 @@
                           : '&ensp;'
                       }}
                     </p>
-
                     <p style="margin-top: 6px; margin-bottom: 0">
                       {{
                         `${itemrs.tryCnt}${
-                          itemrs.tryCntAftFrozen
+                          itemrs.tryCntAftFrozen !== undefined &&
+                          itemrs.tryCntAftFrozen > 0
                             ? '+' + itemrs.tryCntAftFrozen
                             : ''
                         }${
-                          itemrs.tryCnt + itemrs.tryCntAftFrozen
+                          (itemrs.tryCnt + itemrs.tryCntAftFrozen !==
+                            undefined && itemrs.tryCntAftFrozen > 0
                             ? itemrs.tryCntAftFrozen
-                            : 0 <= 1
+                            : 0) <= 1
                             ? 'try'
                             : 'tries'
                         }`

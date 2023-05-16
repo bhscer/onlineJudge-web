@@ -169,7 +169,9 @@
                     $router.push(`/problem?type=0&&id=${item.sourceProblemId}`)
                   "
                   :href="`/problem?type=0&&id=${item.sourceProblemId}`"
-                  >{{ `${item.sourceProblemId}:${item.sourceProblemTitle}` }}</a
+                  >{{
+                    `${item.sourceProblemId}: ${item.sourceProblemTitle}`
+                  }}</a
                 >
               </td>
               <td class="text-left">
@@ -313,6 +315,7 @@ export default defineComponent({
                 status: filter_status.value,
                 problem: filter_problemId.value
             };
+            post_data['via'] = (this_route.path==='/status' || this_route.path==='/problem' && this_route.query.type==='0')?0:1
             console.log(post_data);
             axios({
                 method: "post",
@@ -387,23 +390,17 @@ export default defineComponent({
             })
                 .catch((error) => {
                 console.error("Error:", error);
-                if (error.response.status === 401) {
-                    // localStorage.removeItem('Authorization');
-                    // showFailToast("登录状态失效，请重新登录")
-                    // router.push('/login');
-                }
-                else if (error.response.status === 400) {
-                    // showFailToast('获取签到情况失败');
-                    $q.notify({
-                        type: "negative",
-                        message: error.response.data.detail,
-                        progress: true,
-                    });
-                    err_msg.value = error.response.data.detail;
-                }
-                else {
-                    err_msg.value = `未知错误,代码为${error.response.status}`;
-                }
+                try {
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
+            else if (error.response.status === 400)
+              err_msg.value = error.response.data.detail;
+            else err_msg.value = error.response.status;
+          } catch {
+            err_msg.value = error.code;
+          }
             });
         };
         return {
