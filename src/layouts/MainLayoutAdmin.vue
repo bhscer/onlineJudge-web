@@ -53,13 +53,13 @@ const linksList = [
     title: '问题管理',
     caption: '',
     icon: 'code',
-    link: 'editProblemList',
+    link: '/admin/editProblemList',
   },
   {
     title: '比赛管理',
     caption: '',
     icon: 'chat',
-    link: 'editContestList',
+    link: '/admin/editContestList',
   },
 ];
 
