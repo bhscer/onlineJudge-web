@@ -13,19 +13,32 @@
     <div style="padding: 0; margin: 0">
       <div v-if="hideMsg.length" class="q-pa-md">{{ hideMsg }}</div>
       <div v-if="!hideMsg.length">
-        <p class="q-my-none q-pa-sm">
-          {{ rank_type === 1 ? '已封榜' : '实时排名' }}
-        </p>
+        <div style="display: flex; flex-direction: row">
+          <div>
+            <p class="q-my-none q-pa-sm">
+              {{ rank_type === 1 ? '已封榜' : '实时排名' }}
+            </p>
+            <q-checkbox
+              v-model="auto_refresh_flag"
+              label="自动刷新"
+              @click="auto_refresh_flag ? getRankList : null"
+            ></q-checkbox>
+          </div>
+          <div
+            v-if="show_loading_mini"
+            class="q-ml-md q-my-auto"
+            style="display: flex"
+          >
+            <q-spinner-gears size="40px" color="primary" />
+            <p class="q-my-auto">loading...</p>
+          </div>
+        </div>
+
         <div class="q-pa-md" style="padding: 0; margin: 0">
           <q-markup-table
             class="q-mt-md"
             separator="cell"
-            v-show="
-              !empty_content &&
-              !show_loading &&
-              !show_loading_mini &&
-              !err_msg.length
-            "
+            v-show="!empty_content && !show_loading && !err_msg.length"
           >
             <thead>
               <tr>
@@ -136,6 +149,7 @@ import {api as axios} from '@/boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import LoadingPage from './loadingPage.vue';
+import ThemeOsDefaultIcon from './icons/theme-os-default-icon.vue';
 
 export default defineComponent({
     name: 'rankListComponent',
@@ -153,10 +167,13 @@ export default defineComponent({
         const show_loading_mini = ref(true)
         const empty_content = ref(false)
         const display_small_mode = ref(false);
-        const need_update = ref('false');
+        const need_update = ref(false);
         const err_msg = ref('')
         const hideMsg = ref('')
+        const auto_refresh_flag = ref(true)
         const {contestInfo,queryType} = toRefs(props)
+        const page_show = ref(true)
+        let refreshTimer = null
 
         const getWindowInfo = () => {
           if (window.innerWidth > 500) {
@@ -175,6 +192,8 @@ export default defineComponent({
             if (!(this_route.path.toLowerCase() === '/invigilator/contest'.toLowerCase() || this_route.path.toLowerCase() === '/contest'.toLowerCase() || this_route.path.toLowerCase() === '/admin/viewRank'.toLowerCase())){
               return;
             }
+            console.log('show:',page_show.value);
+            if (refreshTimer!==null) clearInterval(refreshTimer)
             // show_loading.value = true
             show_loading_mini.value = true
             err_msg.value = ''
@@ -231,6 +250,10 @@ export default defineComponent({
                       rank_list.value[i]['rank'] = i+1
                     }
 
+                    if (auto_refresh_flag.value===true && page_show.value===true)
+                    {
+                      refreshTimer = setInterval(getRankList,5*1000);
+                    }
                     show_loading.value = false;
                     show_loading_mini.value = false;
                 } else {
@@ -267,7 +290,9 @@ export default defineComponent({
             show_loading_mini,
             err_msg,
             hideMsg,
-            rank_type
+            rank_type,
+            auto_refresh_flag,
+            page_show
         };
 
 
@@ -307,10 +332,15 @@ export default defineComponent({
     beforeUnmount() {
       // window.removeEventListener('resize', this.cancalDebounce);
       window.removeEventListener('resize', this.getWindowInfo);
+      if (this.auto_refresh_flag!==null) clearInterval(this.auto_refresh_flag)
     },
     watch:{
       queryType (to,from){
         console.log(from,'->',to)
+        this.getRankList()
+      },
+      need_update (to,from) {
+        this.need_update = false
         this.getRankList()
       }
     },

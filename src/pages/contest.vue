@@ -62,8 +62,18 @@
           >
             <q-tab name="description" label="description" />
             <q-tab name="problems" label="problems" v-if="tstatus" />
-            <q-tab name="submissions" label="submissions" v-if="tstatus" />
-            <q-tab name="rankList" label="rankList" v-if="tstatus" />
+            <q-tab
+              name="submissions"
+              label="submissions"
+              v-if="tstatus"
+              @click="refreshSubmission"
+            />
+            <q-tab
+              name="rankList"
+              label="rankList"
+              v-if="tstatus"
+              @click="refreshRank"
+            />
             <q-tab name="notes" label="notes" v-if="tstatus" />
           </q-tabs>
         </q-card>
@@ -149,12 +159,13 @@
               </q-markup-table>
             </q-tab-panel>
             <q-tab-panel name="submissions" style="padding: 0; margin: 0">
-              <submission-list></submission-list>
+              <submission-list ref="submissionRef"></submission-list>
             </q-tab-panel>
             <q-tab-panel name="rankList" class="q-ma-none q-pa-none">
               <rank-list-component
                 class="q-ma-none q-pa-none"
                 :contestInfo="contest_info"
+                ref="rankRef"
               ></rank-list-component>
             </q-tab-panel>
             <q-tab-panel name="notes"></q-tab-panel>
@@ -215,6 +226,9 @@ export default {
     const countdown_text = ref('00:00:00');
     let cgTimeTimer = null;
     let cgTimeTimerCountdown = null;
+    const tab_inited = ref({});
+    const submissionRef = ref();
+    const rankRef = ref();
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
@@ -371,6 +385,24 @@ export default {
           }
         });
     };
+    const tab_pannel_change = (next, prev) => {
+      tab_inited.value[next] = true;
+      console.log(prev, '->', next);
+      try {
+        if (next === 'rankList') rankRef.value.page_show = true;
+        if (prev === 'rankList') rankRef.value.page_show = false;
+      } catch {}
+    };
+    const refreshSubmission = () => {
+      if (tab_inited.value['submissions'])
+        submissionRef.value.need_update = true;
+      // if (tab_inited.value['submissions'])
+      // else
+      //  submissionRef.value.getSubmissionList()
+    };
+    const refreshRank = () => {
+      if (tab_inited.value['rankList']) rankRef.value.need_update = true;
+    };
     return {
       tab,
       show_loading,
@@ -388,6 +420,12 @@ export default {
       cgTimeTimerCountdown,
       cgTimeTimer,
       countdown_text,
+      submissionRef,
+      tab_pannel_change,
+      tab_inited,
+      refreshSubmission,
+      rankRef,
+      refreshRank,
     };
   },
   mounted() {
