@@ -38,7 +38,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { type } from 'os';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'EssentialLink',

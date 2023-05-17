@@ -1,5 +1,8 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page
+    class="flex flex-center"
+    style="flex-wrap: wrap; flex-direction: column"
+  >
     <q-card v-show="!show_loading">
       <q-markup-table>
         <thead>

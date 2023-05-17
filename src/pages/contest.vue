@@ -181,6 +181,7 @@ import SubmissionList from '@/components/submissionList.vue';
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
+import form from '@/i18n/zh-CN/form';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -393,6 +394,15 @@ export default {
     window.addEventListener('resize', this.getWindowInfo);
     this.getWindowInfo();
     this.getContestInfo();
+    if (
+      this.$route.hash &&
+      ['description', 'problems', 'submissions', 'rankList', 'notes'].indexOf(
+        this.$route.hash.substring(1)
+      ) !== -1
+    ) {
+      this.tab = this.$route.hash.substring(1);
+    }
+    console.log(this.$route.query);
   },
   unmounted() {
     window.removeEventListener('resize', this.getWindowInfo);

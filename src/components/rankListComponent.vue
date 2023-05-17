@@ -11,7 +11,7 @@
     v-show="!show_loading"
   >
     <div style="padding: 0; margin: 0">
-      <div v-if="hideMsg.length">{{ hideMsg }}</div>
+      <div v-if="hideMsg.length" class="q-pa-md">{{ hideMsg }}</div>
       <div v-if="!hideMsg.length">
         <p class="q-my-none q-pa-sm">
           {{ rank_type === 1 ? '已封榜' : '实时排名' }}
@@ -182,7 +182,8 @@ export default defineComponent({
             var post_data = {}
             post_data = { 'page': current_page.value };
 
-            post_data['contestId'] = contestInfo.value.contestId // this_route.query.cid?this_route.query.cid:'All'
+            post_data['contestId'] = this_route.query.cid
+            // contestInfo.value.contestId // this_route.query.cid?this_route.query.cid:'All'
             post_data['queryType'] = queryType.value
             console.log(post_data)
             axios({

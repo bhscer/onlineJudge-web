@@ -22,6 +22,7 @@
         <q-item-label header> 菜单 </q-item-label>
 
         <EssentialLink
+          @click="clickedFun"
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
@@ -30,7 +31,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view :key="_time__" />
     </q-page-container>
   </q-layout>
 </template>
@@ -103,13 +104,19 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
-
+    const _time__ = ref(0);
+    const clickedFun = () => {
+      _time__.value = new Date().getTime();
+      leftDrawerOpen.value = false; // !leftDrawerOpen.value
+    };
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      clickedFun,
+      _time__,
     };
   },
 });

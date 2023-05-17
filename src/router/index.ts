@@ -17,20 +17,20 @@ import { onMounted } from 'vue';
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
-onMounted(() => {
-  // 检测浏览器路由改变页面不刷新问题,hash模式的工作原理是hashchange事件
-  window.addEventListener(
-    'hashchange',
-    () => {
-      const currentPath = window.location.hash.slice(1);
-      alert(currentPath);
-      if (this.$route.path !== currentPath) {
-        this.$router.push(currentPath);
-      }
-    },
-    false
-  );
-});
+// onMounted(() => {
+//   // 检测浏览器路由改变页面不刷新问题,hash模式的工作原理是hashchange事件
+//   window.addEventListener(
+//     'hashchange',
+//     () => {
+//       const currentPath = window.location.hash.slice(1);
+//       alert(currentPath);
+//       if (this.$route.path !== currentPath) {
+//         this.$router.push(currentPath);
+//       }
+//     },
+//     false
+//   );
+// });
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
