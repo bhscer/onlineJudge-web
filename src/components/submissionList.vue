@@ -121,12 +121,7 @@
 
         <q-markup-table
           class="q-mt-md"
-          v-show="
-            !empty_content &&
-            !show_loading &&
-            !show_loading_mini &&
-            !err_msg.length
-          "
+          v-show="!empty_content && !show_loading && !err_msg.length"
         >
           <thead>
             <tr>
@@ -263,6 +258,7 @@ export default defineComponent({
         const err_msg = ref("");
         const showSubmitResult = ref(false)
         const submissionId = ref('')
+        let refresh_timer = null
 
         const filter_func_reset = () => {
             filter_userLabel.value = filter_contest.value = "";
@@ -301,6 +297,7 @@ export default defineComponent({
             if (!(this_route.path.toLowerCase() === "/invigilator/contest".toLowerCase() || this_route.path.toLowerCase() === "/status".toLowerCase() || this_route.path.toLowerCase() === "/contest".toLowerCase() || this_route.path.toLowerCase() === "/problem".toLowerCase() || this_route.path.toLowerCase() === "/invigilator/problem".toLowerCase())) {
                 return;
             }
+            if (refresh_timer!==null) clearInterval(refresh_timer)
             // show_loading.value = true
             show_loading_mini.value = true;
             err_msg.value = "";
@@ -326,9 +323,11 @@ export default defineComponent({
                 if (data.data.status === 1) // 列表获取成功
                  {
                     console.log(data);
+                    let havPending = false
                     maxPage.value = data.data.maxPage;
                     submission_list.value = data.data.data;
                     for (var i = 0; i < submission_list.value.length; i++) {
+                      if (submission_list.value[i]["submissionResultGeneral"] == 1) havPending = true;
                         if (submission_list.value[i]["submissionResultGeneral"] == 10) {
                             submission_list.value[i]["boardColor"] = "#17b978";
                             submission_list.value[i]["boardText"] = "Accepted";
@@ -379,6 +378,10 @@ export default defineComponent({
                         err_msg.value = `没有检索结果`;
                         empty_content.value = true;
                     }
+                    if (havPending)
+                    {
+                      refresh_timer = setInterval(getSubmissionList,3*1000)
+                    }
                     show_loading.value = false;
                     show_loading_mini.value = false;
                     console.log(submission_list.value);
@@ -428,7 +431,8 @@ export default defineComponent({
             show_loading_mini,
             err_msg,
             showSubmitResult,
-            submissionId
+            submissionId,
+            refresh_timer
         };
     },
     watch: {
@@ -460,6 +464,7 @@ export default defineComponent({
     beforeUnmount() {
         // window.removeEventListener('resize', this.cancalDebounce);
         window.removeEventListener("resize", this.getWindowInfo);
+        if (this.refresh_timer!==null) clearInterval(this.refresh_timer)
     },
     components: { ResultComponent, LoadingPage }
 });

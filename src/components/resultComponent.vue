@@ -5,6 +5,14 @@
     style="flex-direction: column"
     v-show="!show_loading"
   >
+    <div
+      v-if="show_loading_mini"
+      class="q-ml-md q-my-auto"
+      style="display: flex"
+    >
+      <q-spinner-gears size="40px" color="primary" />
+      <p class="q-my-auto">loading...</p>
+    </div>
     <q-card class="q-pa-md">
       <div class="text-h5 q-mb-md">信息</div>
       <div>
@@ -26,53 +34,56 @@
       <div>{{ `运行时间:${submission_info.submissionRunTime}ms` }}</div>
       <div>{{ `提交语言:${submission_info.submissionCodeLanguage}` }}</div>
     </q-card>
-    <q-card v-if="submission_info.submissionResultGeneral !== 3">
-      <div class="text-h5 q-pt-md q-pl-md">测试点信息</div>
-      <q-markup-table
-        class="q-mt-md"
-        v-show="
-          !empty_content &&
-          !show_loading &&
-          !show_loading_mini &&
-          !err_msg.length
-        "
-        style="height: 200px; overflow: auto"
-      >
-        <thead>
-          <tr>
-            <th class="text-left" style="width: 10%">测试点序号</th>
-            <th class="text-left">结果</th>
-            <th class="text-left" style="width: 5%">内存</th>
-            <th class="text-left" style="width: 5%">运行时间</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(point, idx) in submission_info.submissionResultDetail"
-            :key="point"
-          >
-            <td>{{ idx }}</td>
-            <td>
-              <span :style="`color:${statusCovernt(point.result)[0]}`">
-                {{ statusCovernt(point.result)[1] }}
-              </span>
-            </td>
-            <td>
-              {{ `${parseInt(point.memory / 1024)}KB` }}
-            </td>
-            <td>
-              <p class="q-pa-none q-ma-none">{{ `${point.time}ms` }}</p>
-            </td>
-          </tr>
-        </tbody>
-      </q-markup-table>
-    </q-card>
-    <q-card v-else>
-      <div class="text-h5 q-pt-md q-pl-md">错误信息</div>
-      <p class="q-mx-md q-pb-md">
-        {{ submission_info.submissionResultErrMsg }}
-      </p>
-    </q-card>
+    <div v-if="submission_info.submissionResultGeneral !== 1">
+      <q-card v-if="submission_info.submissionResultGeneral !== 3">
+        <div class="text-h5 q-pt-md q-pl-md">测试点信息</div>
+        <q-markup-table
+          class="q-mt-md"
+          v-show="
+            !empty_content &&
+            !show_loading &&
+            !show_loading_mini &&
+            !err_msg.length
+          "
+          style="height: 200px; overflow: auto"
+        >
+          <thead>
+            <tr>
+              <th class="text-left" style="width: 10%">测试点序号</th>
+              <th class="text-left">结果</th>
+              <th class="text-left" style="width: 5%">内存</th>
+              <th class="text-left" style="width: 5%">运行时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(point, idx) in submission_info.submissionResultDetail"
+              :key="point"
+            >
+              <td>{{ idx }}</td>
+              <td>
+                <span :style="`color:${statusCovernt(point.result)[0]}`">
+                  {{ statusCovernt(point.result)[1] }}
+                </span>
+              </td>
+              <td>
+                {{ `${parseInt(point.memory / 1024)}KB` }}
+              </td>
+              <td>
+                <p class="q-pa-none q-ma-none">{{ `${point.time}ms` }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+      </q-card>
+      <q-card v-else>
+        <div class="text-h5 q-pt-md q-pl-md">错误信息</div>
+        <p class="q-mx-md q-pb-md">
+          {{ submission_info.submissionResultErrMsg }}
+        </p>
+      </q-card>
+    </div>
+
     <q-card>
       <div class="text-h5 q-py-md q-pl-md">代码</div>
       <div
@@ -93,7 +104,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, onUnmounted } from 'vue';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
@@ -107,14 +118,16 @@ const this_router = useRouter();
 const this_route = useRoute();
 const tab = ref('points');
 const show_loading = ref(true);
+const show_loading_mini = ref(true);
 const submission_info = ref({});
 const err_msg = ref('');
 let ITextModel = null;
-
+let refresh_timer = null;
 const props = defineProps(['sid']);
 
 function getSubmissionInfo() {
-  show_loading.value = true;
+  if (refresh_timer !== null) clearInterval(refresh_timer);
+  show_loading_mini.value = true;
   axios({
     method: 'post',
     url: '/submission/getInfo',
@@ -125,13 +138,20 @@ function getSubmissionInfo() {
         (this_route.path === '/problem' && this_route.query.type === '0')
           ? 0
           : 1,
+      needCode: show_loading.value,
     },
   })
     .then((data) => {
       console.log('Success:', data);
       submission_info.value = data.data;
-      createEditor();
+      if (ITextModel === null) createEditor();
+      if (submission_info.value.submissionResultGeneral === 1) {
+        refresh_timer = setInterval(getSubmissionInfo, 3 * 1000);
+      } else {
+        if (refresh_timer !== null) clearInterval(refresh_timer);
+      }
       show_loading.value = false;
+      show_loading_mini.value = false;
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -240,6 +260,9 @@ function timestampToTime(timestamp) {
 }
 onMounted(() => {
   getSubmissionInfo();
+});
+onUnmounted(() => {
+  if (refresh_timer !== null) clearInterval(refresh_timer);
 });
 </script>
 

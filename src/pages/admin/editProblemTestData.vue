@@ -148,7 +148,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import md5 from 'js-md5';
 import { useQuasar } from 'quasar';
 import { useRouter, useRoute } from 'vue-router';
@@ -493,6 +493,9 @@ function getFileList() {
 }
 onMounted(() => {
   getFileList();
+});
+onUnmounted(() => {
+  if (check_rejudge_timer !== null) clearInterval(check_rejudge_timer);
 });
 </script>
 
