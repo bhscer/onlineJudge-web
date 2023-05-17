@@ -15,6 +15,9 @@
       <p class="q-ma-none q-pa-none">
         文件操作完成后，请务必务必点击应用更改按钮，否则评测数据并不会更新！
       </p>
+      <p class="q-ma-none q-pa-none">
+        数据点更新后，如果你需要重判，请点击下方重判按钮
+      </p>
       <q-btn
         class="q-mt-md"
         outline
@@ -22,6 +25,20 @@
         label="应用更改"
         @click="genConfig"
       />
+      <q-btn
+        class="q-mt-md"
+        outline
+        color="primary"
+        @click="reJudge"
+        :loading="rejudge_running"
+      >
+        重判提交
+        <template v-slot:loading>
+          <q-spinner-hourglass class="on-left" />
+          重判中
+        </template>
+      </q-btn>
+      <p>{{ rejudge_text }}</p>
 
       <q-uploader
         class="q-my-md"
@@ -151,7 +168,9 @@ const showRenameForm = ref(false);
 const renameFileName = ref('');
 const renameFileNameNew = ref('');
 const files_model = ref(null);
-
+let check_rejudge_timer = null;
+const rejudge_text = ref('');
+const rejudge_running = ref(false);
 // function fileUpload() {
 //   if (files_model.value === null) {
 //     $q.notify({
@@ -319,6 +338,99 @@ function genConfig() {
       // submiting.value = false;
       // console.error('Error:', error);
       // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+function checkRejudgeStatus() {
+  if (check_rejudge_timer !== null) clearInterval(check_rejudge_timer);
+  axios({
+    method: 'post',
+    url: '/admin/problem/rejudgeStatus',
+    data: {
+      problemId: this_route.query.id,
+    },
+  })
+    .then((data) => {
+      rejudge_text.value = data.data.msg;
+      if (data.data.status == 1) {
+        // finished
+        rejudge_running.value = false;
+        $q.notify({
+          type: 'positive',
+          message: '重判结束',
+          progress: true,
+        });
+      } else {
+        setInterval(checkRejudgeStatus, 5 * 1000);
+      }
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      // if (err_msg_notify !== '') {
+      //   $q.notify({
+      //     type: 'negative',
+      //     message: err_msg_notify,
+      //     progress: true,
+      //   });
+      // }
+      err_msg.value = err_msg_notify;
+    });
+}
+function reJudge() {
+  rejudge_running.value = true;
+  axios({
+    method: 'post',
+    url: '/admin/problem/rejudge',
+    data: {
+      problemId: this_route.query.id,
+    },
+  })
+    .then((data) => {
+      $q.notify({
+        type: 'positive',
+        message: data.data.msg,
+        progress: true,
+      });
+      rejudge_text.value = data.data.msg;
+      checkRejudgeStatus();
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      rejudge_running.value = false;
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)
