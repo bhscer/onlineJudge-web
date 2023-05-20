@@ -127,6 +127,10 @@ const routes: RouteRecordRaw[] = [
         path: 'viewRank',
         component: () => import('pages/admin/viewRank.vue'),
       },
+      {
+        path: 'judgeStatus',
+        component: () => import('pages/admin/judgeStatus.vue'),
+      },
     ],
   },
   {

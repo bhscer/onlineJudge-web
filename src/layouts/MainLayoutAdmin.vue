@@ -61,6 +61,12 @@ const linksList = [
     icon: 'chat',
     link: '/admin/editContestList',
   },
+  {
+    title: '评测机状态',
+    caption: '',
+    icon: 'flaky',
+    link: '/admin/judgeStatus',
+  },
 ];
 
 export default defineComponent({

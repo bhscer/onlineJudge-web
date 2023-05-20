@@ -27,6 +27,16 @@
           </tr>
         </tbody>
       </q-markup-table>
+
+      <div class="q-pa-lg">
+        <q-pagination
+          v-model="current_page"
+          :max="maxPage"
+          :max-pages="6"
+          direction-links
+          @update:model-value="changePage"
+        />
+      </div>
     </q-card>
 
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
@@ -53,6 +63,16 @@ export default defineComponent({
     const show_loading = ref(true);
     const err_msg = ref('');
     const total_rank_list = ref([]);
+
+    const changePage = (newPage) => {
+      this_router.push({
+        path: '/rankList',
+        // name: 'index',
+        query: {
+          page: newPage,
+        },
+      });
+    };
 
     const getTotalRankList = () => {
       show_loading.value = false;
@@ -111,6 +131,7 @@ export default defineComponent({
 
     return {
       current_page,
+      changePage,
       maxPage,
       show_loading,
       err_msg,
@@ -120,6 +141,11 @@ export default defineComponent({
   },
   mounted() {
     this.getTotalRankList();
+  },
+  watch: {
+    $route(to, from) {
+      this.getTotalRankList();
+    },
   },
 });
 </script>
