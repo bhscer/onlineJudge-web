@@ -62,6 +62,12 @@ const linksList = [
     link: '/admin/editContestList',
   },
   {
+    title: '用户管理',
+    caption: '',
+    icon: 'perm_identity',
+    link: '/admin/editUserList',
+  },
+  {
     title: '评测机状态',
     caption: '',
     icon: 'flaky',

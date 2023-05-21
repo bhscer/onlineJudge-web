@@ -135,6 +135,12 @@ export const useUserStore = defineStore('user', () => {
     });
   }
 
+  function update_token(token: string) {
+    if (info.value === null) return;
+    info.value.token = token;
+    localStorage.setItem('oj-auth-token', token);
+  }
+
   // load info 方法不对外暴露, 因为要维持一个loading queue
   function load_info(id: string) {
     return new Promise<user.CommonUserInfo>((resolve, reject) => {
@@ -178,5 +184,6 @@ export const useUserStore = defineStore('user', () => {
     user_auth,
     back_login,
     auth_ing,
+    update_token,
   };
 });

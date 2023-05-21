@@ -324,7 +324,7 @@ export default defineComponent({
     };
     const changePage = (newPage) => {
       this_router.push({
-        path: '/contestList',
+        path: '/admin/editContestList',
         // name: 'index',
         query: {
           page: newPage,

@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
+// import { useUserStore } from '@/stores/user';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -13,6 +14,9 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
+
+// const user = useUserStore();
+
 const api = axios.create({ baseURL: process.env.BASE_URL });
 api.interceptors.request.use(
   (config) => {
@@ -23,6 +27,23 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+api.interceptors.response.use(
+  (res) => {
+    // 请求成功对响应数据做处理
+    if (res.data && res.data.new_token) {
+      // user.update_token(res.data.new_token)
+      localStorage.setItem('oj-auth-token', res.data.new_token);
+    }
+    // 该返回的数据则是axios.then(res)中接收的数据
+    return res;
+  },
+  (err) => {
+    // 在请求错误时要做的事儿
+
+    // 该返回的数据则是axios.catch(err)中接收的数据
+    return Promise.reject(err);
   }
 );
 

@@ -45,6 +45,29 @@ export default boot(async ({ app }) => {
     // return Y + M + D + h + m + s;
     return `${Y}-${M}-${D} ${h}:${m}:${s}`;
   };
+  app.config.globalProperties.$permissionDict = {
+    root: {
+      editProblem: true,
+      editContest: true,
+      viewSubmission: true,
+      viewTrueRank: true,
+      editUser: true,
+    },
+    admin: {
+      editProblem: true,
+      editContest: true,
+      viewSubmission: true,
+      viewTrueRank: true,
+      editUser: false,
+    },
+    user: {
+      editProblem: false,
+      editContest: false,
+      viewSubmission: false,
+      viewTrueRank: false,
+      editUser: false,
+    },
+  };
   VMdEditor.use(githubTheme, {
     Hljs: hljs,
   });

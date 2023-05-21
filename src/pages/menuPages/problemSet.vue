@@ -48,7 +48,9 @@
                 <a
                   @click.prevent="
                     item.public ||
-                    (user.info && user.info.permission !== 'user')
+                    (user.info &&
+                      $permissionDict[user.info.permission]['editProblem'] ===
+                        true)
                       ? $router.push(
                           `/problem?type=0&&id=${item.problemIdString}`
                         )

@@ -28,7 +28,9 @@
                       $route.path.toLowerCase().substring(0, 12) ===
                         '/invigilator' ||
                       (item.permission && !item.permission.needPwd) ||
-                      (user.info && user.info.permission !== 'user')
+                      (user.info &&
+                        $permissionDict[user.info.permission]['editContest'] ===
+                          true)
                     "
                     class=""
                     style="
@@ -52,7 +54,9 @@
                     v-if="
                       item.permission &&
                       item.permission.needPwd &&
-                      (!user.info || user.info.permission === 'user')
+                      (!user.info ||
+                        $permissionDict[user.info.permission]['editContest'] ===
+                          false)
                     "
                     class=""
                     style="

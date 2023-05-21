@@ -8,12 +8,14 @@
             {{ problem_info.title }}
           </div>
 
-          <q-badge color="primary"
+          <q-badge
+            color="primary"
+            v-if="
+              $route.path !== '/invigilator/problem' &&
+              user.info &&
+              $permissionDict[user.info.permission]['editProblem'] === true
+            "
             ><a
-              v-if="
-                $route.path !== '/invigilator/problem' &&
-                user.info?.permission !== 'user'
-              "
               @click.prevent="
                 $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
               "
@@ -22,12 +24,14 @@
               >编辑</a
             ></q-badge
           >
-          <q-badge color="teal"
+          <q-badge
+            color="teal"
+            v-if="
+              $route.path !== '/invigilator/problem' &&
+              user.info &&
+              $permissionDict[user.info.permission]['editProblem'] === true
+            "
             ><a
-              v-if="
-                $route.path !== '/invigilator/problem' &&
-                user.info?.permission !== 'user'
-              "
               @click.prevent="
                 $router.push(
                   `/admin/editProblemTestData?id=${problem_info.problemIdString}`
