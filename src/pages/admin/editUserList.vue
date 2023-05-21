@@ -72,7 +72,7 @@
           v-model="editInfo.nickname"
           type="text"
           label="昵称"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         />
         <q-input
           outlined
@@ -80,7 +80,7 @@
           v-model="editInfo.email"
           type="email"
           label="输入新的邮箱"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         />
         <q-input
           outlined

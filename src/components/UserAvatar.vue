@@ -30,7 +30,10 @@ const props = defineProps<{
 
 // defineEmits(['click']);
 const user = useUserStore();
-const info = user.get_info(props.id as string);
+// const info = user.get_info(props.id as string);
+const info = user.info;
+console.log(info);
+console.log(`https://cravatar.cn/avatar/${info?.emailMd5}?d=mp`);
 </script>
 
 <script lang="ts">

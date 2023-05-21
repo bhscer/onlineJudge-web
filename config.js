@@ -4,5 +4,6 @@ module.exports = {
   },
   prod: {
     BASE_URL: 'https://api.bhscer.com/',
+    // BASE_URL: 'http://172.31.140.189:8011', // special version for vm
   },
 };

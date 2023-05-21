@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', () => {
   const info = ref<null | user.UserInfo>(null);
   const exists = computed(() => info.value !== null);
   const auth_ing = ref(false);
-  const loading_queue: any = {}; // uid=>bool 表示是否正在从服务器获取对应用户的info
+  // const loading_queue: any = {}; // uid=>bool 表示是否正在从服务器获取对应用户的info
   const router = useRouter();
   const route = useRoute();
   const $q = useQuasar();
@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
         .then((d) => {
           const user = d.data;
           info.value = user;
-          users.push(user);
+          // users.push(user);
           localStorage.setItem('oj-auth-token', d.data.token);
           resolve(user);
         })
@@ -80,7 +80,7 @@ export const useUserStore = defineStore('user', () => {
         .catch(reject);
     });
   }
-  const users = reactive<user.CommonUserInfo[]>([]);
+  // const users = reactive<user.CommonUserInfo[]>([]);
 
   // auth
   if (
@@ -93,7 +93,7 @@ export const useUserStore = defineStore('user', () => {
       .then((d) => {
         info.value = d.data;
         localStorage.setItem('oj-auth-token', d.data.token);
-        users.push(d.data);
+        // users.push(d.data);
         auth_ing.value = false;
       })
       .catch((error) => {
@@ -125,7 +125,7 @@ export const useUserStore = defineStore('user', () => {
         .then((d) => {
           auth_ing.value = false;
           info.value = d.data;
-          users.push(d.data);
+          // users.push(d.data);
           resolve(info.value);
         })
         .catch((error) => {
@@ -142,45 +142,45 @@ export const useUserStore = defineStore('user', () => {
   }
 
   // load info 方法不对外暴露, 因为要维持一个loading queue
-  function load_info(id: string) {
-    return new Promise<user.CommonUserInfo>((resolve, reject) => {
-      for (const user of users) {
-        if (user.username === id) {
-          resolve(user);
-          return;
-        }
-      }
-      if (!loading_queue[id]) {
-        loading_queue[id] = true;
-        user
-          .info(id)
-          .then((d) => {
-            const user = d.data;
-            users.push(user);
-            resolve(user);
-          })
-          .catch(reject)
-          .finally(() => {
-            loading_queue[id] = false;
-          });
-      }
-    });
-  }
+  // function load_info(id: string) {
+  //   return new Promise<user.CommonUserInfo>((resolve, reject) => {
+  //     for (const user of users) {
+  //       if (user.username === id) {
+  //         resolve(user);
+  //         return;
+  //       }
+  //     }
+  //     if (!loading_queue[id]) {
+  //       loading_queue[id] = true;
+  //       user
+  //         .info(id)
+  //         .then((d) => {
+  //           const user = d.data;
+  //           users.push(user);
+  //           resolve(user);
+  //         })
+  //         .catch(reject)
+  //         .finally(() => {
+  //           loading_queue[id] = false;
+  //         });
+  //     }
+  //   });
+  // }
 
-  function get_info(id: string) {
-    const info = computed(() => users.find((v) => v.username === id));
-    if (!info.value) load_info(id);
-    return info;
-  }
+  // function get_info(id: string) {
+  //   const info = computed(() => users.find((v) => v.username === id));
+  //   if (!info.value) load_info(id);
+  //   return info;
+  // }
 
   return {
-    users,
+    // users,
     info,
     exists,
     logout,
     login,
     register,
-    get_info,
+    // get_info,
     user_auth,
     back_login,
     auth_ing,

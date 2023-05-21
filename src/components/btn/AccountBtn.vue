@@ -15,7 +15,10 @@
 
     <q-btn v-if="!user.auth_ing && user.exists" flat rounded>
       <user-avatar
-        v-if="user.exists"
+        v-if="
+          user.exists &&
+          $route.path.toLowerCase().substring(0, 12) !== '/invigilator'
+        "
         :id="user.info?.username"
         class="q-mr-sm"
       ></user-avatar>

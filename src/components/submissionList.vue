@@ -125,13 +125,13 @@
         >
           <thead>
             <tr>
-              <th class="text-left" style="width: 10%">Status</th>
-              <th class="text-left">Problem Id</th>
-              <th class="text-left" style="width: 5%">NickName</th>
-              <th class="text-left" style="width: 5%">Memory</th>
-              <th class="text-left" style="width: 4%">Run Time</th>
-              <th class="text-left" style="width: 4%">Language</th>
-              <th class="text-left" style="width: 8%">Submit Time</th>
+              <th class="text-left" style="width: 10%">结果</th>
+              <th class="text-left">问题编号</th>
+              <th class="text-left" style="width: 5%">昵称</th>
+              <th class="text-left" style="width: 5%">内存</th>
+              <th class="text-left" style="width: 4%">耗时</th>
+              <th class="text-left" style="width: 4%">语言</th>
+              <th class="text-left" style="width: 8%">提交时间</th>
             </tr>
           </thead>
           <tbody>
@@ -387,8 +387,9 @@ export default defineComponent({
                     console.log(submission_list.value);
                 }
                 else {
-                    // alert(data.msg)
-                    // showFailToast(data.data.msg)
+                    err_msg.value = data.data.msg
+          submission_list.value = []
+
                 }
             })
                 .catch((error) => {
@@ -404,6 +405,8 @@ export default defineComponent({
           } catch {
             err_msg.value = error.code;
           }
+          show_loading_mini.value = false
+          submission_list.value = []
             });
         };
         return {

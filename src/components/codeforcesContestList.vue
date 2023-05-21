@@ -63,7 +63,7 @@ function getCfContestList() {
       if (data.data.status === 'OK') {
         cf_contest_list.value = [];
         data.data.result.forEach((item) => {
-          console.log(item);
+          // console.log(item);
           if (item.phase !== 'FINISHED') {
             if (
               item.startTimeSeconds - Date.now() / 1000 >= 0 &&
@@ -75,7 +75,7 @@ function getCfContestList() {
         cf_contest_list.value.sort((x, y) => {
           return x.startTimeSeconds < y.startTimeSeconds;
         });
-        console.log(cf_contest_list.value);
+        // console.log(cf_contest_list.value);
       }
     })
     .catch((error) => {

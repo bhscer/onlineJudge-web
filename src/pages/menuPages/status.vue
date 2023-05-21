@@ -3,7 +3,7 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div style="width: 800px">
+    <div style="width: 1000px">
       <submission-list></submission-list>
     </div>
   </q-page>

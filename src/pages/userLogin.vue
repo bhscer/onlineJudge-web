@@ -10,8 +10,8 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="login" label="login" />
-        <q-tab name="register" label="register" />
+        <q-tab name="login" label="登录" />
+        <q-tab name="register" label="注册" />
       </q-tabs>
 
       <q-separator />
@@ -23,16 +23,16 @@
               <q-input
                 outlined
                 v-model="username"
-                label="username"
-                :rules="[(val) => val.length || 'Please input this field']"
+                label="账号"
+                :rules="[(val) => val.length || '请填写此项目']"
               />
               <q-input
                 outlined
                 v-model="password"
-                label="password"
+                label="密码"
                 :type="showPwd ? 'password' : 'text'"
                 hint=""
-                :rules="[(val) => val.length || 'Please input this field']"
+                :rules="[(val) => val.length || '请填写此项目']"
               >
                 <template v-slot:append>
                   <q-icon
@@ -45,7 +45,7 @@
               <q-btn
                 class="q-my-md"
                 color="primary"
-                label="Login"
+                label="登录"
                 @click="loginFun"
               />
             </div>
@@ -56,14 +56,14 @@
             <q-input
               outlined
               v-model="username"
-              label="username"
-              :rules="[(val) => val.length || 'Please input this field']"
+              label="用户名（账号）"
+              :rules="[(val) => val.length || '请填写此项目']"
             />
             <q-input
               outlined
               v-model="nickname"
-              label="nickname"
-              :rules="[(val) => val.length || 'Please input this field']"
+              label="昵称"
+              :rules="[(val) => val.length || '请填写此项目']"
             />
             <q-input
               outlined
@@ -71,14 +71,14 @@
               type="email"
               label="email"
               hint=""
-              :rules="[(val) => val.length || 'Please input this field']"
+              :rules="[(val) => val.length || '请填写此项目']"
             />
             <q-input
               outlined
               v-model="password"
-              label="password"
+              label="密码"
               :type="showPwd ? 'password' : 'text'"
-              :rules="[(val) => val.length || 'Please input this field']"
+              :rules="[(val) => val.length || '请填写此项目']"
             >
               <template v-slot:append>
                 <q-icon
@@ -91,7 +91,7 @@
             <q-input
               outlined
               v-model="passwordConfirm"
-              label="Confirm password"
+              label="再次输入密码"
               :type="showPwdConfirm ? 'password' : 'text'"
               hint=""
               :rules="[
@@ -109,7 +109,7 @@
             <q-btn
               class="q-my-md"
               color="primary"
-              label="Register"
+              label="注册"
               @click="registerFun"
             />
           </div>

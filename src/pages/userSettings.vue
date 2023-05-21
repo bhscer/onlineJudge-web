@@ -11,7 +11,7 @@
           v-model="passwordOld"
           label="输入原密码"
           :type="showPwdOld ? 'password' : 'text'"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         >
           <template v-slot:append>
             <q-icon
@@ -27,7 +27,7 @@
           v-model="password"
           label="输入新密码"
           :type="showPwd ? 'password' : 'text'"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         >
           <template v-slot:append>
             <q-icon
@@ -79,7 +79,7 @@
           v-model="cfAccount"
           type="text"
           label="输入新的cf账号"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         />
         <q-btn
           class="q-my-md"
@@ -97,7 +97,7 @@
           v-model="nickname"
           type="text"
           label="输入新的昵称"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         />
         <q-btn
           class="q-my-md"
@@ -114,7 +114,7 @@
           v-model="email"
           type="email"
           label="输入新的邮箱"
-          :rules="[(val) => val.length || 'Please input this field']"
+          :rules="[(val) => val.length || '请填写此项目']"
         />
         <q-btn
           class="q-my-md"
