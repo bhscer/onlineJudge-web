@@ -15,7 +15,10 @@
     <div style="padding: 0; margin: 0">
       <div class="q-pa-md" style="padding: 0; margin: 0">
         <q-card class="q-pa-md" style="display: flex; flex-direction: column">
-          <div class="q-gutter-md" style="display: flex; flex-wrap: wrap">
+          <div
+            class="q-gutter-md q-mb-sm"
+            style="display: flex; flex-wrap: wrap"
+          >
             <div class="text-h4">过滤</div>
             <div
               v-if="show_loading_mini"
@@ -36,6 +39,7 @@
             </div>
           </div>
           <q-checkbox
+            class="q-ml-md"
             v-model="filter_show_user_only"
             label="只看自己"
             dense

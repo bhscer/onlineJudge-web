@@ -3,7 +3,7 @@
     <div class="content_main">
       <q-card class="q-pa-lg q-my-md">
         <div>
-          <div class="text-h4" style="font-weight: bold">
+          <div class="text-h3" style="font-weight: bold">
             {{ contest_info.contestTitle }}
           </div>
           <div class="q-mt-md" style="display: flex; flex-wrap: wrap">
@@ -65,21 +65,21 @@
             outside-arrows
             mobile-arrows
           >
-            <q-tab name="description" label="description" />
-            <q-tab name="problems" label="problems" v-if="tstatus" />
+            <q-tab name="description" label="介绍" />
+            <q-tab name="problems" label="问题" v-if="tstatus" />
             <q-tab
               name="submissions"
-              label="submissions"
+              label="提交"
               v-if="tstatus"
               @click="refreshSubmission"
             />
             <q-tab
               name="rankList"
-              label="rankList"
+              label="榜单"
               v-if="tstatus"
               @click="refreshRank"
             />
-            <q-tab name="notes" label="notes" v-if="tstatus" />
+            <q-tab name="notes" label="通知" v-if="tstatus" />
           </q-tabs>
         </q-card>
         <q-card class="q-mt-md" :style="`width: 100%;${qmarkstyle};padding:0`">
@@ -98,11 +98,11 @@
               <q-markup-table style="margin: 0" flat bordered>
                 <thead>
                   <tr>
-                    <th class="text-left" style="width: 8%">Status</th>
-                    <th class="text-left" style="width: 8%">ProblemId</th>
-                    <th class="text-left">Title</th>
-                    <th class="text-left" style="width: 5%">Solved</th>
-                    <th class="text-left" style="width: 5%">Submitted</th>
+                    <th class="text-left" style="width: 8%">状态</th>
+                    <th class="text-left" style="width: 8%">题号</th>
+                    <th class="text-left">标题</th>
+                    <th class="text-left" style="width: 5%">通过</th>
+                    <th class="text-left" style="width: 5%">提交</th>
                   </tr>
                 </thead>
                 <tbody>

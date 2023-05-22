@@ -4,7 +4,7 @@
     <div class="content_main">
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
-          <div class="text-h4" style="font-weight: bold">
+          <div class="text-h3" style="font-weight: bold">
             {{ problem_info.title }}
           </div>
 
@@ -224,13 +224,15 @@
             </q-tab-panel>
 
             <q-tab-panel name="submit">
-              <div style="display: flex; margin-bottom: 20px" class="q-mx-lg">
+              <div
+                style="display: flex; flex-wrap: wrap; margin-bottom: 20px"
+                class="q-mx-md q-gutter-sm"
+              >
                 <q-select
-                  rounded
                   outlined
                   v-model="language_model"
                   :options="language_options"
-                  label="Select Your Language"
+                  label="编程语言"
                   dense
                   options-dense
                   style="width: 200px"
@@ -239,40 +241,37 @@
                 <q-btn
                   :loading="testing"
                   outline
-                  rounded
-                  color="primary"
+                  color="green"
                   label="测试"
                   @click="runCode"
-                  style="width: 120px; height: fit-content"
+                  style="width: 120px"
                 >
                   <template v-slot:loading>
                     <q-spinner-hourglass class="on-left" />
-                    running...
+                    运行中...
                   </template>
                 </q-btn>
                 <q-btn
                   :loading="submiting"
                   outline
-                  rounded
-                  color="primary"
+                  color="red"
                   label="提交"
                   @click="submitCode"
-                  style="width: 140px; height: fit-content"
+                  style="width: 120px"
                 >
                   <template v-slot:loading>
                     <q-spinner-hourglass class="on-left" />
-                    submiting...
+                    提交中...
                   </template>
                 </q-btn>
               </div>
               <q-file
                 class="q-mx-lg"
-                rounded
                 outlined
                 dense
                 bottom-slots
                 v-model="file_model"
-                label="submit code from file"
+                label="从文件提交"
                 counter
                 style="width: fit-content"
               >

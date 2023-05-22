@@ -15,65 +15,69 @@
           <tr v-for="item in contest_list" :key="item">
             <td>
               <div style="display: flex; flex-wrap: wrap">
-                <div class="q-my-lg q-ml-lg q-mr-md">
+                <!-- <div class="q-my-lg q-ml-lg q-mr-md">
                   <q-icon color="primary" name="article" size="lg"></q-icon>
-                </div>
+                </div> -->
 
                 <div
-                  class="q-my-md"
+                  class="q-my-md q-ml-sm"
                   style="display: flex; flex-direction: column; flex-wrap: wrap"
                 >
-                  <a
-                    v-if="
-                      $route.path.toLowerCase().substring(0, 12) ===
-                        '/invigilator' ||
-                      (item.permission && !item.permission.needPwd) ||
-                      (user.info &&
-                        $permissionDict[user.info.permission]['editContest'] ===
-                          true)
-                    "
-                    class=""
-                    style="
-                      margin: 0;
-                      cursor: pointer;
-                      text-decoration: none;
-                      color: inherit;
-                      font-size: 20px;
-                      width: max-content;
-                    "
-                    @click.prevent="
-                      $router.push(
-                        `${url_prefix}/contest?cid=${item.contestId}`
-                      )
-                    "
-                    :href="`${url_prefix}/contest?cid=${item.contestId}`"
-                  >
-                    {{ item.contestTitle }}
-                  </a>
-                  <a
-                    v-if="
-                      item.permission &&
-                      item.permission.needPwd &&
-                      (!user.info ||
-                        $permissionDict[user.info.permission]['editContest'] ===
-                          false)
-                    "
-                    class=""
-                    style="
-                      margin: 0;
-                      cursor: pointer;
-                      text-decoration: none;
-                      color: inherit;
-                      font-size: 20px;
-                      width: max-content;
-                    "
-                    @click="
-                      showPwdForm = true;
-                      pwdFormInfo = item;
-                    "
-                  >
-                    {{ item.contestTitle }}
-                  </a>
+                  <div>
+                    <a
+                      v-if="
+                        $route.path.toLowerCase().substring(0, 12) ===
+                          '/invigilator' ||
+                        (item.permission && !item.permission.needPwd) ||
+                        (user.info &&
+                          $permissionDict[user.info.permission][
+                            'editContest'
+                          ] === true)
+                      "
+                      class=""
+                      style="
+                        margin: 0;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: inherit;
+                        font-size: 20px;
+                        width: max-content;
+                      "
+                      @click.prevent="
+                        $router.push(
+                          `${url_prefix}/contest?cid=${item.contestId}`
+                        )
+                      "
+                      :href="`${url_prefix}/contest?cid=${item.contestId}`"
+                    >
+                      {{ item.contestTitle }}
+                    </a>
+                    <a
+                      v-if="
+                        item.permission &&
+                        item.permission.needPwd &&
+                        (!user.info ||
+                          $permissionDict[user.info.permission][
+                            'editContest'
+                          ] === false)
+                      "
+                      class=""
+                      style="
+                        margin: 0;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: inherit;
+                        font-size: 20px;
+                        width: max-content;
+                      "
+                      @click="
+                        showPwdForm = true;
+                        pwdFormInfo = item;
+                      "
+                    >
+                      {{ item.contestTitle }}
+                    </a>
+                  </div>
 
                   <div style="display: flex; flex-wrap: wrap">
                     <q-chip
