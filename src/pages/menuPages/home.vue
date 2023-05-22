@@ -1,6 +1,9 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="q-gutter-sm">
+  <q-page
+    class="flex flex-center"
+    style="flex-wrap: wrap; flex-direction: column"
+  >
+    <div class="q-gutter-sm q-pa-md">
       <div>
         <h2 style="padding: 0; margin: 0"><strong>:)</strong></h2>
         <h5 style="padding-top: 30px; margin: 0">欢迎</h5>
