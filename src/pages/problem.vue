@@ -237,6 +237,20 @@
                   @update:model-value="language_change"
                 />
                 <q-btn
+                  :loading="testing"
+                  outline
+                  rounded
+                  color="primary"
+                  label="测试"
+                  @click="runCode"
+                  style="width: 120px; height: fit-content"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-hourglass class="on-left" />
+                    running...
+                  </template>
+                </q-btn>
+                <q-btn
                   :loading="submiting"
                   outline
                   rounded
@@ -284,6 +298,38 @@
                   overflow: hidden;
                 "
               ></div>
+              <div>
+                <div>输入</div>
+                <textarea
+                  rows="10"
+                  style="width: 100%; resize: vertical"
+                  v-model="input_text"
+                ></textarea>
+                <div>输出</div>
+                <div>
+                  <div v-if="runResult.err && runResult.err === true">
+                    <div class="text-h5">{{ runResult.errMsg.type }}</div>
+                    <p>{{ runResult.errMsg.msg }}</p>
+                  </div>
+                  <div v-else>
+                    <div v-if="runResult.msg">
+                      <div v-if="runResult.msg.errResult === true">
+                        <div class="text-h5">
+                          {{ statusCovernt(runResult.msg.errCode)[1] }}
+                        </div>
+                      </div>
+                      <div v-else>
+                        <textarea
+                          rows="10"
+                          style="width: 100%; resize: vertical"
+                          v-model="output_text"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div>{{ runResult }}</div> -->
+              </div>
             </q-tab-panel>
 
             <q-tab-panel name="submissions" style="padding: 0; margin: 0">
@@ -356,12 +402,16 @@ export default defineComponent({
     const submissionRef = ref();
     const tab_inited = ref({});
     const submiting = ref(false);
+    const testing = ref(false);
     const file_model = ref(null);
     let code_content = '';
     const tab = ref('problem');
     const err_msg = ref('');
     const showSubmitResult = ref(false);
     const submissionId = ref('');
+    const runResult = ref({});
+    const input_text = ref('');
+    const output_text = ref('');
 
     const readCodeFromFile = async () => {
       var promise = new Promise((reslove) => {
@@ -420,6 +470,61 @@ export default defineComponent({
           });
           showSubmitResult.value = true;
           submissionId.value = data.data.submissionId;
+        })
+        .catch((error) => {
+          submiting.value = false;
+          // console.error('Error:', error);
+          // alert(error.response.data.detail);
+          var err_msg_notify = '';
+          try {
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&&err=${error.response.data.detail}`
+              );
+            else if (error.response.status === 400)
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
+          } catch {
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
+            $q.notify({
+              type: 'negative',
+              message: err_msg_notify,
+              progress: true,
+            });
+          }
+        });
+    };
+
+    const runCode = async () => {
+      if (testing.value) return;
+      testing.value = true;
+      if (file_model.value === null) {
+        code_content = ITextModel.getValue();
+      } else {
+        await readCodeFromFile();
+      }
+      // console.log('then',code_content)
+
+      axios({
+        method: 'post',
+        url: '/code/run',
+        data: {
+          codeLanguage: languageType.value,
+          code: code_content,
+          input: input_text.value,
+        },
+      })
+        .then((data) => {
+          testing.value = false;
+          // tab.value = 'submissions';
+          // refreshSubmission();
+          console.log('submit Success:', data);
+          runResult.value = data.data.data;
+          try {
+            output_text.value = runResult.value.msg.output;
+          } catch {}
         })
         .catch((error) => {
           submiting.value = false;
@@ -656,6 +761,11 @@ export default defineComponent({
       user,
       showSubmitResult,
       submissionId,
+      testing,
+      runCode,
+      runResult,
+      input_text,
+      output_text,
     };
   },
   mounted() {
