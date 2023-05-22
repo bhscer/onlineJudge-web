@@ -4,7 +4,7 @@
     <div class="content_main">
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
-          <div class="text-h2" style="font-weight: bold">
+          <div class="text-h4" style="font-weight: bold">
             {{ problem_info.title }}
           </div>
 

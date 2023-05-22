@@ -2,11 +2,11 @@
   <div class="bg_div" v-show="!show_loading">
     <div class="content_main">
       <q-card class="q-pa-lg q-my-md">
-        <div class="q-gutter-md">
-          <div class="text-h2" style="font-weight: bold">
+        <div>
+          <div class="text-h4" style="font-weight: bold">
             {{ contest_info.contestTitle }}
           </div>
-          <div style="display: flex; flex-wrap: wrap">
+          <div class="q-mt-md" style="display: flex; flex-wrap: wrap">
             <q-badge color="primary">{{
               `${contest_info.permission?.needPwd ? '需要密码' : '公开'}`
             }}</q-badge>
@@ -14,18 +14,23 @@
               ['未开始', '比赛中', '已封榜', '已结束'][tstatus]
             }}</q-badge>
           </div>
-          <div style="display: flex; justify-content: space-between">
-            <p>
+          <div
+            class="q-mt-sm"
+            style="display: flex; justify-content: space-between"
+          >
+            <p class="q-ma-none q-pa-none">
               Start:{{ timeStampTostring(contest_info.contestTimeBeginStamp) }}
             </p>
-            <p>End:{{ timeStampTostring(contest_info.contestTimeEndStamp) }}</p>
+            <p class="q-ma-none q-pa-none">
+              End:{{ timeStampTostring(contest_info.contestTimeEndStamp) }}
+            </p>
           </div>
           <q-linear-progress
             v-if="tstatus"
             size="15px"
             :value="time_percent"
             :color="`${tstatus === 2 ? 'light-blue-7' : 'primary'}`"
-            class="q-my-sm"
+            class="q-my-sm q-mr-lg"
             stripe
             style="text-align: center"
           >
@@ -232,7 +237,7 @@ export default {
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
-      if (window.innerWidth > 1000) {
+      if (window.innerWidth > 500) {
         qmarkstyle.value = '';
       } else {
         qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
