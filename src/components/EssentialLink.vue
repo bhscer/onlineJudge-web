@@ -1,7 +1,5 @@
 <template>
-  <!-- <q-item clickable tag="a" :to="link"
-      class="q-ml-sm menu-default"
-        active-class="menu-selected">
+  <q-item clickable tag="a" :to="link" class="q-ml-sm">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -9,10 +7,9 @@
     <q-item-section>
       <q-item-label>{{ title }}</q-item-label>
       <q-item-label caption>{{ caption }}</q-item-label>
-
     </q-item-section>
-  </q-item> -->
-  <a
+  </q-item>
+  <!-- <a
     class="q-my-sm q-ml-sm"
     style="
       height: 48px;
@@ -34,7 +31,7 @@
         <q-item-label>{{ title }}</q-item-label>
       </div>
     </div>
-  </a>
+  </a> -->
 </template>
 
 <script lang="ts">

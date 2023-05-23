@@ -521,6 +521,11 @@ export default {
           console.log('Success:', data);
           contest_info.value.invigilatorList = data.data.data;
           file_xlsx_model.value = null;
+          $q.notify({
+            type: 'positive',
+            message: '上传成功',
+            progress: true,
+          });
         })
         .catch((error) => {
           console.error('Error:', error);
