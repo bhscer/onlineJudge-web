@@ -25,6 +25,11 @@
           </div>
         </div>
       </q-card>
+      <div
+        v-if="contest_info.contestUser && contest_info.contestUser.length === 0"
+      >
+        用户列表为空
+      </div>
       <div style="display: flex; flex-wrap: wrap" class="q-ma-md">
         <div
           v-for="(item, idx) in contest_info.contestUser"
@@ -55,7 +60,10 @@
         </div>
       </div>
     </div>
-    <div style="width: 30%; margin-left: auto">
+    <div
+      style="width: 30%; margin-left: auto"
+      v-if="contest_info.contestUser.length > 0"
+    >
       <InvigilatorUserDetail
         :username="userDetail_username"
         :contestId="userDetail_contestId"
@@ -243,7 +251,10 @@ export default {
           contest_info.value = data.data;
           if (userDetail_contestId.value === '')
             userDetail_contestId.value = contest_info.value.contestId;
-          if (userDetail_username.value === '')
+          if (
+            userDetail_username.value === '' &&
+            contest_info.value.contestUser.length > 0
+          )
             userDetail_username.value =
               contest_info.value.contestUser[0]['username'];
           if (Object.keys(userDetail_dict.value).length === 0)

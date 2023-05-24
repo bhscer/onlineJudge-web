@@ -21,12 +21,12 @@
         <q-markup-table>
           <thead>
             <tr>
-              <th class="text-left" style="width: 5%">Problem Id</th>
-              <th class="text-left">Title</th>
-              <th class="text-left">Sources</th>
-              <th class="text-left" style="width: 5%">Solved</th>
-              <th class="text-left" style="width: 5%">Submitted</th>
-              <th class="text-left" style="width: 10%">Action</th>
+              <th class="text-left" style="width: 5%">问题编号</th>
+              <th class="text-left">标题</th>
+              <th class="text-left">来源</th>
+              <th class="text-left" style="width: 5%">通过</th>
+              <th class="text-left" style="width: 5%">提交</th>
+              <th class="text-left" style="width: 10%">操作</th>
             </tr>
           </thead>
           <tbody>

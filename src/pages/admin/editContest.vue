@@ -690,7 +690,6 @@ export default {
               err_msg.value = error.code;
             }
           });
-        show_loading.value = false;
       } else {
         axios({
           method: 'post',
