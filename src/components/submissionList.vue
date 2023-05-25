@@ -1,7 +1,7 @@
 <template>
-  <div v-if="show_loading" style="width: 200px; height: 272px">
+  <q-page v-if="show_loading" class="flex flex-center">
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
-  </div>
+  </q-page>
   <div
     v-if="!show_loading"
     style="
