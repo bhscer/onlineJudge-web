@@ -45,6 +45,7 @@
         <textarea
           rows="10"
           style="width: 100%; resize: vertical"
+          class="textbox_test"
           v-model="input_text"
         ></textarea>
         <div>输出</div>
@@ -64,6 +65,7 @@
                 <textarea
                   rows="10"
                   style="width: 100%; resize: vertical"
+                  class="textbox_test"
                   v-model="output_text"
                 ></textarea>
               </div>
@@ -348,24 +350,12 @@ export default defineComponent({
   padding-right: 10vh;
 }
 
-.body--light .sample_box {
-  margin: 0.5em 0;
-  padding: 0.3em 0.5em;
-  border: #ddd solid 1px;
-  background: #f8f8f8;
-  border-radius: 3px;
-  overflow: auto;
-  font-size: 0.875em;
-  font-family: monospace;
+.body--dark .textbox_test {
+  background: transparent;
+  color: white;
 }
-.body--dark .sample_box {
-  margin: 0.5em 0;
-  padding: 0.3em 0.5em;
-  border: #ddd solid 1px;
-  background: #111111;
-  border-radius: 3px;
-  overflow: auto;
-  font-size: 0.875em;
-  font-family: monospace;
+
+#monaco_editor_container {
+  border: grey solid 1px;
 }
 </style>

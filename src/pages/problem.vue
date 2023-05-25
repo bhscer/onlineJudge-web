@@ -287,6 +287,7 @@
                 </template>
               </q-file>
               <div
+                class="q-mt-md"
                 v-if="!file_model"
                 id="monaco_editor_container"
                 style="
@@ -302,6 +303,7 @@
                 <textarea
                   rows="10"
                   style="width: 100%; resize: vertical"
+                  class="textbox_test"
                   v-model="input_text"
                 ></textarea>
                 <div>输出</div>
@@ -321,6 +323,7 @@
                         <textarea
                           rows="10"
                           style="width: 100%; resize: vertical"
+                          class="textbox_test"
                           v-model="output_text"
                         ></textarea>
                       </div>
@@ -822,5 +825,13 @@ export default defineComponent({
   overflow: auto;
   font-size: 0.875em;
   font-family: monospace;
+}
+.body--dark .textbox_test {
+  background: transparent;
+  color: white;
+}
+
+#monaco_editor_container {
+  border: grey solid 1px;
 }
 </style>
