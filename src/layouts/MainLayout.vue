@@ -31,7 +31,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :key="_time__" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
