@@ -39,12 +39,7 @@
         <div class="text-h5 q-pt-md q-pl-md">测试点信息</div>
         <q-markup-table
           class="q-mt-md"
-          v-show="
-            !empty_content &&
-            !show_loading &&
-            !show_loading_mini &&
-            !err_msg.length
-          "
+          v-show="!show_loading && !show_loading_mini && !err_msg.length"
           style="height: 200px; overflow: auto"
         >
           <thead>
@@ -87,7 +82,7 @@
     <q-card>
       <div class="text-h5 q-py-md q-pl-md">代码</div>
       <div
-        id="monaco_editor_container"
+        id="monaco_editor_container_resultPage"
         style="
           height: 300px;
           width: 99%;
@@ -144,6 +139,7 @@ function getSubmissionInfo() {
     .then((data) => {
       console.log('Success:', data);
       submission_info.value = data.data;
+      console.log('model is', ITextModel);
       if (ITextModel === null) createEditor();
       if (submission_info.value.submissionResultGeneral === 1) {
         refresh_timer = setInterval(getSubmissionInfo, 3 * 1000);
@@ -181,9 +177,8 @@ function createEditor() {
       true_type = 'python';
       break;
   }
-  console.log(submission_info);
   ITextModel = monaco.editor.create(
-    document.getElementById('monaco_editor_container'),
+    document.getElementById('monaco_editor_container_resultPage'),
     {
       value: '',
       language: true_type,
@@ -266,4 +261,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+#monaco_editor_container {
+  border: grey solid 1px;
+}
+</style>
