@@ -109,7 +109,8 @@ export default defineComponent({
     const clickedFun = (linkNew: string) => {
       if (linkNew === cur_link) {
         _time__.value = new Date().getTime();
-        leftDrawerOpen.value = false; // !leftDrawerOpen.value
+        if (window.innerWidth < 1010) leftDrawerOpen.value = false;
+        // leftDrawerOpen.value = false; // !leftDrawerOpen.value
       }
       cur_link = linkNew;
     };
