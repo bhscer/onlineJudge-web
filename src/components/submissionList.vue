@@ -175,8 +175,10 @@
               </td>
               <td class="text-left">
                 <a
-                  @click.prevent="$router.push(`/user?uid=${item.userDBId}`)"
-                  :href="`/user?uid=${item.userDBId}`"
+                  @click.prevent="
+                    $router.push(`/userInfo?uid=${item.userDBId}`)
+                  "
+                  :href="`/userInfo?uid=${item.userDBId}`"
                   >{{ item.nickname }}</a
                 >
               </td>
