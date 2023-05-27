@@ -724,6 +724,53 @@ export default defineComponent({
           }
         });
     };
+    const statusCovernt = (status) => {
+      if (status == 10) {
+        return ['#17b978', 'AC'];
+      } else if (status == 11) {
+        return ['red', 'WA'];
+      } else if (status == 19) {
+        return ['purple', `Mystery`];
+      } else {
+        var rest = [];
+        rest.push('#ff8a5c');
+        switch (status) {
+          case 0:
+            rest.push('UnknownError');
+            break;
+          case 1:
+            rest.push('Pending');
+            break;
+          case 3:
+            rest.push('CompileError');
+            break;
+          case 12:
+            rest.push('FormatError');
+            break;
+          case 13:
+            rest.push('TLE');
+            break;
+          case 14:
+            rest.push('MLE');
+            break;
+          case 15:
+            rest.push('RuntimeError');
+            break;
+          case 16:
+            rest.push('OutputOverRange');
+            break;
+          case 17:
+            rest.push('SystemError');
+            break;
+          case 18:
+            rest.push('MultipleError');
+            break;
+          default:
+            rest.push('UnknownError');
+        }
+        return rest;
+      }
+    };
     const refreshSubmission = () => {
       if (!tab_inited.value['submissions']) return;
       // if (tab_inited.value['submissions'])
@@ -768,6 +815,7 @@ export default defineComponent({
       runResult,
       input_text,
       output_text,
+      statusCovernt,
     };
   },
   mounted() {

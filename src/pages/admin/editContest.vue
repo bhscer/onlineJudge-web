@@ -166,6 +166,12 @@
       <q-card class="q-pa-lg q-my-md" v-if="contest_info.permission">
         <q-checkbox
           dense
+          v-model="contest_info.permission.allowViewCodeAfterContest"
+          label="赛后允许查看别人代码"
+        />
+        <q-separator></q-separator>
+        <q-checkbox
+          dense
           v-model="contest_info.permission.useInvigilator"
           label="使用监考系统"
         />
@@ -288,6 +294,23 @@
           padding="xs xs"
           @click="
             contest_info.contestProblem.splice(0, 0, {
+              problemNo: '',
+              data: {
+                sourceProblemId: '',
+                isCustomTitle: false,
+                customTitle: '',
+              },
+            })
+          "
+        />
+        <q-btn
+          outline
+          color="primary"
+          label="在尾部插入"
+          size="xs"
+          padding="xs xs"
+          @click="
+            contest_info.contestProblem.push({
               problemNo: '',
               data: {
                 sourceProblemId: '',

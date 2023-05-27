@@ -11,12 +11,18 @@
     v-show="!show_loading"
   >
     <div style="padding: 0; margin: 0">
-      <div v-if="hideMsg.length" class="q-pa-md">{{ hideMsg }}</div>
-      <div v-if="!hideMsg.length">
+      <!-- <div v-if="hideMsg.length" class="q-pa-md">{{ hideMsg }}</div> -->
+      <div>
         <div style="display: flex; flex-direction: row">
           <div>
             <p class="q-my-none q-pa-sm">
-              {{ rank_type === 1 ? '已封榜' : '实时排名' }}
+              {{
+                hideMsg.length
+                  ? hideMsg
+                  : rank_type === 1
+                  ? '已封榜'
+                  : '实时排名'
+              }}
             </p>
             <q-checkbox
               v-model="auto_refresh_flag"
@@ -38,7 +44,12 @@
           <q-markup-table
             class="q-mt-md"
             separator="cell"
-            v-show="!empty_content && !show_loading && !err_msg.length"
+            v-show="
+              hideMsg.length === 0 &&
+              !empty_content &&
+              !show_loading &&
+              !err_msg.length
+            "
           >
             <thead>
               <tr>
@@ -292,7 +303,8 @@ export default defineComponent({
             hideMsg,
             rank_type,
             auto_refresh_flag,
-            page_show
+            page_show,
+            refreshTimer
         };
 
 
@@ -332,7 +344,7 @@ export default defineComponent({
     beforeUnmount() {
       // window.removeEventListener('resize', this.cancalDebounce);
       window.removeEventListener('resize', this.getWindowInfo);
-      if (this.auto_refresh_flag!==null) clearInterval(this.auto_refresh_flag)
+      if (this.refreshTimer!==null) clearInterval(this.refreshTimer)
     },
     watch:{
       queryType (to,from){

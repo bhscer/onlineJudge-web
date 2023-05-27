@@ -177,6 +177,8 @@ function statusCovernt(status) {
     return ['#17b978', 'AC'];
   } else if (status == 11) {
     return ['red', 'WA'];
+  } else if (status == 19) {
+    return ['purple', `Mystery`];
   } else {
     var rest = [];
     rest.push('#ff8a5c');

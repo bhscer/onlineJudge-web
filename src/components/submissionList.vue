@@ -342,6 +342,10 @@ export default defineComponent({
                             submission_list.value[i]["boardColor"] = "red";
                             submission_list.value[i]["boardText"] = `WA:${submission_list.value[i]["submissionPassRate"]}%`;
                         }
+                        else if (submission_list.value[i]["submissionResultGeneral"] == 19) {
+                            submission_list.value[i]["boardColor"] = "purple";
+                            submission_list.value[i]["boardText"] = `Mystery`;
+                        }
                         else {
                             submission_list.value[i]["boardColor"] = "#ff8a5c";
                             switch (submission_list.value[i]["submissionResultGeneral"]) {
