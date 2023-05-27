@@ -45,7 +45,7 @@ function getContestInfo() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       // 列表获取成功
       console.log(data);
       contest_info.value = data.data.data;

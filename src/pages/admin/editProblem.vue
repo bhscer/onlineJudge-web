@@ -386,7 +386,7 @@ export default defineComponent({
           url: '/admin/problem/getCnt',
         })
           .then((data) => {
-            console.log('Success:', data);
+            // console.log('Success:', data);
             if (data.data.status === 1) {
               console.log(data);
               problem_info.value.problemIdString = data.data.problemIdString;
@@ -421,7 +421,7 @@ export default defineComponent({
           },
         })
           .then((data) => {
-            console.log('Success:', data);
+            // console.log('Success:', data);
             if (data.data.status === 1) {
               // 列表获取成功
               console.log(data);

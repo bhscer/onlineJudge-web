@@ -137,7 +137,7 @@ function getSubmissionInfo() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       submission_info.value = data.data;
       console.log('model is', ITextModel);
       if (ITextModel === null) createEditor();

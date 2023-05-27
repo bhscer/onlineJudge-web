@@ -100,7 +100,7 @@ function getUserCfRating() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       console.log(data);
       user_info.value.analyze.cf_rating = data.data.cf_rating;
     })
@@ -137,7 +137,7 @@ function getUserInfo() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       if (data.data.status === 1) {
         // 列表获取成功
         console.log(data);
@@ -270,7 +270,7 @@ function drawChart() {
           let v = tarValue;
           //计算出百分比
           let p = Math.round((tarValue / total) * 100) + '%';
-          return `${name}  ${v} (${p})`;
+          return `${name}: ${v}(${p})`;
           //name是名称，v是数值
         },
       },
@@ -304,6 +304,10 @@ function drawChart() {
 }
 onMounted(() => {
   getUserInfo();
+
+  window.onresize = () => {
+    if (chartPie !== null) chartPie.resize();
+  };
 });
 watch(
   () => proxy.$route,

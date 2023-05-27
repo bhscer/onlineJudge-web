@@ -702,7 +702,7 @@ export default defineComponent({
         data: post_data,
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           console.log(data);
           problem_info.value = data.data.data;
           language_options.value = data.data.data.language;

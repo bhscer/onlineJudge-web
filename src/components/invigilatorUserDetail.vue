@@ -335,7 +335,7 @@ function waitImgUploaded() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       clearInterval(waitImgUploadedTimer);
       screenImgLoading.value = false;
       queryUserImgList();
@@ -371,7 +371,7 @@ function queryUserImgList() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       img_list.value = data.data;
       show_loading.value = false;
     })
@@ -410,7 +410,7 @@ function sendMsg() {
     .then((data) => {
       msg_sending.value = false;
       send_msg_text.value = '';
-      console.log('Success:', data);
+      // console.log('Success:', data);
       $q.notify({
         type: 'positive',
         message: '请求成功',
@@ -457,7 +457,7 @@ function changeLogType(dbId) {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       $q.notify({
         type: 'positive',
         message: '请求成功',
@@ -505,7 +505,7 @@ function getUserImg() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       $q.notify({
         type: 'positive',
         message: '请求成功',
@@ -551,7 +551,7 @@ function getUserDetailInfo() {
     },
   })
     .then((data) => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       user_detail_info.value = data.data;
       show_loading.value = false;
       show_loading_mini.value = false;

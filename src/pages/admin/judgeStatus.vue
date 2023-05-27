@@ -48,7 +48,7 @@ export default defineComponent({
         url: '/admin/judger/status',
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           // 列表获取成功
           console.log(data);
           judge_info.value = data.data;

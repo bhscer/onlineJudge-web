@@ -518,7 +518,7 @@ export default {
           formData
         )
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           contest_info.value.invigilatorList = data.data.data;
           file_xlsx_model.value = null;
           $q.notify({
@@ -669,7 +669,7 @@ export default {
           url: '/admin/contest/getCnt',
         })
           .then((data) => {
-            console.log('Success:', data);
+            // console.log('Success:', data);
             if (data.data.status === 1) {
               console.log(data);
               contest_info.value.contestId = data.data.contestId;
@@ -699,7 +699,7 @@ export default {
           },
         })
           .then((data) => {
-            console.log('Success:', data);
+            // console.log('Success:', data);
             if (data.data.status === 1) {
               // 列表获取成功
               console.log(data);
@@ -743,7 +743,7 @@ export default {
         },
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           $q.notify({
             type: 'positive',
             message: '重构成功',

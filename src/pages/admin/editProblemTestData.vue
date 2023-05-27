@@ -361,6 +361,10 @@ function genConfig() {
 }
 function checkRejudgeStatus() {
   if (check_rejudge_timer !== null) clearInterval(check_rejudge_timer);
+  if (
+    this_route.path.toLowerCase() !== '/admin/editProblemTestData'.toLowerCase()
+  )
+    return;
   axios({
     method: 'post',
     url: '/admin/problem/rejudgeStatus',
@@ -379,7 +383,7 @@ function checkRejudgeStatus() {
           progress: true,
         });
       } else {
-        setInterval(checkRejudgeStatus, 5 * 1000);
+        check_rejudge_timer = setInterval(checkRejudgeStatus, 5 * 1000);
       }
     })
     .catch((error) => {

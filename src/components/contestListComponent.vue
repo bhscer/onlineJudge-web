@@ -252,7 +252,7 @@ export default defineComponent({
         },
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           this_router.push(
             `/contest?cid=${pwdFormInfo.value.contestId}&&pwd=${md5(
               pwd_text.value
@@ -348,7 +348,7 @@ export default defineComponent({
         data: post_data,
       })
         .then((data) => {
-          console.log('Success:', data);
+          // console.log('Success:', data);
           if (data.data.status === 1) {
             // 列表获取成功
             console.log(data);

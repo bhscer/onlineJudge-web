@@ -163,7 +163,7 @@ export default defineComponent({
                 url: '/problem/getList',
                 data: post_data
             }) .then(data => {
-                console.log('Success:', data);
+                // console.log('Success:', data);
                 if (data.data.status === 1) // 列表获取成功
                 {
                     console.log(data);
