@@ -96,7 +96,9 @@
                       itemrs.status === 1
                         ? 'red-6'
                         : itemrs.status === 2
-                        ? 'green-6'
+                        ? itemrs.isFirst
+                          ? 'green-9'
+                          : 'green-5'
                         : 'deep-purple-3'
                     }`"
                   >
@@ -228,6 +230,7 @@ export default defineComponent({
                     maxPage.value = data.data.maxPage;
                     rank_type.value = data.data.type
                     rank_list.value = [];
+                    var solved_dict = {};
                     for (var i=0;i<data.data.data.length;i++)
                     {
                       var tmp_dict = data.data.data[i]
@@ -245,8 +248,14 @@ export default defineComponent({
                             'tryCnt':0
                           }
                         }
-                        else{
+                        else
+                        {
                           tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
+                          if (tmp_tmp_dict.status===2 && solved_dict.j === undefined)
+                          {
+                            tmp_tmp_dict.isFirst = true
+                          }
+                          if (tmp_tmp_dict.status===2) solved_dict.j = true;
                         }
                         tmp_dict['res'].push(tmp_tmp_dict)
                       }

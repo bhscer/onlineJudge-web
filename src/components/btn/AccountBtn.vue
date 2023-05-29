@@ -26,7 +26,10 @@
     </q-btn>
     <q-menu
       v-model="showing"
-      v-if="$route.path.toLowerCase().substring(0, 12) !== '/invigilator'"
+      v-if="
+        $route.path.toLowerCase().substring(0, 12) !== '/invigilator' &&
+        !user.auth_ing
+      "
     >
       <q-list style="min-width: 100px">
         <q-item
