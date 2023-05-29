@@ -251,11 +251,11 @@ export default defineComponent({
                         else
                         {
                           tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
-                          if (tmp_tmp_dict.status===2 && solved_dict.j === undefined)
+                          if (tmp_tmp_dict.status===2 && solved_dict[j] === undefined)
                           {
                             tmp_tmp_dict.isFirst = true
                           }
-                          if (tmp_tmp_dict.status===2) solved_dict.j = true;
+                          if (tmp_tmp_dict.status===2) solved_dict[j] = true;
                         }
                         tmp_dict['res'].push(tmp_tmp_dict)
                       }
@@ -276,6 +276,7 @@ export default defineComponent({
                     }
                     show_loading.value = false;
                     show_loading_mini.value = false;
+                    console.log(solved_dict)
                 } else {
                     // alert(data.msg)
                     // showFailToast(data.data.msg)
