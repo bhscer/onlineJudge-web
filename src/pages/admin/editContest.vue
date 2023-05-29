@@ -162,6 +162,25 @@
           </q-input>
         </div>
       </q-card>
+      <q-card class="q-pa-lg q-my-md" v-if="contest_info.permission">
+        <q-checkbox
+          dense
+          v-model="contest_info.permission.languageLimit"
+          label="限制提交语言"
+        />
+        <div v-if="contest_info.permission.languageLimit">
+          <div style="max-height: 200px; overflow: auto; margin-top: 5px">
+            <q-option-group
+              class="q-ml-sm"
+              v-model="contest_info.permission.languageList"
+              :options="language_options"
+              color="primary"
+              type="checkbox"
+              dense
+            />
+          </div>
+        </div>
+      </q-card>
 
       <q-card class="q-pa-lg q-my-md" v-if="contest_info.permission">
         <q-checkbox
@@ -438,6 +457,20 @@ export default {
     const date_froze = ref('2023-01-01 16:00');
     const use_custom_id = ref(false);
     const file_xlsx_model = ref(null);
+    const language_options = ref([
+      {
+        label: 'C++',
+        value: 'C++',
+      },
+      {
+        label: 'Java',
+        value: 'Java',
+      },
+      {
+        label: 'Python3',
+        value: 'Python3',
+      },
+    ]);
 
     const submitEdit = async () => {
       // submiting.value = true;
@@ -818,6 +851,7 @@ export default {
       getXlsxResolvedList,
       date_froze,
       rebuildRank,
+      language_options,
     };
   },
   mounted() {
