@@ -230,7 +230,30 @@ export default defineComponent({
                     maxPage.value = data.data.maxPage;
                     rank_type.value = data.data.type
                     rank_list.value = [];
-                    var solved_dict = {};
+                    var min_time = {};
+                    for (var i=0;i<data.data.data.length;i++)
+                    {
+                      for (var j=0;j<contestInfo.value.contestProblem.length;j++)
+                      {
+                        if (data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]===undefined)
+                        {
+                          ;
+                        }
+                        else
+                        {
+                          tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
+                          if (tmp_tmp_dict.status===2 && min_time[j] === undefined)
+                          {
+                            min_time[j] = tmp_tmp_dict.timeCost
+                          }
+                          if (tmp_tmp_dict.status===2)
+                          {
+                            min_time[j] = Math.min(min_time[j],tmp_tmp_dict.timeCost)
+                          }
+                        }
+                      }
+                    }
+
                     for (var i=0;i<data.data.data.length;i++)
                     {
                       var tmp_dict = data.data.data[i]
@@ -251,11 +274,10 @@ export default defineComponent({
                         else
                         {
                           tmp_tmp_dict = data.data.data[i]['result'][contestInfo.value.contestProblem[j]['problemNo']]
-                          if (tmp_tmp_dict.status===2 && solved_dict[j] === undefined)
+                          if (tmp_tmp_dict.status===2 && min_time[j] === tmp_tmp_dict.timeCost)
                           {
                             tmp_tmp_dict.isFirst = true
                           }
-                          if (tmp_tmp_dict.status===2) solved_dict[j] = true;
                         }
                         tmp_dict['res'].push(tmp_tmp_dict)
                       }
@@ -276,7 +298,6 @@ export default defineComponent({
                     }
                     show_loading.value = false;
                     show_loading_mini.value = false;
-                    console.log(solved_dict)
                 } else {
                     // alert(data.msg)
                     // showFailToast(data.data.msg)

@@ -4,9 +4,15 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
-    style="color: white"
   >
-    <circle cx="8" cy="8" r="7.25" stroke="#ffffff" stroke-width="1.5" />
+    <circle
+      cx="8"
+      cy="8"
+      r="7.25"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      class="svg-stroke"
+    />
     <mask
       id="a"
       style="mask-type: alpha"
@@ -20,13 +26,14 @@
         cx="8"
         cy="8"
         r="7.25"
+        class="svg-stroke svg-fill"
         fill="#ffffff"
         stroke="#ffffff"
         stroke-width="1.5"
       />
     </mask>
     <g mask="url(#a)">
-      <path fill="#ffffff" d="M0 0h8v16H0z" />
+      <path fill="#ffffff" d="M0 0h8v16H0z" class="svg-fill" />
     </g>
   </svg>
 </template>

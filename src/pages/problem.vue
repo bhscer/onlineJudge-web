@@ -7,6 +7,34 @@
           <div class="text-h3" style="font-weight: bold">
             {{ problem_info.title }}
           </div>
+          <div v-if="$route.query.type === '1'">
+            <a
+              @click.prevent="
+                $router.push(
+                  `${
+                    $route.path.toLowerCase() ===
+                    '/invigilator/problem'.toLowerCase()
+                      ? '/invigilator'
+                      : ''
+                  }/contest?cid=${$route.query.cid}${
+                    $route.query.pwd ? '&pwd=' + $route.query.pwd : ''
+                  }`
+                )
+              "
+              :href="`${
+                $route.path.toLowerCase() ===
+                '/invigilator/problem'.toLowerCase()
+                  ? '/invigilator'
+                  : ''
+              }/contest?cid=${$route.query.cid}${
+                $route.query.pwd ? '&pwd=' + $route.query.pwd : ''
+              }`"
+              style="color: inherit; cursor: pointer; text-decoration: none"
+            >
+              <q-icon name="arrow_back"></q-icon>
+              <span>返回比赛</span>
+            </a>
+          </div>
 
           <q-badge
             color="primary"
