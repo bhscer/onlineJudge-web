@@ -278,7 +278,7 @@ export default defineComponent({
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;

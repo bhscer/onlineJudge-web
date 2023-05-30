@@ -80,7 +80,7 @@
                     <a
                       @click.prevent="
                         this.$router.push(
-                          `/invigilator/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`
+                          `/invigilator/problem?type=1&cid=${contest_info.contestId}&pid=${item.problemNo}`
                         )
                       "
                       style="
@@ -88,7 +88,7 @@
                         cursor: pointer;
                         text-decoration: none;
                       "
-                      :href="`/invigilator/problem?type=1&&cid=${contest_info.contestId}&&pid=${item.problemNo}`"
+                      :href="`/invigilator/problem?type=1&cid=${contest_info.contestId}&pid=${item.problemNo}`"
                       >{{ item.problemName }}</a
                     >
                   </td>
@@ -320,7 +320,7 @@ export default {
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;

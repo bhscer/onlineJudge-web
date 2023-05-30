@@ -274,7 +274,7 @@ export default defineComponent({
           submiting.value = false;
           console.log('submit Success:', data);
           if (this_route.query.add === '1') {
-            this_router.replace(`/admin/editContest?add=0&&id=${data.data.id}`);
+            this_router.replace(`/admin/editContest?add=0&id=${data.data.id}`);
           }
           $q.notify({
             type: 'positive',

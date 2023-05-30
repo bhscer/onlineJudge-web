@@ -115,9 +115,9 @@
                     width: max-content;
                   "
                   @click.prevent="
-                    $router.push(`/admin/editContest?add=0&&id=${item.id}`)
+                    $router.push(`/admin/editContest?add=0&id=${item.id}`)
                   "
-                  :href="`/admin/editContest?add=0&&id=${item.id}`"
+                  :href="`/admin/editContest?add=0&id=${item.id}`"
                 >
                   编辑
                 </a>
@@ -267,7 +267,7 @@ export default defineComponent({
         .then((data) => {
           // console.log('Success:', data);
           this_router.push(
-            `/contest?cid=${pwdFormInfo.value.contestId}&&pwd=${md5(
+            `/contest?cid=${pwdFormInfo.value.contestId}&pwd=${md5(
               pwd_text.value
             )}`
           );
@@ -393,7 +393,7 @@ export default defineComponent({
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;

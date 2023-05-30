@@ -129,12 +129,12 @@
                       <a
                         @click.prevent="
                           this.$router.push(
-                            `${url_prefix}/problem?type=1&&cid=${
+                            `${url_prefix}/problem?type=1&cid=${
                               contest_info.contestId
-                            }&&pid=${item.problemNo}${
+                            }&pid=${item.problemNo}${
                               contest_info.permission.needPwd
                                 ? this.$route.query.pwd
-                                  ? '&&pwd=' + this.$route.query.pwd
+                                  ? '&pwd=' + this.$route.query.pwd
                                   : ''
                                 : ''
                             }`
@@ -145,12 +145,12 @@
                           cursor: pointer;
                           text-decoration: none;
                         "
-                        :href="`${url_prefix}/problem?type=1&&cid=${
+                        :href="`${url_prefix}/problem?type=1&cid=${
                           contest_info.contestId
-                        }&&pid=${item.problemNo}${
+                        }&pid=${item.problemNo}${
                           contest_info.permission.needPwd
                             ? this.$route.query.pwd
-                              ? '&&pwd=' + this.$route.query.pwd
+                              ? '&pwd=' + this.$route.query.pwd
                               : ''
                             : ''
                         }`"
@@ -388,7 +388,7 @@ export default {
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;

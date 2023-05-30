@@ -199,7 +199,7 @@ const loginFun = () => {
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)
-          router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
+          router.push(`/userLogin?type=2&err=${error.response.data.detail}`);
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
         else err_msg_notify = '错误码' + error.response.status;
@@ -244,7 +244,7 @@ const registerFun = () => {
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)
-          router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
+          router.push(`/userLogin?type=2&err=${error.response.data.detail}`);
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
         else err_msg_notify = '错误码' + error.response.status;

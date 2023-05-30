@@ -45,9 +45,9 @@
             "
             ><a
               @click.prevent="
-                $router.push(`/admin/editProblem?add=0&&id=${problem_info.id}`)
+                $router.push(`/admin/editProblem?add=0&id=${problem_info.id}`)
               "
-              :href="`/admin/editProblem?add=0&&id=${problem_info.id}`"
+              :href="`/admin/editProblem?add=0&id=${problem_info.id}`"
               style="color: inherit; cursor: pointer; text-decoration: none"
               >编辑</a
             ></q-badge
@@ -143,7 +143,7 @@
             keep-alive
           >
             <q-tab-panel name="problem">
-              <div class="q-pa-md q-gutter-md">
+              <div class="q-pa-md q-gutter-md" v-viewer>
                 <div
                   v-if="
                     problem_info.description && problem_info.description.length
@@ -397,6 +397,8 @@ import SubmissionList from '@/components/submissionList.vue';
 import LoadingPage from '@/components/loadingPage.vue';
 import { useUserStore } from '@/stores/user';
 import ResultComponent from '@/components/resultComponent.vue';
+import 'viewerjs/dist/viewer.css';
+import { component as Viewer } from 'v-viewer';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -509,7 +511,7 @@ export default defineComponent({
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;
@@ -564,7 +566,7 @@ export default defineComponent({
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;
@@ -742,7 +744,7 @@ export default defineComponent({
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;

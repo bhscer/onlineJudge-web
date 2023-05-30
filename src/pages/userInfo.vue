@@ -12,7 +12,7 @@
             text-color="white"
           >
             <img
-              :src="`https://cravatar.cn/avatar/${user_info.emailMd5}?d=mp&&s=100`"
+              :src="`https://cravatar.cn/avatar/${user_info.emailMd5}?d=mp&s=100`"
             />
           </q-avatar>
           <div class="q-my-auto">
@@ -109,7 +109,7 @@ function getUserCfRating() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         // else if (error.response.status === 400)
         //   err_msg.value = error.response.data.detail;
@@ -162,7 +162,7 @@ function getUserInfo() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg.value = error.response.data.detail;

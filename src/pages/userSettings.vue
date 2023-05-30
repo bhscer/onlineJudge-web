@@ -210,7 +210,7 @@ function pwdChange() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -259,7 +259,7 @@ function emailChange() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -301,7 +301,7 @@ function nicknameChange() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -342,7 +342,7 @@ function cfAccountChange() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -375,7 +375,7 @@ function getCurrentUserCfAccount() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;

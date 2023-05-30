@@ -35,9 +35,9 @@
               <td class="text-left">
                 <a
                   @click.prevent="
-                    $router.push(`/problem?type=0&&id=${item.problemIdString}`)
+                    $router.push(`/problem?type=0&id=${item.problemIdString}`)
                   "
-                  :href="`/problem?type=0&&id=${item.problemIdString}`"
+                  :href="`/problem?type=0&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
                   >{{ item.title }}</a
                 >
@@ -69,9 +69,9 @@
                 <q-badge color="primary" outline class="q-ml-sm">
                   <a
                     @click.prevent="
-                      $router.push(`/admin/editProblem?add=0&&id=${item.id}`)
+                      $router.push(`/admin/editProblem?add=0&id=${item.id}`)
                     "
-                    :href="`/admin/editProblem?add=0&&id=${item.id}`"
+                    :href="`/admin/editProblem?add=0&id=${item.id}`"
                     style="
                       color: inherit;
                       cursor: pointer;
@@ -119,9 +119,9 @@
       <div class="text-h6">
         <a
           @click.prevent="
-            $router.push(`/problem?type=0&&id=${deleteInfo.problemIdString}`)
+            $router.push(`/problem?type=0&id=${deleteInfo.problemIdString}`)
           "
-          :href="`/problem?type=0&&id=${deleteInfo.problemIdString}`"
+          :href="`/problem?type=0&id=${deleteInfo.problemIdString}`"
           style="color: inherit; cursor: pointer; text-decoration: none"
           >{{ deleteInfo.title }}</a
         >
@@ -263,7 +263,7 @@ export default defineComponent({
                     console.error('Error:', error);
                     try {
                       if (error.response.status === 401)
-              this_router.push(`/userLogin?type=2&&err=${error.response.data.detail}`);
+              this_router.push(`/userLogin?type=2&err=${error.response.data.detail}`);
                       else if (error.response.status === 400)
                         err_msg.value = error.response.data.detail;
                       else err_msg.value = error.response.status;

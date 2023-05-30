@@ -52,7 +52,7 @@
                       $permissionDict[user.info.permission]['editProblem'] ===
                         true)
                       ? $router.push(
-                          `/problem?type=0&&id=${item.problemIdString}`
+                          `/problem?type=0&id=${item.problemIdString}`
                         )
                       : $q.notify({
                           type: 'negative',
@@ -60,7 +60,7 @@
                           progress: true,
                         })
                   "
-                  :href="`/problem?type=0&&id=${item.problemIdString}`"
+                  :href="`/problem?type=0&id=${item.problemIdString}`"
                   style="color: inherit; cursor: pointer; text-decoration: none"
                   >{{ item.title }}</a
                 >

@@ -498,7 +498,7 @@ export default {
           // submiting.value = false;
           console.log('submit Success:', data);
           if (this_route.query.add === '1') {
-            this_router.replace(`/admin/editContest?add=0&&id=${data.data.id}`);
+            this_router.replace(`/admin/editContest?add=0&id=${data.data.id}`);
           }
           $q.notify({
             type: 'positive',
@@ -589,7 +589,7 @@ export default {
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;
@@ -812,7 +812,7 @@ export default {
           try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg_notify = error.response.data.detail;

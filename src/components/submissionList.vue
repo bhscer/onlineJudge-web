@@ -165,9 +165,9 @@
               <td class="text-left">
                 <a
                   @click.prevent="
-                    $router.push(`/problem?type=0&&id=${item.sourceProblemId}`)
+                    $router.push(`/problem?type=0&id=${item.sourceProblemId}`)
                   "
-                  :href="`/problem?type=0&&id=${item.sourceProblemId}`"
+                  :href="`/problem?type=0&id=${item.sourceProblemId}`"
                   >{{
                     `${item.sourceProblemId}: ${item.sourceProblemTitle}`
                   }}</a
@@ -407,7 +407,7 @@ export default defineComponent({
                 try {
             if (error.response.status === 401)
               this_router.push(
-                `/userLogin?type=2&&err=${error.response.data.detail}`
+                `/userLogin?type=2&err=${error.response.data.detail}`
               );
             else if (error.response.status === 400)
               err_msg.value = error.response.data.detail;

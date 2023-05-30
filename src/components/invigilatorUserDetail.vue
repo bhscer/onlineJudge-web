@@ -345,7 +345,7 @@ function waitImgUploaded() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else waitImgUploadedTimer = setInterval(waitImgUploaded, 5 * 1000);
         // else if (error.response.status === 400)
@@ -381,7 +381,7 @@ function queryUserImgList() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg.value = error.response.data.detail;
@@ -424,7 +424,7 @@ function sendMsg() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -472,7 +472,7 @@ function changeLogType(dbId) {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -522,7 +522,7 @@ function getUserImg() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400)
           err_msg_notify = error.response.data.detail;
@@ -563,7 +563,7 @@ function getUserDetailInfo() {
       try {
         if (error.response.status === 401)
           this_router.push(
-            `/userLogin?type=2&&err=${error.response.data.detail}`
+            `/userLogin?type=2&err=${error.response.data.detail}`
           );
         else if (error.response.status === 400) {
           err_msg.value = error.response.data.detail;
