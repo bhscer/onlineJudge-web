@@ -1,6 +1,21 @@
 <template>
   <div class="bg_div" v-show="!show_loading">
     <div class="content_main">
+      <div class="text-h5">
+        <strong>{{
+          this.$route.query.add === '0' ? '比赛编辑' : '添加比赛'
+        }}</strong>
+      </div>
+      <a
+        v-if="$route.query.add === '0'"
+        class="q-pb-sm"
+        @click.prevent="$router.push(`/contest?cid=${contest_info.contestId}`)"
+        :href="`/contest?cid=${contest_info.contestId}`"
+        style="color: inherit; cursor: pointer; text-decoration: none"
+      >
+        <q-icon name="arrow_back"></q-icon>
+        <span>返回比赛</span>
+      </a>
       <q-card class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
           <q-checkbox

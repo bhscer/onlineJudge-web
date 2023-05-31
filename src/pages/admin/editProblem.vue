@@ -2,11 +2,22 @@
   <div class="bg_div" v-show="!show_loading">
     <!-- 题目 -->
     <div class="content_main">
-      <div class="text-h3">
+      <div class="text-h5">
         <strong>{{
           this.$route.query.add === '0' ? '题目编辑' : '添加题目'
         }}</strong>
       </div>
+      <a
+        v-if="$route.query.add === '0'"
+        @click.prevent="
+          $router.push(`/problem?type=0&id=${problem_info.problemIdString}`)
+        "
+        :href="`/problem?type=0&id=${problem_info.problemIdString}`"
+        style="color: inherit; cursor: pointer; text-decoration: none"
+      >
+        <q-icon name="arrow_back"></q-icon>
+        <span>返回题目</span>
+      </a>
       <div class="q-pa-lg q-my-md">
         <div class="q-gutter-md">
           <q-checkbox
@@ -63,14 +74,10 @@
           <div class="text-h5" style="font-weight: bold">题目描述</div>
           <div>
             <div v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor
-                :content="problem_info.description"
-                @change="updateData"
-                :height="500"
-                :z-index="1000"
-                :auto-height="true"
-                :show-module-name="false"
-              ></vue-html5-editor>
+              <vue3-tinymce
+                v-model="problem_info.description"
+                :setting="$tinymce_config"
+              />
             </div>
             <div v-if="problem_info.uiType === 'markdown'">
               <v-md-editor
@@ -86,14 +93,10 @@
           <div class="text-h5" style="font-weight: bold">输入格式</div>
           <div>
             <div v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor
-                :content="problem_info.inputFormat"
-                @change="updateData"
-                :height="500"
-                :z-index="1000"
-                :auto-height="true"
-                :show-module-name="false"
-              ></vue-html5-editor>
+              <vue3-tinymce
+                v-model="problem_info.inputFormat"
+                :setting="$tinymce_config"
+              />
             </div>
             <div v-if="problem_info.uiType === 'markdown'">
               <v-md-editor
@@ -109,14 +112,10 @@
           <div class="text-h5" style="font-weight: bold">输出格式</div>
           <div>
             <div v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor
-                :content="problem_info.outputFormat"
-                @change="updateData"
-                :height="500"
-                :z-index="1000"
-                :auto-height="true"
-                :show-module-name="false"
-              ></vue-html5-editor>
+              <vue3-tinymce
+                v-model="problem_info.outputFormat"
+                :setting="$tinymce_config"
+              />
             </div>
             <div v-if="problem_info.uiType === 'markdown'">
               <v-md-editor
@@ -175,14 +174,10 @@
           <div class="text-h5" style="font-weight: bold">提示</div>
           <div>
             <div v-if="problem_info.uiType === 'html'">
-              <vue-html5-editor
-                :content="problem_info.problemHint"
-                @change="updateData"
-                :height="500"
-                :z-index="1000"
-                :auto-height="true"
-                :show-module-name="false"
-              ></vue-html5-editor>
+              <vue3-tinymce
+                v-model="problem_info.problemHint"
+                :setting="$tinymce_config"
+              />
             </div>
             <div v-if="problem_info.uiType === 'markdown'">
               <v-md-editor
@@ -216,10 +211,10 @@ import { api as axios } from '@/boot/axios';
 
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
-
 import * as monaco from 'monaco-editor';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import Vue3Tinymce from '@jsdawn/vue3-tinymce';
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -501,6 +496,9 @@ export default defineComponent({
   beforeUnmount() {
     // window.removeEventListener('resize', this.cancalDebounce);
     window.removeEventListener('resize', this.getWindowInfo);
+  },
+  components: {
+    Vue3Tinymce,
   },
 });
 </script>
