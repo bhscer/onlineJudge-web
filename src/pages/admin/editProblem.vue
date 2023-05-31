@@ -66,6 +66,9 @@
           val="markdown"
           label="markdown"
         />
+        <p class="q-ma-none q-pa-none q-ml-md">
+          编辑器加载较慢，如未显示请耐心等待
+        </p>
       </div>
 
       <div class="q-pa-md q-gutter-md">
@@ -160,11 +163,19 @@
             <div style="display: flex; flex-wrap: wrap">
               <div :style="samplewidthTextLeft">
                 <strong>{{ '输入' }}</strong>
-                <textarea v-model="item.input" class="sample_box"></textarea>
+                <textarea
+                  v-model="item.input"
+                  class="sample_box"
+                  style="width: 100%"
+                ></textarea>
               </div>
               <div :style="samplewidthTextRight">
                 <strong>{{ '输出' }}</strong>
-                <textarea v-model="item.output" class="sample_box"></textarea>
+                <textarea
+                  v-model="item.output"
+                  class="sample_box"
+                  style="width: 100%"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -535,6 +546,7 @@ export default defineComponent({
   padding: 0.3em 0.5em;
   border: #ddd solid 1px;
   background: #111111;
+  color: white;
   border-radius: 3px;
   overflow: auto;
   font-size: 0.875em;
