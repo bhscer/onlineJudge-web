@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" :style="bg_style">
     <q-header reveal class="bg-header-auto">
       <q-toolbar class="text-primary">
         <q-btn
@@ -37,11 +37,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { inject } from 'vue';
 import { $t } from '@/boot/i18n';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarBtnGroup from '@/components/ToolbarBtnGroup.vue';
+import { useUserStore } from '@/stores/user';
+import { setCssVar } from 'quasar';
 
 const linksList = [
   {
@@ -103,6 +106,9 @@ export default defineComponent({
   },
 
   setup() {
+    const this_route = useRoute();
+    const user = useUserStore();
+    const bg_style = ref();
     const leftDrawerOpen = ref(false);
     const _time__ = ref(0);
     let cur_link = '';
@@ -114,6 +120,34 @@ export default defineComponent({
       }
       cur_link = linkNew;
     };
+    const changeBgFun = () => {
+      if (this_route.path.toLowerCase().substring(0, 12) === '/invigilator')
+        return;
+      bg_style.value =
+        user.exists && user.info?.customBg
+          ? `
+      background: url(${user.info?.bgUrl}) no-repeat;
+     background-size: cover;
+     background-attachment: fixed;`
+          : '';
+      if (user.exists && user.info?.customColorFlag) {
+        setCssVar('primary', user.info?.customColor);
+      } else {
+        setCssVar('primary', '#1976d2');
+      }
+    };
+    watch(
+      () => [
+        user.exists,
+        user.info?.customBg,
+        user.info?.bgUrl,
+        user.info?.customColorFlag,
+        user.info?.customColor,
+      ],
+      (to, from) => {
+        changeBgFun();
+      }
+    );
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
@@ -122,7 +156,13 @@ export default defineComponent({
       },
       clickedFun,
       _time__,
+      user,
+      bg_style,
+      changeBgFun,
     };
+  },
+  mounted() {
+    this.changeBgFun();
   },
 });
 </script>

@@ -11,6 +11,10 @@ export namespace user {
     permission: string;
     userDBId: string;
     loginType: number;
+    customBg: boolean;
+    bgUrl: string;
+    customColorFlag: boolean;
+    customColor: string;
   }
 
   const base = (key: string) => {

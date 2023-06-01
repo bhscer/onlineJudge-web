@@ -73,20 +73,23 @@
             }`
           }}
         </p>
-        <q-input
-          outlined
-          dense
-          v-model="cfAccount"
-          type="text"
-          label="输入新的cf账号"
-          :rules="[(val) => val.length || '请填写此项目']"
-        />
-        <q-btn
-          class="q-my-md"
-          color="primary"
-          label="修改"
-          @click="cfAccountChange"
-        />
+        <div v-if="Object.keys(cf_status).length > 0">
+          <q-checkbox v-model="cf_status.bind" label="绑定账号" />
+          <q-input
+            outlined
+            dense
+            v-model="cfAccount"
+            type="text"
+            label="输入新的cf账号"
+            :rules="[(val) => val.length || '请填写此项目']"
+          />
+          <q-btn
+            class="q-my-md"
+            color="primary"
+            label="修改"
+            @click="cfAccountChange"
+          />
+        </div>
       </q-card>
       <q-card class="q-my-sm q-pa-md">
         <div class="text-h5 q-mb-lg">修改昵称</div>
@@ -123,6 +126,36 @@
           @click="emailChange"
         />
       </q-card>
+      <q-card class="q-my-sm q-pa-md">
+        <div class="text-h5 q-mb-lg">修改主题</div>
+        <div v-if="theme_loading">加载中</div>
+        <div v-if="!theme_loading">
+          <q-checkbox v-model="theme_setting.customBg" label="自定背景" />
+          <q-input
+            outlined
+            dense
+            v-model="theme_setting.bgUrl"
+            type="text"
+            label="输入背景网址"
+            :rules="[(val) => val.length || '请填写此项目']"
+          />
+          <q-checkbox
+            v-model="theme_setting.customColorFlag"
+            label="自定主题色"
+          />
+          <q-color
+            v-model="theme_setting.customColor"
+            no-header
+            class="my-picker"
+          />
+          <q-btn
+            class="q-my-md"
+            color="primary"
+            label="修改"
+            @click="themeChange"
+          />
+        </div>
+      </q-card>
     </div>
 
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
@@ -156,6 +189,8 @@ const email = ref('');
 const nickname = ref('');
 const cfAccount = ref('');
 const cf_status = ref({});
+const theme_loading = ref(true);
+const theme_setting = ref({});
 
 function IsEmail(str) {
   var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -323,7 +358,8 @@ function cfAccountChange() {
     method: 'post',
     url: '/user/setting/cfBindStatus',
     data: {
-      cfAccount: cfAccount.value,
+      cfAccount: cf_status.value.account,
+      bind: cf_status.value.bind,
     },
   })
     .then((data) => {
@@ -392,8 +428,88 @@ function getCurrentUserCfAccount() {
       }
     });
 }
+
+function themeChange() {
+  axios({
+    method: 'post',
+    url: '/user/setting/theme',
+    data: theme_setting.value,
+  })
+    .then((data) => {
+      Object.entries(theme_setting.value).forEach(([key, value]) => {
+        user.info[key] = value;
+      });
+      console.log(user.info);
+      $q.notify({
+        type: 'positive',
+        message: '修改成功',
+        progress: true,
+      });
+      cf_status.value = { bind: true, account: cfAccount.value };
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+function getTheme() {
+  axios({
+    method: 'post',
+    url: '/user/query/theme',
+  })
+    .then((data) => {
+      theme_setting.value = data.data;
+      theme_loading.value = false;
+    })
+    .catch((error) => {
+      // submiting.value = false;
+      // console.error('Error:', error);
+      // alert(error.response.data.detail);
+      var err_msg_notify = '';
+      try {
+        if (error.response.status === 401)
+          this_router.push(
+            `/userLogin?type=2&err=${error.response.data.detail}`
+          );
+        else if (error.response.status === 400)
+          err_msg_notify = error.response.data.detail;
+        else err_msg_notify = '错误码' + error.response.status;
+      } catch {
+        err_msg_notify = '错误码' + error.code;
+      }
+      if (err_msg_notify !== '') {
+        $q.notify({
+          type: 'negative',
+          message: err_msg_notify,
+          progress: true,
+        });
+      }
+    });
+}
+
 onMounted(() => {
   getCurrentUserCfAccount();
+  getTheme();
 });
 </script>
 

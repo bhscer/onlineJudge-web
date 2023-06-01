@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div v-if="!show_loading">
-    <div class="text-h5">Codeforces近期比赛</div>
+  <q-card v-if="!show_loading">
+    <div class="text-h5 q-pl-sm q-py-sm">Codeforces近期比赛</div>
     <!-- <div>{{ cf_contest_list }}</div> -->
     <q-markup-table>
       <thead>
@@ -17,7 +17,7 @@
         </tr>
       </tbody>
     </q-markup-table>
-  </div>
+  </q-card>
 </template>
 
 <script setup>

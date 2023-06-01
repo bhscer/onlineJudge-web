@@ -4,7 +4,7 @@
     style="flex-wrap: wrap; flex-direction: column"
   >
     <div class="q-gutter-sm q-pa-md">
-      <div>
+      <q-card class="q-pa-md">
         <h2 style="padding: 0; margin: 0"><strong>:)</strong></h2>
         <h5 style="padding-top: 30px; margin: 0">欢迎</h5>
         <div>
@@ -26,7 +26,7 @@
             >bhscer/onlineJudge-web</a
           >
         </div>
-      </div>
+      </q-card>
       <div>
         <codeforces-contest-list></codeforces-contest-list>
       </div>
