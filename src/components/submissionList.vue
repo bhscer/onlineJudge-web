@@ -135,6 +135,7 @@
               <th class="text-left" style="width: 5%">内存</th>
               <th class="text-left" style="width: 4%">耗时</th>
               <th class="text-left" style="width: 4%">语言</th>
+              <th class="text-left" style="width: 8%">提交编号</th>
               <th class="text-left" style="width: 8%">提交时间</th>
             </tr>
           </thead>
@@ -185,6 +186,7 @@
               <td class="text-left">{{ item.submissionRunMem + 'KB' }}</td>
               <td class="text-left">{{ item.submissionRunTime + 'MS' }}</td>
               <td class="text-left">{{ item.submissionCodeLanguage }}</td>
+              <td class="text-left">{{ item.rid }}</td>
               <td class="text-left">
                 {{ timestampToTime(item.submitTimeStamp) }}
               </td>
@@ -260,6 +262,7 @@ export default defineComponent({
         const filter_language = ref("All");
         const filter_status = ref("All");
         const display_small_mode = ref(false);
+        const page_show = ref(true)
         const need_update = ref("false");
         const err_msg = ref("");
         const showSubmitResult = ref(false)
@@ -304,6 +307,7 @@ export default defineComponent({
                 return;
             }
             if (refresh_timer!==null) clearInterval(refresh_timer)
+            if (!page_show.value===true) return
             // show_loading.value = true
             show_loading_mini.value = true;
             err_msg.value = "";
@@ -394,7 +398,6 @@ export default defineComponent({
                     }
                     show_loading.value = false;
                     show_loading_mini.value = false;
-                    console.log(submission_list.value);
                 }
                 else {
                     err_msg.value = data.data.msg
@@ -445,7 +448,8 @@ export default defineComponent({
             err_msg,
             showSubmitResult,
             submissionId,
-            refresh_timer
+            refresh_timer,
+            page_show
         };
     },
     watch: {

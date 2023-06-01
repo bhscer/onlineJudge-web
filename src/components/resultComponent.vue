@@ -34,8 +34,19 @@
       <div>{{ `运行时间:${submission_info.submissionRunTime}ms` }}</div>
       <div>{{ `提交语言:${submission_info.submissionCodeLanguage}` }}</div>
     </q-card>
-    <div v-if="submission_info.submissionResultGeneral !== 1">
-      <q-card v-if="submission_info.submissionResultGeneral !== 3">
+    <div
+      v-if="
+        submission_info.submissionResultGeneral !== 1 ||
+        (submission_info.submissionResultGeneral === 0 &&
+          submission_info.submissionResultErrMsg.length > 0)
+      "
+    >
+      <q-card
+        v-if="
+          submission_info.submissionResultGeneral !== 3 &&
+          submission_info.submissionResultGeneral !== 0
+        "
+      >
         <div class="text-h5 q-pt-md q-pl-md">测试点信息</div>
         <q-markup-table
           class="q-mt-md"

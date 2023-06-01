@@ -15,7 +15,7 @@ import hljs from 'highlight.js';
 import md5 from 'js-md5';
 // import VueMarkdownEditor from "@kangc/v-md-editor";
 
-import MonacoEditor from 'monaco-editor-vue';
+// import MonacoEditor from 'monaco-editor-vue';
 import { inject } from '@vercel/analytics';
 import 'font-awesome/css/font-awesome.css';
 import 'viewerjs/dist/viewer.css';
@@ -92,6 +92,6 @@ export default boot(async ({ app }) => {
   VMdPreview.use(createKatexPlugin());
   app.use(VMdPreview);
   app.use(VMdEditor);
-  app.use(MonacoEditor);
+  // app.use(MonacoEditor);
   app.use(VueViewer);
 });

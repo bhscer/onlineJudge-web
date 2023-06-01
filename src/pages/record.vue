@@ -1,10 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page class="flex flex-center q-pa-lg q-ma-lg">
-    <result-component
-      v-if="!show_loading"
-      :sid="$route.query.sid"
-    ></result-component>
+    <q-card v-if="!show_loading" style="width: 600px">
+      <result-component :sid="$route.query.sid"></result-component>
+    </q-card>
     <loading-page :loading="show_loading" :message="err_msg"></loading-page>
   </q-page>
 </template>

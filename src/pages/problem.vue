@@ -606,6 +606,10 @@ export default defineComponent({
         createEditor();
       }
       tab_inited.value[next] = true;
+      try {
+        if (next === 'submissions') submissionRef.value.page_show = true;
+        if (prev === 'submissions') submissionRef.value.page_show = false;
+      } catch {}
     };
     const language_change = (newtype) => {
       console.log('new type is', newtype);
