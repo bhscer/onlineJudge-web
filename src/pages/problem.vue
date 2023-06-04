@@ -554,11 +554,17 @@ export default defineComponent({
           // refreshSubmission();
           console.log('submit Success:', data);
           runResult.value = data.data.data;
+          $q.notify({
+            type: 'possitive',
+            message: '运行完成',
+            progress: true,
+          });
           try {
             output_text.value = runResult.value.msg.output;
           } catch {}
         })
         .catch((error) => {
+          testing.value = false;
           submiting.value = false;
           // console.error('Error:', error);
           // alert(error.response.data.detail);

@@ -266,6 +266,12 @@ export default defineComponent({
           // refreshSubmission();
           console.log('submit Success:', data);
           runResult.value = data.data.data;
+
+          $q.notify({
+            type: 'possitive',
+            message: '运行完成',
+            progress: true,
+          });
           try {
             output_text.value = runResult.value.msg.output;
           } catch {}

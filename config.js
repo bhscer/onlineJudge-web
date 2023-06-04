@@ -1,6 +1,7 @@
 module.exports = {
   dev: {
-    BASE_URL: 'http://localhost:8011/',
+    // BASE_URL: 'http://localhost:8011/',
+    BASE_URL: 'https://oj-api.bhscer.com/',
   },
   prod: {
     BASE_URL: 'https://oj-api.bhscer.com/',
