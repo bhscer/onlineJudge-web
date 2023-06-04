@@ -47,6 +47,7 @@
                 color="primary"
                 label="登录"
                 @click="loginFun"
+                :loading="logining"
               />
             </div>
           </q-form>
@@ -111,6 +112,7 @@
               color="primary"
               label="注册"
               @click="registerFun"
+              :loading="registering"
             />
           </div>
         </q-tab-panel>
@@ -140,6 +142,8 @@ const password = ref('');
 const passwordConfirm = ref('');
 const showPwd = ref(true);
 const showPwdConfirm = ref(true);
+const registering = ref(false);
+const logining = ref(false);
 
 function IsEmail(str: string) {
   var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -181,6 +185,7 @@ const loginFun = () => {
     return;
   }
 
+  logining.value = true;
   user
     .login({
       username: username.value,
@@ -193,9 +198,13 @@ const loginFun = () => {
         message: '登陆成功',
         progress: true,
       });
+      logining.value = false;
+
       router.push('/');
     })
     .catch((error) => {
+      logining.value = false;
+
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)
@@ -225,6 +234,7 @@ const registerFun = () => {
     });
     return;
   }
+  registering.value = true;
   user
     .register({
       username: username.value,
@@ -233,6 +243,7 @@ const registerFun = () => {
       pwd: password.value,
     })
     .then(() => {
+      registering.value = false;
       tab.value = 'login';
       $q.notify({
         type: 'positive',
@@ -241,6 +252,7 @@ const registerFun = () => {
       });
     })
     .catch((error) => {
+      registering.value = false;
       var err_msg_notify = '';
       try {
         if (error.response.status === 401)

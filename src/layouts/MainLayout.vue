@@ -1,6 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf" :style="bg_style">
-    <q-header reveal class="bg-header-auto">
+    <q-header
+      reveal
+      class="bg-header-auto"
+      :style="bg_style?.length ? 'opacity: 0.75;' : ''"
+    >
       <q-toolbar class="text-primary">
         <q-btn
           flat
@@ -18,7 +22,7 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
+      <q-list style="background: transparent">
         <q-item-label header> 菜单 </q-item-label>
 
         <EssentialLink
@@ -166,3 +170,4 @@ export default defineComponent({
   },
 });
 </script>
+<style></style>
