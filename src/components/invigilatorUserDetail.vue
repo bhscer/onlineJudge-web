@@ -172,12 +172,8 @@
       <div class="text-h5 q-pt-md q-pl-md">日志</div>
       <div
         class="q-mt-md"
-        v-show="
-          !empty_content &&
-          !show_loading &&
-          !err_msg.length
-        "
-        style="height: 200px; overflow: scroll;resize: vertical;"
+        v-show="!empty_content && !show_loading && !err_msg.length"
+        style="height: 200px; overflow: scroll; resize: vertical"
       >
         <div
           v-for="(log, idx) in user_detail_info.userLogs"

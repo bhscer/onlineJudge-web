@@ -247,6 +247,12 @@
             </template>
           </q-file>
         </div>
+        <q-badge color="primary">
+          <a
+            :href="`${$api_url}admin/invigilator/query/userExcel/contest/${contest_info.contestId}/token/${user.info.token}`"
+            >导出名单</a
+          >
+        </q-badge>
         <div
           style="margin-top: 5px"
           v-if="contest_info.permission.useInvigilator"
@@ -441,6 +447,7 @@ import SubmissionList from '@/components/submissionList.vue';
 import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
+import { useUserStore } from '@/stores/user';
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
   dateStr = dateStr.replace(/-/g, '/');
@@ -459,6 +466,7 @@ export default {
   setup() {
     const tab = ref('description');
     const $q = useQuasar();
+    const user = useUserStore();
     let this_route = useRoute();
     let this_router = useRouter();
     const contest_info = ref({});
@@ -866,6 +874,7 @@ export default {
       rebuildRank,
       language_options,
       submiting,
+      user,
     };
   },
   mounted() {

@@ -168,8 +168,7 @@ function checkFormInputted(type: string) {
     if (password.value !== passwordConfirm.value) {
       return '两次输入的密码不一致';
     }
-    if (password.value.length < 6)
-    {
+    if (password.value.length < 6) {
       return '密码过短请更换';
     }
     if (!IsEmail(email.value)) {
