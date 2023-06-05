@@ -65,6 +65,12 @@
                 </div>
               </div>
               <div v-else>
+                <p>
+                  {{
+                    `内存:${runResult.msg.memory}KB 耗时:${runResult.msg.cpu_time}ms`
+                  }}
+                </p>
+
                 <textarea
                   rows="10"
                   style="width: 100%; resize: vertical"
