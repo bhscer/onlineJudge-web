@@ -66,36 +66,43 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/userLogin',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '用户登录' },
     children: [{ path: '', component: () => import('pages/userLogin.vue') }],
   },
   {
     path: '/userInfo',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '用户信息' },
     children: [{ path: '', component: () => import('pages/userInfo.vue') }],
   },
   {
     path: '/userSettings',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '用户设置' },
     children: [{ path: '', component: () => import('pages/userSettings.vue') }],
   },
   {
     path: '/record',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '运行记录' },
     children: [{ path: '', component: () => import('pages/record.vue') }],
   },
   {
     path: '/editor',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '编辑器' },
     children: [{ path: '', component: () => import('pages/editor.vue') }],
   },
   {
     path: '/game',
     component: () => import('layouts/MainLayout.vue'),
+    meta: { title: '2048' },
     children: [{ path: '', component: () => import('pages/game.vue') }],
   },
   {
     path: '/admin',
     component: () => import('layouts/MainLayoutAdmin.vue'),
+    meta: { title: '管理' },
     children: [
       { path: '', redirect: '/admin/welcome' },
       { path: 'welcome', component: () => import('pages/admin/welcome.vue') },
