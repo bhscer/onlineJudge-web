@@ -334,7 +334,7 @@
                   class="textbox_test"
                   v-model="input_text"
                 ></textarea>
-                <div>输出</div>
+                <div>输出 <q-spinner color="primary" v-if="testing" /></div>
                 <div>
                   <div v-if="runResult.err && runResult.err === true">
                     <div class="text-h5">{{ runResult.errMsg.type }}</div>
@@ -538,7 +538,7 @@ export default defineComponent({
         await readCodeFromFile();
       }
       // console.log('then',code_content)
-      runResult.value = {}
+      runResult.value = {};
       axios({
         method: 'post',
         url: '/code/run',

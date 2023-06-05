@@ -48,7 +48,10 @@
           class="textbox_test"
           v-model="input_text"
         ></textarea>
-        <div>输出</div>
+        <div>
+          输出
+          <q-spinner color="primary" v-if="submiting" />
+        </div>
         <div>
           <div v-if="runResult.err && runResult.err === true">
             <div class="text-h5">{{ runResult.errMsg.type }}</div>
@@ -251,7 +254,7 @@ export default defineComponent({
       if (submiting.value) return;
       submiting.value = true;
       output_text.value = '';
-      runResult.value = {}
+      runResult.value = {};
       axios({
         method: 'post',
         url: '/code/run',
