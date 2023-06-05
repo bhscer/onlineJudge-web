@@ -251,6 +251,7 @@ export default defineComponent({
       if (submiting.value) return;
       submiting.value = true;
       output_text.value = '';
+      runResult.value = {}
       axios({
         method: 'post',
         url: '/code/run',

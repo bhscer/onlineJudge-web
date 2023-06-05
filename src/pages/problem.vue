@@ -538,7 +538,7 @@ export default defineComponent({
         await readCodeFromFile();
       }
       // console.log('then',code_content)
-
+      runResult.value = {}
       axios({
         method: 'post',
         url: '/code/run',
