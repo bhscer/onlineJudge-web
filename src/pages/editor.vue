@@ -65,7 +65,7 @@
                 </div>
               </div>
               <div v-else>
-                <p>
+                <p class="q-ma-none q-pa-none">
                   {{
                     `内存:${runResult.msg.memory}KB 耗时:${runResult.msg.cpu_time}ms`
                   }}
