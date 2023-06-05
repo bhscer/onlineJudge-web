@@ -249,7 +249,7 @@
         </div>
         <q-badge color="primary">
           <a
-            :href="`${$api_url}admin/invigilator/query/userExcel/contest/${contest_info.contestId}/token/${user.info.token}`"
+            :href="`${$api_url}admin/invigilator/query/userExcel/contest/${contest_info.contestId}/token/${user.info?.token}`"
             >导出名单</a
           >
         </q-badge>

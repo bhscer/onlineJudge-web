@@ -104,7 +104,7 @@
           <tr>
             <td v-if="img_list[0]">
               <q-img
-                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[0]['file_name']}/token/${user.info.token}`"
+                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[0]['file_name']}/token/${user.info?.token}`"
               >
                 <q-tooltip>
                   {{
@@ -117,7 +117,7 @@
             </td>
             <td v-if="img_list[1]">
               <q-img
-                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[1]['file_name']}/token/${user.info.token}`"
+                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[1]['file_name']}/token/${user.info?.token}`"
               >
                 <q-tooltip>
                   {{
@@ -132,7 +132,7 @@
           <tr>
             <td v-if="img_list[2]">
               <q-img
-                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[2]['file_name']}/token/${user.info.token}`"
+                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[2]['file_name']}/token/${user.info?.token}`"
               >
                 <q-tooltip>
                   {{
@@ -145,7 +145,7 @@
             </td>
             <td v-if="img_list[3]">
               <q-img
-                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[3]['file_name']}/token/${user.info.token}`"
+                :src="`${$api_url}admin/invigilator/query/screenImgFile/name/${img_list[3]['file_name']}/token/${user.info?.token}`"
               >
                 <q-tooltip>
                   {{
