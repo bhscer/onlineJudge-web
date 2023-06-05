@@ -40,10 +40,10 @@
         {{ `座位:${props.userContestInfo.userSeatNo}` }}
       </p>
       <p class="q-ma-none q-pa-none">
-        {{ `${props.userContestInfo.userOnline ? '在线' : '离线'}` }}
+        {{ `${user_detail_info.userOnline ? '在线' : '离线'}` }}
       </p>
       <p class="q-ma-none q-pa-none">
-        {{ `${props.userContestInfo.userStatusErr ? '异常' : '正常'}` }}
+        {{ `${user_detail_info.userStatusErr ? '异常' : '正常'}` }}
       </p>
     </div>
 
@@ -83,10 +83,6 @@
           dense
         >
           立即截图
-          <template v-slot:loading>
-            <q-spinner-hourglass class="on-left" />
-            截图中
-          </template>
         </q-btn>
         <!-- <q-btn
         outline
@@ -112,7 +108,7 @@
               >
                 <q-tooltip>
                   {{
-                    `${props.contestId} ${props.username} ${timeStampTostring(
+                    `${props.userContestInfo.userRealName} ${timeStampTostring(
                       img_list[0]['time']
                     )}`
                   }}
@@ -125,7 +121,7 @@
               >
                 <q-tooltip>
                   {{
-                    `${props.contestId} ${props.username} ${timeStampTostring(
+                    `${props.userContestInfo.userRealName} ${timeStampTostring(
                       img_list[1]['time']
                     )}`
                   }}
@@ -140,7 +136,7 @@
               >
                 <q-tooltip>
                   {{
-                    `${props.contestId} ${props.username} ${timeStampTostring(
+                    `${props.userContestInfo.userRealName} ${timeStampTostring(
                       img_list[2]['time']
                     )}`
                   }}
@@ -153,7 +149,7 @@
               >
                 <q-tooltip>
                   {{
-                    `${props.contestId} ${props.username} ${timeStampTostring(
+                    `${props.userContestInfo.userRealName} ${timeStampTostring(
                       img_list[3]['time']
                     )}`
                   }} </q-tooltip
@@ -179,10 +175,9 @@
         v-show="
           !empty_content &&
           !show_loading &&
-          !show_loading_mini &&
           !err_msg.length
         "
-        style="height: 200px; overflow: scroll"
+        style="height: 200px; overflow: scroll;resize: vertical;"
       >
         <div
           v-for="(log, idx) in user_detail_info.userLogs"
