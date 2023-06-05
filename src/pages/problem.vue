@@ -555,7 +555,7 @@ export default defineComponent({
           console.log('submit Success:', data);
           runResult.value = data.data.data;
           $q.notify({
-            type: 'possitive',
+            type: 'positive',
             message: '运行完成',
             progress: true,
           });
