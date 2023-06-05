@@ -419,6 +419,7 @@
         style="width: 100%"
         padding="xs xs"
         @click="submitEdit()"
+        :loading="submiting"
       />
     </div>
   </div>
@@ -472,6 +473,7 @@ export default {
     const date_froze = ref('2023-01-01 16:00');
     const use_custom_id = ref(false);
     const file_xlsx_model = ref(null);
+    const submiting = ref(false);
     const language_options = ref([
       {
         label: 'C++',
@@ -488,7 +490,7 @@ export default {
     ]);
 
     const submitEdit = async () => {
-      // submiting.value = true;
+      submiting.value = true;
       // console.log('then',code_content)
       // 处理两个时间
       contest_info.value.contestTimeBeginStamp = parseInt(
@@ -510,7 +512,7 @@ export default {
         },
       })
         .then((data) => {
-          // submiting.value = false;
+          submiting.value = false;
           console.log('submit Success:', data);
           if (this_route.query.add === '1') {
             this_router.replace(`/admin/editContest?add=0&id=${data.data.id}`);
@@ -522,27 +524,23 @@ export default {
           });
         })
         .catch((error) => {
-          // submiting.value = false;
-          console.error('Error:', error);
-          alert(error.response.data.detail);
-          if (error.response.status === 401) {
-            this_router.push('/userLogin?type=2');
-          } else if (error.response.status === 400) {
+          submiting.value = false;
+          var err_msg_notify = '';
+          try {
+            if (error.response.status === 401)
+              this_router.push(
+                `/userLogin?type=2&err=${error.response.data.detail}`
+              );
+            else if (error.response.status === 400)
+              err_msg_notify = error.response.data.detail;
+            else err_msg_notify = '错误码' + error.response.status;
+          } catch {
+            err_msg_notify = '错误码' + error.code;
+          }
+          if (err_msg_notify !== '') {
             $q.notify({
               type: 'negative',
-              message: error.response.data.detail,
-              progress: true,
-            });
-          } else {
-            var err_code_info = '';
-            try {
-              err_code_info = error.response.status;
-            } catch {
-              err_code_info = error.code;
-            }
-            $q.notify({
-              type: 'negative',
-              message: `网络错误,code=${err_code_info}`,
+              message: err_msg_notify,
               progress: true,
             });
           }
@@ -867,6 +865,7 @@ export default {
       date_froze,
       rebuildRank,
       language_options,
+      submiting,
     };
   },
   mounted() {

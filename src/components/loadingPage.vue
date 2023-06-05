@@ -3,11 +3,10 @@
     :showing="props.loading && !message?.length"
     style="background-color: transparent"
   >
-  <q-card class="q-pa-lg">
-
-    <q-spinner-gears size="50px" color="primary" />
-    <p class="q-ma-none q-pa-none">{{ loading_msg || 'loading...' }}</p>
-  </q-card>
+    <q-card class="q-pa-lg">
+      <q-spinner-gears size="50px" color="primary" />
+      <p class="q-ma-none q-pa-none">{{ loading_msg || 'loading...' }}</p>
+    </q-card>
   </q-inner-loading>
   <q-card v-if="message?.length" class="q-pa-lg">
     <h2 style="padding: 0; margin: 0"><strong>:(</strong></h2>
