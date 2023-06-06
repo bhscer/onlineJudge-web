@@ -4,462 +4,139 @@
     class="flex flex-center"
     style="flex-wrap: wrap; flex-direction: column"
   >
-    <div>
-      <div id="header">
-        <h1 class="title1">2048</h1>
-        <!--
-      <h3 class="title2">Created by Cheng Xiao Gang</h3>
-      -->
-        <div class="wrapper">
-          <div class="score-wrapper">
-            <span id="txt">score:</span>
-            <span id="score">0</span>
-          </div>
-          <div class="newgame-wrapper">
-            <a @click="newgame()" id="newGame">New Game</a>
-          </div>
+    <q-card class="q-pa-lg">
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        "
+      >
+        <div>
+          <div class="text-h5"><strong>2048</strong></div>
+          <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
+        </div>
+        <div class="q-mt-auto">
+          <q-btn :label="gaming ? '重新开始' : '开始'" @clicjiaoxnk="gameStart" />
         </div>
       </div>
-      <div id="grid-container">
-        <div class="grid-cell" id="grid-cell-0-0"></div>
-        <div class="grid-cell" id="grid-cell-0-1"></div>
-        <div class="grid-cell" id="grid-cell-0-2"></div>
-        <div class="grid-cell" id="grid-cell-0-3"></div>
-
-        <div class="grid-cell" id="grid-cell-1-0"></div>
-        <div class="grid-cell" id="grid-cell-1-1"></div>
-        <div class="grid-cell" id="grid-cell-1-2"></div>
-        <div class="grid-cell" id="grid-cell-1-3"></div>
-
-        <div class="grid-cell" id="grid-cell-2-0"></div>
-        <div class="grid-cell" id="grid-cell-2-1"></div>
-        <div class="grid-cell" id="grid-cell-2-2"></div>
-        <div class="grid-cell" id="grid-cell-2-3"></div>
-
-        <div class="grid-cell" id="grid-cell-3-0"></div>
-        <div class="grid-cell" id="grid-cell-3-1"></div>
-        <div class="grid-cell" id="grid-cell-3-2"></div>
-        <div class="grid-cell" id="grid-cell-3-3"></div>
+      <div class="q-mt-md">
+        <div id="grid_box" style="position: relative"></div>
       </div>
-    </div>
+    </q-card>
   </q-page>
 </template>
-
 <script setup>
 import $ from 'jquery';
+import { onMounted } from 'vue';
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 
-var nums = [];
-var score = 0;
-var hasConflicted = []; //表示是否已叠加，用来解决重复问题
+const $q = useQuasar();
+var cell_width = 80;
+var cell_space = 10;
+const cell_width_ref = ref(`${cell_width}px`);
+var num_data = [];
+const score = ref(0);
+const gaming = ref(false);
 
-var startx = 0;
-var starty = 0;
-var endx = 0;
-var endy = 0;
-
-//移动端尺寸
-var documentWidth = document.documentElement.clientWidth; //页面DOM的宽度
-var containerWidth = documentWidth * 0.92; //容器的宽度
-var cellWidth = documentWidth * 0.18;
-var cellSpace = documentWidth * 0.04;
-console.log(documentWidth, containerWidth, cellWidth, cellSpace);
-
-$(document).ready(function () {
-  newgame();
+onMounted(() => {
+  gameStart();
 });
 
-//开始新游戏
-function newgame() {
-  if (documentWidth > 500) {
-    containerWidth = 500;
-    cellWidth = 100;
-    cellSpace = 20;
-    // settingForMobile();
+function gameStart() {
+  gaming.value = true;
+  score.value = 0;
+  // 创建元素
+  $('#grid_box').empty();
+  for (var i = 0; i < 4 * 4; i++) {
+    var tmp_child_grid = document.createElement('div');
+    tmp_child_grid.setAttribute('class', 'grid_cell');
+    tmp_child_grid.setAttribute('id', `grid_cell_${parseInt(i / 4)}_${i % 4}`);
+    $('#grid_box').append(tmp_child_grid);
   }
-  /*
-  else{
-	//设置移动端尺寸
-		settingForMobile();
-	}
-  */
-  settingForMobile();
-
-  init();
-
-  //在随机的两个单元格生成数字
-  generateOneNumber();
-  generateOneNumber();
-}
-
-function settingForMobile() {
-  $('#header .wrapper').css('width', containerWidth);
-
-  $('#grid-container').css('width', containerWidth /*-cellSpace*2*/);
-  $('#grid-container').css('height', containerWidth /*-cellSpace*2*/);
-  $('#grid-container').css('padding', cellSpace);
-  $('#grid-container').css('border-radius', containerWidth * 0.02);
-
-  $('.grid-cell').css('width', cellWidth);
-  $('.grid-cell').css('height', cellWidth);
-  $('.grid-cell').css('border-radius', cellWidth * 0.06);
-}
-
-//初始化页面
-function init() {
-  //初始化单元格位置
+  $('#grid_box').css('width', cell_width * 4 + cell_space * 5);
+  $('#grid_box').css('height', cell_width * 4 + cell_space * 5);
+  $('.grid_cell').css('width', cell_width);
+  $('.grid_cell').css('height', cell_width);
   for (var i = 0; i < 4; i++) {
+    num_data[i] = [];
     for (var j = 0; j < 4; j++) {
-      var gridCell = $('#grid-cell-' + i + '-' + j);
-      gridCell.css('top', getPosTop(i, j));
-      gridCell.css('left', getPosLeft(i, j));
+      num_data[i].push(0);
+      $(`#grid_cell_${i}_${j}`).css('top', getPosTop(i, j));
+      $(`#grid_cell_${i}_${j}`).css('left', getPosLeft(i, j));
     }
   }
-
-  //初始化数组  使所有数组都默认为0
-  for (var i = 0; i < 4; i++) {
-    nums[i] = [];
-    hasConflicted[i] = [];
-    for (var j = 0; j < 4; j++) {
-      nums[i][j] = 0;
-      hasConflicted[i][j] = false; //false表示未曾叠加过，true表示已经叠加过
+  updateNumView();
+  genNewCell();
+  genNewCell();
+}
+function getPosTop(r, c) {
+  return r * cell_width + (r + 1) * cell_space;
+}
+function getPosLeft(r, c) {
+  return c * cell_width + (c + 1) * cell_space;
+}
+function genNewCell() {
+  var finished = false;
+  while (!finished) {
+    var x = Math.floor(Math.random() * 4);
+    var y = Math.floor(Math.random() * 4);
+    if (num_data[x][y] === 0) {
+      num_data[x][y] = Math.random() < 0.5 ? 2 : 4;
+      finished = true;
     }
   }
-
-  //动态创建上层单元格初始化
-  updateView();
-
-  score = 0;
-  updateScore(score);
+  var selected_item = $(`#grid_num_${x}_${y}`);
+  selected_item.text(num_data[x][y]);
+  selected_item.css(
+    'background-color',
+    getNumberBackgroundColor(num_data[x][y])
+  );
+  selected_item.css('color', getNumberColor(num_data[x][y]));
+  selected_item.css('fontSize', getNumberTextStyle(num_data[x][y]));
+  console.log(getNumberTextStyle(num_data[x][y]));
+  selected_item.animate(
+    {
+      width: cell_width,
+      height: cell_width,
+      top: getPosTop(x, y),
+      left: getPosLeft(x, y),
+    },
+    500
+  );
 }
-
-//更新上层单元格视图
-function updateView() {
-  //将上层所有单元格清空，然后重新初始化创建
-  $('.number-cell').remove();
-
+function updateNumView() {
+  $('.grid_num').remove();
   for (var i = 0; i < 4; i++) {
     for (var j = 0; j < 4; j++) {
-      $('#grid-container').append(
-        '<div class="number-cell" id="number-cell-' + i + '-' + j + '"></div>'
-      );
-
-      var numberCell = $('#number-cell-' + i + '-' + j);
-      if (nums[i][j] == 0) {
-        numberCell.css('width', '0px');
-        numberCell.css('height', '0px');
-        numberCell.css('top', getPosTop(i, j) + cellWidth * 0.5);
-        numberCell.css('left', getPosLeft(i, j) + cellWidth * 0.5);
-      } else {
-        numberCell.css('width', cellWidth);
-        numberCell.css('height', cellWidth);
-        numberCell.css('top', getPosTop(i, j));
-        numberCell.css('left', getPosLeft(i, j));
-        numberCell.css(
+      var tmp_child_number = document.createElement('div');
+      tmp_child_number.setAttribute('class', 'grid_num');
+      tmp_child_number.setAttribute('id', `grid_num_${i}_${j}`);
+      $('#grid_box').append(tmp_child_number);
+      tmp_child_number = $(`#grid_num_${i}_${j}`);
+      if (num_data[i][j] > 0) {
+        tmp_child_number.text(num_data[i][j]);
+        tmp_child_number.css('width', cell_width);
+        tmp_child_number.css('height', cell_width);
+        tmp_child_number.css(
           'background-color',
-          getNumberBackgroundColor(nums[i][j])
+          getNumberBackgroundColor(num_data[i][j])
         );
-        numberCell.css('color', getNumberColor(nums[i][j]));
-        numberCell.text(nums[i][j]);
-      }
-      hasConflicted[i][j] = false; //初始化默认该值未曾叠加过
-      //移动端尺寸
-      $('.number-cell').css('border-radius', cellWidth * 0.06);
-      $('.number-cell').css('font-size', cellWidth * 0.5);
-      $('.number-cell').css('line-height', cellWidth + 'px');
-    }
-  }
-}
-/*
-	在随机的单元格中生成一个随机数：
-	1.在空余的单元格当中随机找一个（先判断单元格是否为空）
-	2.随机产生一个2或者4
-*/
-function generateOneNumber() {
-  //判断是否还有空间，如果没有空间则直接返回
-  if (nospace(nums)) {
-    return;
-  }
+        tmp_child_number.css('color', getNumberColor(num_data[i][j]));
+        tmp_child_number.css('fontSize', getNumberTextStyle(num_data[i][j]));
 
-  //随机一个位置
-  var count = 0;
-  var temp = [];
-  for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 4; j++) {
-      if (nums[i][j] == 0) {
-        temp[count] = i * 4 + j; //方便获取 i和j的坐标位置
-        count++;
+        tmp_child_number.css('top', i * cell_width + (i + 1) * cell_space);
+        tmp_child_number.css('left', j * cell_width + (j + 1) * cell_space);
+      } else {
+        tmp_child_number.css('top', getPosTop(i, j) + 0.5 * cell_width);
+        tmp_child_number.css('left', getPosLeft(i, j) + 0.5 * cell_width);
+        tmp_child_number.css('width', 0);
+        tmp_child_number.css('height', 0);
       }
     }
   }
-  var pos = Math.floor(Math.random() * count); //[0,1)*6=[0,5]
-
-  var randx = Math.floor(temp[pos] / 4);
-  var randy = Math.floor(temp[pos] % 4);
-
-  //随机一个数字
-  var randNum = Math.random() < 0.5 ? 2 : 4;
-
-  //在随机位置上显示随机数字
-  nums[randx][randy] = randNum;
-  showNumberWihthAnimation(randx, randy, randNum);
 }
-
-//实现键盘的响应
-$(document).keydown(function (event) {
-  //阻止事件的默认行为
-  event.preventDefault();
-
-  switch (event.keyCode) {
-    case 37: //left
-      //判断是否可以向左移动
-      if (canMoveLeft(nums)) {
-        moveLeft();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-      break;
-    case 38: //up
-      if (canMoveUp(nums)) {
-        moveUp();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-      break;
-    case 39: //right
-      if (canMoveRight(nums)) {
-        moveRight();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-      break;
-    case 40: //down
-      if (canMoveDown(nums)) {
-        moveDown();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-      break;
-    default:
-      break;
-  }
-});
-
-//实现触摸滑动响应
-document.addEventListener('touchstart', function (event) {
-  startx = event.touches[0].pageX;
-  starty = event.touches[0].pageY;
-});
-document.addEventListener('touchend', function (event) {
-  endx = event.changedTouches[0].pageX;
-  endy = event.changedTouches[0].pageY;
-
-  //判断滑动的方向
-  var deltax = endx - startx;
-  var deltay = endy - starty;
-
-  //判断当滑动距离小于一定的阈值时不做任何操作
-  if (
-    Math.abs(deltax) < documentWidth * 0.08 &&
-    Math.abs(deltay) < documentWidth * 0.08
-  ) {
-    return;
-  }
-
-  if (Math.abs(deltax) >= Math.abs(deltay)) {
-    //水平方向移动
-    if (deltax > 0) {
-      //向右移动
-      if (canMoveRight(nums)) {
-        moveRight();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-    } else {
-      //向左移动
-      if (canMoveLeft(nums)) {
-        moveLeft();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-    }
-  } else {
-    //垂直方向移动
-
-    if (deltay > 0) {
-      //向下移动
-      if (canMoveDown(nums)) {
-        moveDown();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-    } else {
-      //向上移动
-      if (canMoveUp(nums)) {
-        moveUp();
-        setTimeout(generateOneNumber, 200);
-        setTimeout(IsGameOver, 500);
-      }
-    }
-  }
-});
-/*
-	向左移动
-	需要对每一个数字的左边进行判断，选择合适的落脚点，落脚点有两种情况：
-		1.落脚点没有数字，且移动的路径中没有阻碍物
-		2.落脚点的数字和自己相同，且移动路径中没有障碍物
-*/
-function moveLeft() {
-  for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 4; j++) {
-      //j已经在最左边 所以从1开始
-      if (nums[i][j] != 0) {
-        for (var k = 0; k < j; k++) {
-          if (nums[i][k] == 0 && noBlockHorizontal(i, k, j, nums)) {
-            //第I行的地k-j列是否有障碍物
-            //移动操作
-            showMoveAnimation(i, j, i, k);
-            nums[i][k] = nums[i][j];
-            nums[i][j] = 0;
-            break;
-          } else if (
-            nums[i][k] == nums[i][j] &&
-            noBlockHorizontal(i, k, j, nums) &&
-            !hasConflicted[i][k]
-          ) {
-            //进行叠加
-            showMoveAnimation(i, j, i, k);
-            nums[i][k] += nums[i][j];
-            nums[i][j] = 0;
-            //统计分数
-            score += nums[i][k];
-            updateScore(score);
-
-            hasConflicted[i][k] = true; //表示已经叠加
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
-  setTimeout(updateView, 200); //等待500ms，为了让单元格移动效果能够显示完
-}
-
-function moveUp() {
-  for (var j = 0; j < 4; j++) {
-    for (var i = 1; i < 4; i++) {
-      if (nums[i][j] != 0) {
-        for (var k = 0; k < i; k++) {
-          if (nums[k][j] == 0 && noBlockVertical(j, k, i, nums)) {
-            //第j列的第k-i行之间是否有障碍物
-            showMoveAnimation(i, j, k, j);
-            nums[k][j] = nums[i][j];
-            nums[i][j] = 0;
-            break;
-          } else if (
-            nums[k][j] == nums[i][j] &&
-            noBlockVertical(j, k, i, nums) &&
-            !hasConflicted[k][j]
-          ) {
-            showMoveAnimation(i, j, k, j);
-            nums[k][j] += nums[i][j];
-            nums[i][j] = 0;
-            score += nums[k][j];
-            updateScore(score);
-
-            hasConflicted[k][j] = true;
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
-  setTimeout(updateView, 200); //等待500ms，为了让单元格移动效果能够显示完
-}
-
-function moveRight() {
-  for (var i = 0; i < 4; i++) {
-    for (var j = 2; j >= 0; j--) {
-      //j已经在最右边 所以没有3的挤压
-      if (nums[i][j] != 0) {
-        for (var k = 3; k > j; k--) {
-          if (nums[i][k] == 0 && noBlockHorizontal(i, j, k, nums)) {
-            //第i行的地j-k列是否有障碍物
-            //移动操作
-            showMoveAnimation(i, j, i, k);
-            nums[i][k] = nums[i][j];
-            nums[i][j] = 0;
-            break;
-          } else if (
-            nums[i][k] == nums[i][j] &&
-            noBlockHorizontal(i, j, k, nums) &&
-            !hasConflicted[i][k]
-          ) {
-            //进行叠加
-            showMoveAnimation(i, j, i, k);
-            nums[i][k] += nums[i][j];
-            nums[i][j] = 0;
-            //统计分数
-            score += nums[i][k];
-            updateScore(score);
-
-            hasConflicted[i][k] = true; //表示已经叠加
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
-  setTimeout(updateView, 200); //等待500ms，为了让单元格移动效果能够显示完
-}
-
-function moveDown() {
-  for (var j = 0; j < 4; j++) {
-    for (var i = 2; i >= 0; i--) {
-      if (nums[i][j] != 0) {
-        for (var k = 3; k > i; k--) {
-          if (nums[k][j] == 0 && noBlockVertical(j, i, k, nums)) {
-            //第j列的第i-k行之间是否有障碍物
-            showMoveAnimation(i, j, k, j);
-            nums[k][j] = nums[i][j];
-            nums[i][j] = 0;
-            break;
-          } else if (
-            nums[k][j] == nums[i][j] &&
-            noBlockVertical(j, i, k, nums) &&
-            !hasConflicted[k][j]
-          ) {
-            showMoveAnimation(i, j, k, j);
-            nums[k][j] += nums[i][j];
-            nums[i][j] = 0;
-            score += nums[k][j];
-            updateScore(score);
-
-            hasConflicted[k][j] = true;
-            break;
-          }
-        }
-      }
-    }
-  }
-  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
-  setTimeout(updateView, 200); //等待500ms，为了让单元格移动效果能够显示完
-}
-
-//获取上边的位置
-function getPosTop(i, j) {
-  return cellSpace + (cellWidth + cellSpace) * i;
-}
-//获取左边的位置
-function getPosLeft(i, j) {
-  return cellSpace + (cellWidth + cellSpace) * j;
-}
-//获取数字背景的颜色
 function getNumberBackgroundColor(num) {
   switch (num) {
     case 2:
@@ -503,7 +180,6 @@ function getNumberBackgroundColor(num) {
       break;
   }
 }
-//获取数字颜色
 function getNumberColor(num) {
   if (num <= 4) {
     return '#776e65';
@@ -511,23 +187,257 @@ function getNumberColor(num) {
     return '#fff';
   }
 }
-//判断是否没有空间
-function nospace(nums) {
-  for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 4; j++) {
-      if (nums[i][j] == 0) {
-        return false;
+function getNumberTextStyle(num) {
+  switch (num.toString().length) {
+    case 1:
+    case 2:
+      return '50px';
+    case 3:
+      return '40px';
+    case 4:
+      return '30px';
+  }
+}
+
+var startx = 0;
+var starty = 0;
+var endx = 0;
+var endy = 0;
+//实现键盘的响应
+$(document).keydown(function (event) {
+  //阻止事件的默认行为
+  event.preventDefault();
+
+  switch (event.keyCode) {
+    case 37: //left
+      //判断是否可以向左移动
+      if (canMoveLeft()) {
+        moveLeft();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+      break;
+    case 38: //up
+      if (canMoveUp()) {
+        moveUp();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+      break;
+    case 39: //right
+      if (canMoveRight()) {
+        moveRight();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+      break;
+    case 40: //down
+      if (canMoveDown()) {
+        moveDown();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+      break;
+    default:
+      break;
+  }
+});
+
+//实现触摸滑动响应
+document.addEventListener('touchstart', function (event) {
+  startx = event.touches[0].pageX;
+  starty = event.touches[0].pageY;
+});
+document.addEventListener('touchend', function (event) {
+  endx = event.changedTouches[0].pageX;
+  endy = event.changedTouches[0].pageY;
+
+  //判断滑动的方向
+  var deltax = endx - startx;
+  var deltay = endy - starty;
+
+  //判断当滑动距离小于一定的阈值时不做任何操作
+  if (
+    Math.abs(deltax) < documentWidth * 0.08 &&
+    Math.abs(deltay) < documentWidth * 0.08
+  ) {
+    return;
+  }
+
+  if (Math.abs(deltax) >= Math.abs(deltay)) {
+    //水平方向移动
+    if (deltax > 0) {
+      //向右移动
+      if (canMoveRight()) {
+        moveRight();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+    } else {
+      //向左移动
+      if (canMoveLeft()) {
+        moveLeft();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+    }
+  } else {
+    //垂直方向移动
+
+    if (deltay > 0) {
+      //向下移动
+      if (canMoveDown()) {
+        moveDown();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
+      }
+    } else {
+      //向上移动
+      if (canMoveUp()) {
+        moveUp();
+        setTimeout(genNewCell, 200);
+        setTimeout(IsGameOver, 500);
       }
     }
   }
-  return true;
+});
+
+function moveLeft() {
+  for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < 4; j++) {
+      //j已经在最左边 所以从1开始
+      if (num_data[i][j] != 0) {
+        for (var k = 0; k < j; k++) {
+          if (num_data[i][k] == 0 && noBlockHorizontal(i, k, j, num_data)) {
+            //第I行的地k-j列是否有障碍物
+            //移动操作
+            showMoveAnimation(i, j, i, k);
+            num_data[i][k] = num_data[i][j];
+            num_data[i][j] = 0;
+            break;
+          } else if (
+            num_data[i][k] == num_data[i][j] &&
+            noBlockHorizontal(i, k, j, num_data)
+          ) {
+            //进行叠加
+            showMoveAnimation(i, j, i, k);
+            num_data[i][k] += num_data[i][j];
+            num_data[i][j] = 0;
+            //统计分数
+            score.value += num_data[i][k];
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
+  setTimeout(updateNumView, 200); //等待500ms，为了让单元格移动效果能够显示完
 }
+
+function moveUp() {
+  for (var j = 0; j < 4; j++) {
+    for (var i = 1; i < 4; i++) {
+      if (num_data[i][j] != 0) {
+        for (var k = 0; k < i; k++) {
+          if (num_data[k][j] == 0 && noBlockVertical(j, k, i, num_data)) {
+            //第j列的第k-i行之间是否有障碍物
+            showMoveAnimation(i, j, k, j);
+            num_data[k][j] = num_data[i][j];
+            num_data[i][j] = 0;
+            break;
+          } else if (
+            num_data[k][j] == num_data[i][j] &&
+            noBlockVertical(j, k, i, num_data)
+          ) {
+            showMoveAnimation(i, j, k, j);
+            num_data[k][j] += num_data[i][j];
+            num_data[i][j] = 0;
+            score.value += num_data[k][j];
+
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
+  setTimeout(updateNumView, 200); //等待500ms，为了让单元格移动效果能够显示完
+}
+
+function moveRight() {
+  for (var i = 0; i < 4; i++) {
+    for (var j = 2; j >= 0; j--) {
+      //j已经在最右边 所以没有3的挤压
+      if (num_data[i][j] != 0) {
+        for (var k = 3; k > j; k--) {
+          if (num_data[i][k] == 0 && noBlockHorizontal(i, j, k, num_data)) {
+            //第i行的地j-k列是否有障碍物
+            //移动操作
+            showMoveAnimation(i, j, i, k);
+            num_data[i][k] = num_data[i][j];
+            num_data[i][j] = 0;
+            break;
+          } else if (
+            num_data[i][k] == num_data[i][j] &&
+            noBlockHorizontal(i, j, k, num_data)
+          ) {
+            //进行叠加
+            showMoveAnimation(i, j, i, k);
+            num_data[i][k] += num_data[i][j];
+            num_data[i][j] = 0;
+            //统计分数
+            score.value += num_data[i][k];
+
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
+  setTimeout(updateNumView, 200); //等待500ms，为了让单元格移动效果能够显示完
+}
+
+function moveDown() {
+  for (var j = 0; j < 4; j++) {
+    for (var i = 2; i >= 0; i--) {
+      if (num_data[i][j] != 0) {
+        for (var k = 3; k > i; k--) {
+          if (num_data[k][j] == 0 && noBlockVertical(j, i, k, num_data)) {
+            //第j列的第i-k行之间是否有障碍物
+            showMoveAnimation(i, j, k, j);
+            num_data[k][j] = num_data[i][j];
+            num_data[i][j] = 0;
+            break;
+          } else if (
+            num_data[k][j] == num_data[i][j] &&
+            noBlockVertical(j, i, k, num_data)
+          ) {
+            showMoveAnimation(i, j, k, j);
+            num_data[k][j] += num_data[i][j];
+            num_data[i][j] = 0;
+            score.value += num_data[k][j];
+
+            break;
+          }
+        }
+      }
+    }
+  }
+  //更新页面上的数字单元格，此处才是真正的更新显示移动后的效果
+  setTimeout(updateNumView, 200); //等待500ms，为了让单元格移动效果能够显示完
+}
+
 //向左移动
-function canMoveLeft(nums) {
+function canMoveLeft() {
   for (var i = 0; i < 4; i++) {
     for (var j = 1; j < 4; j++) {
-      if (nums[i][j] != 0) {
-        if (nums[i][j - 1] == 0 || nums[i][j - 1] == nums[i][j]) {
+      if (num_data[i][j] != 0) {
+        if (num_data[i][j - 1] == 0 || num_data[i][j - 1] == num_data[i][j]) {
           return true;
         }
       }
@@ -536,11 +446,11 @@ function canMoveLeft(nums) {
   return false;
 }
 //向上移动
-function canMoveUp(nums) {
+function canMoveUp() {
   for (var i = 1; i < 4; i++) {
     for (var j = 0; j < 4; j++) {
-      if (nums[i][j] != 0) {
-        if (nums[i - 1][j] == 0 || nums[i - 1][j] == nums[i][j]) {
+      if (num_data[i][j] != 0) {
+        if (num_data[i - 1][j] == 0 || num_data[i - 1][j] == num_data[i][j]) {
           return true;
         }
       }
@@ -549,12 +459,11 @@ function canMoveUp(nums) {
   return false;
 }
 //向右移动
-function canMoveRight(nums) {
+function canMoveRight() {
   for (var i = 0; i < 4; i++) {
     for (var j = 0; j < 3; j++) {
-      if (nums[i][j] != 0) {
-        if (nums[i][j + 1] == 0 || nums[i][j + 1] == nums[i][j]) {
-          //向右移动应该是+符号
+      if (num_data[i][j] != 0) {
+        if (num_data[i][j + 1] == 0 || num_data[i][j + 1] == num_data[i][j]) {
           return true;
         }
       }
@@ -563,11 +472,11 @@ function canMoveRight(nums) {
   return false;
 }
 //向下移动
-function canMoveDown(nums) {
+function canMoveDown() {
   for (var i = 0; i < 3; i++) {
     for (var j = 0; j < 4; j++) {
-      if (nums[i][j] != 0) {
-        if (nums[i + 1][j] == 0 || nums[i + 1][j] == nums[i][j]) {
+      if (num_data[i][j] != 0) {
+        if (num_data[i + 1][j] == 0 || num_data[i + 1][j] == num_data[i][j]) {
           return true;
         }
       }
@@ -576,68 +485,27 @@ function canMoveDown(nums) {
   return false;
 }
 //判断水平方向上是否没有障碍物
-function noBlockHorizontal(row, col1, col2, nums) {
+function noBlockHorizontal(row, col1, col2) {
   for (var i = col1 + 1; i < col2; i++) {
-    if (nums[row][i] != 0) {
+    if (num_data[row][i] != 0) {
       return false;
     }
   }
   return true;
 }
 //判断垂直方向上是否没有障碍物
-function noBlockVertical(col, row1, row2, nums) {
+function noBlockVertical(col, row1, row2) {
   for (var i = row1 + 1; i < row2; i++) {
-    if (nums[i][col] != 0) {
+    if (num_data[i][col] != 0) {
       return false;
     }
   }
   return true;
 }
-//更新分数
-function updateScore(score) {
-  $('#score').text(score);
-}
-//判断是否不能移动
-function noMove(nums) {
-  if (
-    canMoveLeft(nums) ||
-    canMoveUp(nums) ||
-    canMoveRight(nums) ||
-    canMoveDown(nums)
-  ) {
-    return false;
-  }
-  return true;
-}
-//判断游戏是否结束，两个条件1.没有空的单元格 2.不能移动
-
-function IsGameOver() {
-  if (nospace(nums) && noMove(nums)) {
-    alert('Game Over!');
-  }
-}
-//通过动画显示数字
-function showNumberWihthAnimation(i, j, randNumber) {
-  //console.log(i,j,randNumber);
-  var numberCell = $('#number-cell-' + i + '-' + j); //#符号很容易被忽视 ID
-  numberCell.css('background-color', getNumberBackgroundColor(randNumber));
-  numberCell.css('color', getNumberColor(randNumber));
-  numberCell.text(randNumber);
-
-  numberCell.animate(
-    {
-      width: cellWidth,
-      height: cellWidth,
-      top: getPosTop(i, j),
-      left: getPosLeft(i, j),
-    },
-    500
-  );
-}
 
 //通过动画显示移动的效果
 function showMoveAnimation(fromx, fromy, tox, toy) {
-  var numberCell = $('#number-cell-' + fromx + '-' + fromy);
+  var numberCell = $('#grid_num_' + fromx + '_' + fromy);
   numberCell.animate(
     {
       top: getPosTop(tox, toy),
@@ -646,80 +514,48 @@ function showMoveAnimation(fromx, fromy, tox, toy) {
     200
   );
 }
+
+function nospace() {
+  for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < 4; j++) {
+      if (num_data[i][j] == 0) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function noMove() {
+  if (canMoveLeft() || canMoveUp() || canMoveRight() || canMoveDown()) {
+    return false;
+  }
+  return true;
+}
+function IsGameOver() {
+  if (nospace() && noMove()) {
+    gaming.value = false;
+    $q.notify({
+      message: '游戏结束',
+      progress: true,
+    });
+  }
+}
 </script>
-<style>
-#header {
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
-}
-#header .title1 {
-  font: bold 50px Arial;
-  color: #776e65;
-  margin: 0 auto;
-}
-
-#header .title2 {
-  font: normal 18px Arial;
-  margin: 10px auto;
-  padding-left: 20%;
-}
-#header .wrapper {
-  display: flex;
-  justify-content: space-between;
-  width: 500px;
-  margin: 0 auto;
-}
-#header .score-wrapper {
-  width: 100px;
-  background-color: #8f7a66;
-  padding: 6px;
-  border-radius: 6px;
-}
-#header .score-wrapper #txt {
-  color: #d2c1c1;
-}
-#header .score-wrapper #score {
-  color: #fff;
-  font-size: 30px;
-  vertical-align: middle;
-}
-#header .newgame-wrapper #newGame {
-  width: 100px;
-  display: block;
-  background-color: #8f7a66;
-  text-decoration: none;
-  padding: 13px;
-  border-radius: 6px;
-  color: #fff;
-  font: bold 15px Arial;
-}
-#header .newgame-wrapper #newGame:hover {
-  background-color: #bdac9c;
-}
-#grid-container {
-  width: 460px;
-  height: 460px;
-  padding: 20px;
+<style scoped>
+:deep #grid_box {
   background-color: #bbada0;
-  margin: 10px auto;
-  border-radius: 10px;
-  position: relative;
+  border-radius: 5px;
 }
-#grid-container .grid-cell {
-  width: 100px;
-  height: 100px;
+:deep .grid_cell {
   background-color: #ccc0b3;
-  border-radius: 6px;
+  border-radius: 5px;
   position: absolute;
 }
-
-#grid-container .number-cell {
-  border-radius: 6px;
+:deep .grid_num {
+  border-radius: 5px;
   position: absolute;
-  background-color: red;
-  font: bold 50px Arial;
   text-align: center;
-  line-height: 100px;
+  font: bold 50px Arial;
+  line-height: v-bind(cell_width_ref);
 }
 </style>

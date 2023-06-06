@@ -20,9 +20,8 @@
           $route.path.toLowerCase().substring(0, 12) !== '/invigilator'
         "
         :id="user.info?.username"
-        class="q-mr-sm"
       ></user-avatar>
-      {{ user.info?.nickname }}
+      <p class="q-mx-sm q-my-auto">{{ user.info?.nickname }}</p>
     </q-btn>
     <q-menu
       v-model="showing"
