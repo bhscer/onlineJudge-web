@@ -3,7 +3,16 @@ html[class='dark'] {
   .bg-header-auto {
     background: var(--q-dark);
   }
+  .transparent_theme {
+    .q-card,
+    .q-markup-table,
+    .q-header,
+    .q-drawer {
+      background-color: rgba($color: black, $alpha: 0.8);
+    }
+  }
 }
+
 .bg-header-auto {
   background: var(--q-light);
   background-color: white;
@@ -11,6 +20,19 @@ html[class='dark'] {
 .svg-fill {
   fill: $primary;
 }
-.svg-stroke {//jiayou
+.svg-stroke {
+  //jiayou
   stroke: $primary;
+}
+
+.transparent_theme {
+  .q-card,
+  .q-markup-table,
+  .q-header,
+  .q-drawer,
+  .q-panel,
+  .q-tab-panel,
+  .q-tab-panels {
+    background-color: rgba($color: white, $alpha: 0.8);
+  }
 }

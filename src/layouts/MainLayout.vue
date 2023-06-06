@@ -1,10 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf" :style="bg_style">
-    <q-header
-      reveal
-      class="bg-header-auto"
-      :style="bg_style?.length ? 'opacity: 0.75;' : ''"
-    >
+  <q-layout view="lHh Lpr lFf" :style="bg_style" :class="use_theme">
+    <q-header reveal class="bg-header-auto">
       <q-toolbar class="text-primary">
         <q-btn
           flat
@@ -115,6 +111,7 @@ export default defineComponent({
     const bg_style = ref();
     const leftDrawerOpen = ref(false);
     const _time__ = ref(0);
+    const use_theme = ref('');
     let cur_link = '';
     const clickedFun = (linkNew: string) => {
       if (linkNew === cur_link) {
@@ -134,6 +131,11 @@ export default defineComponent({
      background-size: cover;
      background-attachment: fixed;`
           : '';
+      if (user.exists && user.info?.customBg) {
+        use_theme.value = 'transparent_theme';
+      } else {
+        use_theme.value = '';
+      }
       if (user.exists && user.info?.customColorFlag) {
         setCssVar('primary', user.info?.customColor);
       } else {
@@ -163,6 +165,7 @@ export default defineComponent({
       user,
       bg_style,
       changeBgFun,
+      use_theme,
     };
   },
   mounted() {
