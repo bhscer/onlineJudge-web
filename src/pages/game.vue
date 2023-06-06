@@ -17,7 +17,10 @@
           <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
         </div>
         <div class="q-mt-auto">
-          <q-btn :label="gaming ? '重新开始' : '开始'" @clicjiaoxnk="gameStart" />
+          <q-btn
+            :label="gaming ? '重新开始' : '开始'"
+            @clicjiaoxnk="gameStart"
+          />
         </div>
       </div>
       <div class="q-mt-md">
@@ -28,25 +31,43 @@
 </template>
 <script setup>
 import $ from 'jquery';
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 const $q = useQuasar();
-var cell_width = 80;
-var cell_space = 10;
+var cell_width = 100;
+var cell_space = 20;
 const cell_width_ref = ref(`${cell_width}px`);
 var num_data = [];
 const score = ref(0);
 const gaming = ref(false);
 
 onMounted(() => {
+  window.addEventListener('resize', resizeFun);
   gameStart();
 });
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeFun);
+});
 
-function gameStart() {
-  gaming.value = true;
-  score.value = 0;
+function resizeFun() {
+  changeSize();
+  initUI(false);
+  updateNumView();
+}
+function changeSize() {
+  if (window.innerWidth > 500) {
+    cell_width = 100;
+    cell_space = 20;
+  } else {
+    cell_width = window.innerWidth * 0.16;
+    cell_space = window.innerWidth * 0.04;
+  }
+  cell_width_ref.value = `${cell_width}px`;
+  console.log(cell_width, window.innerWidth);
+}
+function initUI(needInitNum) {
   // 创建元素
   $('#grid_box').empty();
   for (var i = 0; i < 4 * 4; i++) {
@@ -60,13 +81,19 @@ function gameStart() {
   $('.grid_cell').css('width', cell_width);
   $('.grid_cell').css('height', cell_width);
   for (var i = 0; i < 4; i++) {
-    num_data[i] = [];
+    if (needInitNum) num_data[i] = [];
     for (var j = 0; j < 4; j++) {
-      num_data[i].push(0);
+      if (needInitNum) num_data[i].push(0);
       $(`#grid_cell_${i}_${j}`).css('top', getPosTop(i, j));
       $(`#grid_cell_${i}_${j}`).css('left', getPosLeft(i, j));
     }
   }
+}
+function gameStart() {
+  gaming.value = true;
+  score.value = 0;
+  changeSize();
+  initUI(true);
   updateNumView();
   genNewCell();
   genNewCell();
@@ -191,11 +218,11 @@ function getNumberTextStyle(num) {
   switch (num.toString().length) {
     case 1:
     case 2:
-      return '50px';
+      return `${parseInt((50 * cell_width) / 100)}px`;
     case 3:
-      return '40px';
+      return `${parseInt((40 * cell_width) / 100)}px`;
     case 4:
-      return '30px';
+      return `${parseInt((30 * cell_width) / 100)}px`;
   }
 }
 
@@ -214,28 +241,28 @@ $(document).keydown(function (event) {
       if (canMoveLeft()) {
         moveLeft();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
       break;
     case 38: //up
       if (canMoveUp()) {
         moveUp();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
       break;
     case 39: //right
       if (canMoveRight()) {
         moveRight();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
       break;
     case 40: //down
       if (canMoveDown()) {
         moveDown();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
       break;
     default:
@@ -258,8 +285,8 @@ document.addEventListener('touchend', function (event) {
 
   //判断当滑动距离小于一定的阈值时不做任何操作
   if (
-    Math.abs(deltax) < documentWidth * 0.08 &&
-    Math.abs(deltay) < documentWidth * 0.08
+    Math.abs(deltax) < window.innerWidth * 0.08 &&
+    Math.abs(deltay) < window.innerWidth * 0.08
   ) {
     return;
   }
@@ -271,14 +298,14 @@ document.addEventListener('touchend', function (event) {
       if (canMoveRight()) {
         moveRight();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
     } else {
       //向左移动
       if (canMoveLeft()) {
         moveLeft();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
     }
   } else {
@@ -289,14 +316,14 @@ document.addEventListener('touchend', function (event) {
       if (canMoveDown()) {
         moveDown();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
     } else {
       //向上移动
       if (canMoveUp()) {
         moveUp();
         setTimeout(genNewCell, 200);
-        setTimeout(IsGameOver, 500);
+        setTimeout(isGameOver, 500);
       }
     }
   }
@@ -531,7 +558,7 @@ function noMove() {
   }
   return true;
 }
-function IsGameOver() {
+function isGameOver() {
   if (nospace() && noMove()) {
     gaming.value = false;
     $q.notify({
