@@ -15,11 +15,12 @@
         <div>
           <div class="text-h5"><strong>2048</strong></div>
           <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
+          <p v-if="game_over">游戏结束</p>
         </div>
         <div class="q-mt-auto">
           <q-btn
-            :label="gaming ? '重新开始' : '开始'"
-            @clicjiaoxnk="gameStart"
+            :label="gaming || game_over ? '重新开始' : '开始'"
+            @click="gameStart"
           />
         </div>
       </div>
@@ -42,10 +43,11 @@ const cell_width_ref = ref(`${cell_width}px`);
 var num_data = [];
 const score = ref(0);
 const gaming = ref(false);
+const game_over = ref(false);
 
 onMounted(() => {
   window.addEventListener('resize', resizeFun);
-  gameStart();
+  resizeFun();
 });
 onUnmounted(() => {
   window.removeEventListener('resize', resizeFun);
@@ -91,6 +93,7 @@ function initUI(needInitNum) {
 }
 function gameStart() {
   gaming.value = true;
+  game_over.value = false;
   score.value = 0;
   changeSize();
   initUI(true);
@@ -234,36 +237,21 @@ var endy = 0;
 $(document).keydown(function (event) {
   //阻止事件的默认行为
   event.preventDefault();
+  if (!gaming.value) return;
 
   switch (event.keyCode) {
     case 37: //left
       //判断是否可以向左移动
-      if (canMoveLeft()) {
-        moveLeft();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionLeft();
       break;
     case 38: //up
-      if (canMoveUp()) {
-        moveUp();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionUp();
       break;
     case 39: //right
-      if (canMoveRight()) {
-        moveRight();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionRight();
       break;
     case 40: //down
-      if (canMoveDown()) {
-        moveDown();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionDown();
       break;
     default:
       break;
@@ -276,6 +264,7 @@ document.addEventListener('touchstart', function (event) {
   starty = event.touches[0].pageY;
 });
 document.addEventListener('touchend', function (event) {
+  if (!gaming.value) return;
   endx = event.changedTouches[0].pageX;
   endy = event.changedTouches[0].pageY;
 
@@ -294,40 +283,49 @@ document.addEventListener('touchend', function (event) {
   if (Math.abs(deltax) >= Math.abs(deltay)) {
     //水平方向移动
     if (deltax > 0) {
-      //向右移动
-      if (canMoveRight()) {
-        moveRight();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionRight();
     } else {
-      //向左移动
-      if (canMoveLeft()) {
-        moveLeft();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionLeft();
     }
   } else {
     //垂直方向移动
-
     if (deltay > 0) {
-      //向下移动
-      if (canMoveDown()) {
-        moveDown();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionDown();
     } else {
-      //向上移动
-      if (canMoveUp()) {
-        moveUp();
-        setTimeout(genNewCell, 200);
-        setTimeout(isGameOver, 500);
-      }
+      actionUp();
     }
   }
 });
+
+function actionLeft() {
+  if (canMoveLeft()) {
+    moveLeft();
+    setTimeout(genNewCell, 200);
+    setTimeout(isGameOver, 500);
+  }
+}
+function actionRight() {
+  if (canMoveRight()) {
+    moveRight();
+    setTimeout(genNewCell, 200);
+    setTimeout(isGameOver, 500);
+  }
+}
+function actionDown() {
+  if (canMoveDown()) {
+    moveDown();
+    setTimeout(genNewCell, 200);
+    setTimeout(isGameOver, 500);
+  }
+}
+
+function actionUp() {
+  if (canMoveUp()) {
+    moveUp();
+    setTimeout(genNewCell, 200);
+    setTimeout(isGameOver, 500);
+  }
+}
 
 function moveLeft() {
   for (var i = 0; i < 4; i++) {
@@ -560,6 +558,7 @@ function noMove() {
 }
 function isGameOver() {
   if (nospace() && noMove()) {
+    game_over.value = true;
     gaming.value = false;
     $q.notify({
       message: '游戏结束',
