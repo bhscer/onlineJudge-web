@@ -177,6 +177,7 @@ function checkFormInputted(type: string) {
   }
   return false;
 }
+
 const loginFun = () => {
   var ckr = checkFormInputted('login');
   if (ckr) {
@@ -203,7 +204,11 @@ const loginFun = () => {
       });
       logining.value = false;
 
-      router.push('/');
+      if (router.options.history.state.back) {
+        router.go(-1);
+      } else {
+        router.push('/');
+      }
     })
     .catch((error) => {
       logining.value = false;

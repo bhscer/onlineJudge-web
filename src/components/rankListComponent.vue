@@ -207,6 +207,7 @@ export default defineComponent({
             }
             console.log('show:',page_show.value);
             if (refreshTimer!==null) clearInterval(refreshTimer)
+            if (!page_show.value) return
             // show_loading.value = true
             show_loading_mini.value = true
             err_msg.value = ''
@@ -284,8 +285,8 @@ export default defineComponent({
                       rank_list.value.push(tmp_dict)
                     }
                     rank_list.value.sort(function(a,b){
-                      if (a.res.solved != b.res.solved) return a.res.solved > b.res.solved
-                      return a.res.timeCostWithPenalties < b.res.timeCostWithPenalties
+                      if (a.res.solved != b.res.solved) return b.res.solved - a.res.solved
+                      return a.res.timeCostWithPenalties - b.res.timeCostWithPenalties
                     })
                     for (var i=0;i<rank_list.value.length;i++)
                     {

@@ -73,7 +73,7 @@ function getCfContestList() {
           }
         });
         cf_contest_list.value.sort((x, y) => {
-          return x.startTimeSeconds < y.startTimeSeconds;
+          return x.startTimeSeconds - y.startTimeSeconds;
         });
         // console.log(cf_contest_list.value);
       }

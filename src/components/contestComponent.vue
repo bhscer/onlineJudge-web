@@ -241,7 +241,7 @@ export default {
 
     const getWindowInfo = () => {
       // console.log(window.innerWidth)
-      if (window.innerWidth > 500) {
+      if (window.innerWidth > 1000) {
         qmarkstyle.value = '';
       } else {
         qmarkstyle.value = `max-width:${window.innerWidth * 0.95}px`;
