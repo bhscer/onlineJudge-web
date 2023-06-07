@@ -8,7 +8,7 @@ html[class='dark'] {
     .q-markup-table,
     .q-header,
     .q-drawer {
-      background-color: rgba($color: black, $alpha: 0.8);
+      background-color: rgba($color: black, $alpha: 0.75);
     }
   }
 }
@@ -33,6 +33,6 @@ html[class='dark'] {
   .q-panel,
   .q-tab-panel,
   .q-tab-panels {
-    background-color: rgba($color: white, $alpha: 0.8);
+    background-color: rgba($color: white, $alpha: 0.75);
   }
 }
