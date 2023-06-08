@@ -13,7 +13,10 @@
         "
       >
         <div>
-          <div class="text-h5"><strong>2048</strong></div>
+          <div class="text-h5">
+            <strong>2048</strong>
+            <canvas id="canvas_star" class="q-ml-sm"></canvas>
+          </div>
           <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
           <p v-if="game_over">游戏结束</p>
         </div>
@@ -32,7 +35,7 @@
 </template>
 <script setup>
 import $ from 'jquery';
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
@@ -47,16 +50,53 @@ const game_over = ref(false);
 
 onMounted(() => {
   window.addEventListener('resize', resizeFun);
+  genStar();
   resizeFun();
 });
 onUnmounted(() => {
   window.removeEventListener('resize', resizeFun);
 });
-
+watch(
+  () => $q.dark.isActive,
+  () => {
+    genStar();
+  }
+);
+function genStar() {
+  const star_width = 18;
+  var canvas = document.getElementById('canvas_star');
+  console.log(canvas);
+  var context = canvas.getContext('2d');
+  // context.clearRect(0,0,200,200);
+  canvas.height = star_width;
+  canvas.width = star_width;
+  var padding_left = star_width / 2;
+  var padding_top = star_width / 2;
+  var startRa = 72;
+  var R = star_width / 2;
+  var r = star_width / 4;
+  context.moveTo(10, 0);
+  // 逆时针计算五角星外围10个点的坐标
+  for (let i = 0; i < 5; i++) {
+    // 外围凸出的每个点坐标
+    var x = Math.cos(((startRa + 18 + 72 * i) / 180) * Math.PI) * R;
+    var y = -Math.sin(((startRa + 18 + 72 * i) / 180) * Math.PI) * R;
+    context.lineTo(x + padding_left, y + padding_top);
+    // 外围凹下去的每个点坐标
+    x = Math.cos(((startRa + 54 + 72 * i) / 180) * Math.PI) * r;
+    y = -Math.sin(((startRa + 54 + 72 * i) / 180) * Math.PI) * r;
+    context.lineTo(x + padding_left, y + padding_top);
+  }
+  context.closePath();
+  context.strokeStyle = $q.dark.isActive ? 'white' : 'black';
+  context.lineWidth = 2;
+  context.stroke();
+  // context.restore();
+}
 function resizeFun() {
   changeSize();
   initUI(false);
-  updateNumView();
+  if (gaming.value) updateNumView();
 }
 function changeSize() {
   if (window.innerWidth > 500) {
