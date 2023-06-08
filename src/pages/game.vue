@@ -17,7 +17,7 @@
             <strong class="q-my-auto">2048</strong>
             <canvas id="canvas_star" class="q-ml-sm q-my-auto"></canvas>
           </div>
-          <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
+          <p class="q-ma-none q-pa-none" v-if="gaming || game_over">{{ `分数:${score}` }}</p>
           <p v-if="game_over">游戏结束</p>
         </div>
         <div class="q-mt-auto">
