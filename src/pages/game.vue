@@ -14,8 +14,8 @@
       >
         <div>
           <div class="text-h5">
-            <strong>2048</strong>
-            <canvas id="canvas_star" class="q-ml-sm"></canvas>
+            <strong class="q-my-auto">2048</strong>
+            <canvas id="canvas_star" class="q-ml-sm q-my-auto"></canvas>
           </div>
           <p class="q-ma-none q-pa-none">{{ `分数:${score}` }}</p>
           <p v-if="game_over">游戏结束</p>
@@ -68,10 +68,10 @@ function genStar() {
   console.log(canvas);
   var context = canvas.getContext('2d');
   // context.clearRect(0,0,200,200);
-  canvas.height = star_width;
-  canvas.width = star_width;
-  var padding_left = star_width / 2;
-  var padding_top = star_width / 2;
+  canvas.height = star_width+2;
+  canvas.width = star_width+2;
+  var padding_left = star_width / 2+1;
+  var padding_top = star_width / 2+1;
   var startRa = 72;
   var R = star_width / 2;
   var r = star_width / 4;
