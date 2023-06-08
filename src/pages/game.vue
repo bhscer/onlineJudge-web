@@ -17,7 +17,9 @@
             <strong class="q-my-auto">2048</strong>
             <canvas id="canvas_star" class="q-ml-sm q-my-auto"></canvas>
           </div>
-          <p class="q-ma-none q-pa-none" v-if="gaming || game_over">{{ `分数:${score}` }}</p>
+          <p class="q-ma-none q-pa-none" v-if="gaming || game_over">
+            {{ `分数:${score}` }}
+          </p>
           <p v-if="game_over">游戏结束</p>
         </div>
         <div class="q-mt-auto">
@@ -68,10 +70,10 @@ function genStar() {
   console.log(canvas);
   var context = canvas.getContext('2d');
   // context.clearRect(0,0,200,200);
-  canvas.height = star_width+2;
-  canvas.width = star_width+2;
-  var padding_left = star_width / 2+1;
-  var padding_top = star_width / 2+1;
+  canvas.height = star_width + 2;
+  canvas.width = star_width + 2;
+  var padding_left = star_width / 2 + 1;
+  var padding_top = star_width / 2 + 1;
   var startRa = 72;
   var R = star_width / 2;
   var r = star_width / 4;
@@ -148,15 +150,19 @@ function getPosLeft(r, c) {
   return c * cell_width + (c + 1) * cell_space;
 }
 function genNewCell() {
-  var finished = false;
-  while (!finished) {
-    var x = Math.floor(Math.random() * 4);
-    var y = Math.floor(Math.random() * 4);
-    if (num_data[x][y] === 0) {
-      num_data[x][y] = Math.random() < 0.5 ? 2 : 4;
-      finished = true;
+  var q = [];
+  for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < 4; j++) {
+      if (num_data[i][j] === 0) {
+        q.push([i, j]);
+      }
     }
   }
+  var select = Math.floor(Math.random() * q.length);
+  var x = q[select][0];
+  var y = q[select][1];
+  num_data[x][y] = Math.random() < 0.5 ? 2 : 4;
+
   var selected_item = $(`#grid_num_${x}_${y}`);
   selected_item.text(num_data[x][y]);
   selected_item.css(
@@ -211,43 +217,30 @@ function getNumberBackgroundColor(num) {
   switch (num) {
     case 2:
       return '#eee4da';
-      break;
     case 4:
       return '#ede0c8';
-      break;
     case 8:
       return '#f2b179';
-      break;
     case 16:
       return '#f59563';
-      break;
     case 32:
       return '#f67c5f';
-      break;
     case 64:
       return '#f65e3b';
-      break;
     case 128:
       return '#edcf72';
-      break;
     case 256:
       return '#edcc61';
-      break;
     case 512:
       return '#9c0';
-      break;
     case 1024:
       return '#33b5e5';
-      break;
     case 2048:
       return '#09c';
-      break;
     case 4096:
       return '#a6c';
-      break;
     case 8192:
       return '#93c';
-      break;
   }
 }
 function getNumberColor(num) {
@@ -373,7 +366,7 @@ function moveLeft() {
       //j已经在最左边 所以从1开始
       if (num_data[i][j] != 0) {
         for (var k = 0; k < j; k++) {
-          if (num_data[i][k] == 0 && noBlockHorizontal(i, k, j, num_data)) {
+          if (num_data[i][k] == 0 && noBlockHorizontal(i, k, j)) {
             //第I行的地k-j列是否有障碍物
             //移动操作
             showMoveAnimation(i, j, i, k);
@@ -382,7 +375,7 @@ function moveLeft() {
             break;
           } else if (
             num_data[i][k] == num_data[i][j] &&
-            noBlockHorizontal(i, k, j, num_data)
+            noBlockHorizontal(i, k, j)
           ) {
             //进行叠加
             showMoveAnimation(i, j, i, k);
@@ -406,7 +399,7 @@ function moveUp() {
     for (var i = 1; i < 4; i++) {
       if (num_data[i][j] != 0) {
         for (var k = 0; k < i; k++) {
-          if (num_data[k][j] == 0 && noBlockVertical(j, k, i, num_data)) {
+          if (num_data[k][j] == 0 && noBlockVertical(j, k, i)) {
             //第j列的第k-i行之间是否有障碍物
             showMoveAnimation(i, j, k, j);
             num_data[k][j] = num_data[i][j];
@@ -414,7 +407,7 @@ function moveUp() {
             break;
           } else if (
             num_data[k][j] == num_data[i][j] &&
-            noBlockVertical(j, k, i, num_data)
+            noBlockVertical(j, k, i)
           ) {
             showMoveAnimation(i, j, k, j);
             num_data[k][j] += num_data[i][j];
@@ -438,7 +431,7 @@ function moveRight() {
       //j已经在最右边 所以没有3的挤压
       if (num_data[i][j] != 0) {
         for (var k = 3; k > j; k--) {
-          if (num_data[i][k] == 0 && noBlockHorizontal(i, j, k, num_data)) {
+          if (num_data[i][k] == 0 && noBlockHorizontal(i, j, k)) {
             //第i行的地j-k列是否有障碍物
             //移动操作
             showMoveAnimation(i, j, i, k);
@@ -447,7 +440,7 @@ function moveRight() {
             break;
           } else if (
             num_data[i][k] == num_data[i][j] &&
-            noBlockHorizontal(i, j, k, num_data)
+            noBlockHorizontal(i, j, k)
           ) {
             //进行叠加
             showMoveAnimation(i, j, i, k);
@@ -472,7 +465,7 @@ function moveDown() {
     for (var i = 2; i >= 0; i--) {
       if (num_data[i][j] != 0) {
         for (var k = 3; k > i; k--) {
-          if (num_data[k][j] == 0 && noBlockVertical(j, i, k, num_data)) {
+          if (num_data[k][j] == 0 && noBlockVertical(j, i, k)) {
             //第j列的第i-k行之间是否有障碍物
             showMoveAnimation(i, j, k, j);
             num_data[k][j] = num_data[i][j];
@@ -480,7 +473,7 @@ function moveDown() {
             break;
           } else if (
             num_data[k][j] == num_data[i][j] &&
-            noBlockVertical(j, i, k, num_data)
+            noBlockVertical(j, i, k)
           ) {
             showMoveAnimation(i, j, k, j);
             num_data[k][j] += num_data[i][j];
