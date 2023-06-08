@@ -5,7 +5,7 @@
   >
     <q-card class="q-pa-lg">
       <q-spinner-gears size="50px" color="primary" />
-      <p class="q-ma-none q-pa-none">{{ loading_msg || '加载中' }}</p>
+      <p class="q-my-none q-py-none q-mx-auto">{{ loading_msg || '加载中' }}</p>
     </q-card>
   </q-inner-loading>
   <q-card v-if="message?.length" class="q-pa-lg">
