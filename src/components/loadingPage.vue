@@ -4,8 +4,10 @@
     style="background-color: transparent"
   >
     <q-card class="q-pa-lg">
-      <q-spinner-gears size="50px" color="primary"/>
-      <p class="q-my-none q-py-none" align="center">{{ loading_msg || '加载中' }}</p>
+      <q-spinner-gears size="50px" color="primary" />
+      <p class="q-my-none q-py-none" align="center">
+        {{ loading_msg || '加载中' }}
+      </p>
     </q-card>
   </q-inner-loading>
   <q-card v-if="message?.length" class="q-pa-lg">

@@ -150,6 +150,22 @@
                   ></div>
 
                   <a
+                    v-if="
+                      $route.path.toLowerCase().substring(0, 12) ===
+                      '/invigilator'.toLowerCase()
+                    "
+                    class="q-my-auto q-ml-md"
+                    :style="`color:${item.boardColor}`"
+                    @click.prevent="
+                      /* $router.push(`/record?sid=${item.submissionId}`) */
+                      submissionId = item.submissionId;
+                      showSubmitResult = true;
+                    "
+                  >
+                    {{ item.boardText }}
+                  </a>
+                  <a
+                    v-else
                     class="q-my-auto q-ml-md"
                     :style="`color:${item.boardColor}`"
                     @click.prevent="
@@ -166,9 +182,33 @@
               <td class="text-left">
                 <a
                   @click.prevent="
-                    $router.push(`/problem?type=0&id=${item.sourceProblemId}`)
+                    if ($route.path.toLowerCase() === '/status'.toLowerCase()) {
+                      $router.push(
+                        `/problem?type=0&id=${item.sourceProblemId}`
+                      );
+                    } else {
+                      if (
+                        $route.path.toLowerCase().substring(0, 12) ===
+                        '/invigilator'.toLowerCase()
+                      ) {
+                        $router.push(
+                          `/invigilator/problem?type=1&cid=${item.sourceContestId}&pid=${item.sourceProblemIdInContest}`
+                        );
+                      } else {
+                        $router.push(
+                          `/problem?type=1&cid=${item.sourceContestId}&pid=${item.sourceProblemIdInContest}`
+                        );
+                      }
+                    }
                   "
-                  :href="`/problem?type=0&id=${item.sourceProblemId}`"
+                  :href="
+                    $route.path.toLowerCase() === '/status'.toLowerCase()
+                      ? `/problem?type=0&id=${item.sourceProblemId}`
+                      : $route.path.toLowerCase().substring(0, 12) ===
+                        '/invigilator'.toLowerCase()
+                      ? `/invigilator/problem?type=1&cid=${item.sourceContestId}&pid=${item.sourceProblemIdInContest}`
+                      : `/problem?type=1&cid=${item.sourceContestId}&pid=${item.sourceProblemIdInContest}`
+                  "
                   >{{
                     `${item.sourceProblemId}: ${item.sourceProblemTitle}`
                   }}</a
