@@ -50,7 +50,7 @@
           id="music_label_detail"
         >
           <source
-            src="@/assets/Key Sounds Label - Bloom of Youth.mp3"
+            src="@/assets/BGM.mp3"
             type="audio/mpeg"
           />
         </audio>
