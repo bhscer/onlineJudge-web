@@ -29,6 +29,32 @@
           />
         </div>
       </div>
+      <div style="cursor: pointer">
+        <!-- <audio
+        autoplay="autoplay" controls="controls" loop="loop"
+            src="@/assets/Key Sounds Label - Bloom of Youth.mp3" ></audio> -->
+
+        <div id="music_label_mini" @click="changeMusicUI">
+          <q-icon
+            size="sm"
+            :name="show_music_detail ? 'expand_more' : 'expand_less'"
+          ></q-icon>
+          <q-icon name="music_note"></q-icon>
+          <span>Key Sounds Label - Bloom of Youth</span>
+        </div>
+
+        <audio
+          autoplay="autoplay"
+          controls="controls"
+          loop="loop"
+          id="music_label_detail"
+        >
+          <source
+            src="@/assets/Key Sounds Label - Bloom of Youth.mp3"
+            type="audio/mpeg"
+          />
+        </audio>
+      </div>
       <div class="q-mt-md">
         <div id="grid_box" style="position: relative"></div>
       </div>
@@ -49,7 +75,10 @@ var num_data = [];
 const score = ref(0);
 const gaming = ref(false);
 const game_over = ref(false);
-
+const show_music_detail = ref(true);
+// $(document).ready(function () {
+//   autoPlayMusic();
+// });
 onMounted(() => {
   window.addEventListener('resize', resizeFun);
   genStar();
@@ -64,6 +93,25 @@ watch(
     genStar();
   }
 );
+// watch(
+//   ()=>show_music_detail,
+//   ()=>{
+//     $('#music_label_detail').css('display',show_music_detail?'block':'none');
+//   }
+// )
+
+function changeMusicUI() {
+  show_music_detail.value = !show_music_detail.value;
+  $('#music_label_detail').css(
+    'display',
+    show_music_detail.value ? 'block' : 'none'
+  );
+}
+function autoPlayMusic() {
+  var audio = $('#music_label_detail')[0];
+  console.log(audio);
+  audio.play();
+}
 function genStar() {
   const star_width = 18;
   var canvas = document.getElementById('canvas_star');
