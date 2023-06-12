@@ -49,10 +49,7 @@
           loop="loop"
           id="music_label_detail"
         >
-          <source
-            src="@/assets/BGM.mp3"
-            type="audio/mpeg"
-          />
+          <source src="@/assets/BGM.mp3" type="audio/mpeg" />
         </audio>
       </div>
       <div class="q-mt-md">

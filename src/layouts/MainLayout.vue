@@ -154,6 +154,21 @@ export default defineComponent({
         changeBgFun();
       }
     );
+    watch(
+      () => leftDrawerOpen.value,
+      (to, from) => {
+        if (window.innerWidth > 1010) return; // 小尺寸在
+
+        if (user.exists && user.info?.customBg) {
+          use_theme.value = 'transparent_theme';
+        } else {
+          use_theme.value = '';
+        }
+        if (to === true) {
+          use_theme.value = '';
+        }
+      }
+    );
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
