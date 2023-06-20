@@ -10,11 +10,22 @@
             color="orange"
             class="q-mt-auto q-ml-md"
             style="height: fit-content"
-            >{{ ['Not start', 'Competing', 'Ended'][tstatus] }}</q-badge
+            >{{ ['未开始', '比赛中', '已封榜', '已结束'][tstatus] }}</q-badge
           >
           <q-badge outline color="primary" class="q-mt-auto q-ml-md">{{
             countdown_text
           }}</q-badge>
+          <q-badge
+            color="teal"
+            outline
+            class="q-mt-auto q-ml-md"
+            style="height: fit-content"
+          >
+            <a
+              :href="`${$api_url}admin/invigilator/query/userExcel/contest/${contest_info.contestId}/token/${user.info?.token}`"
+              >考生名单</a
+            >
+          </q-badge>
           <div
             v-if="show_loading_mini"
             style="display: flex"
@@ -98,6 +109,7 @@ import { useQuasar } from 'quasar';
 import RankListComponent from '@/components/rankListComponent.vue';
 import LoadingPage from '@/components/loadingPage.vue';
 import InvigilatorUserDetail from '@/components/invigilatorUserDetail.vue';
+import { useUserStore } from '@/stores/user';
 
 function dateStrChangeTimeTamp(dateStr) {
   dateStr = dateStr.substring(0, 19);
@@ -116,6 +128,7 @@ export default {
   },
   setup() {
     const { proxy } = getCurrentInstance();
+    const user = useUserStore();
     const tab = ref('description');
     const $q = useQuasar();
     let this_route = useRoute();
@@ -150,10 +163,13 @@ export default {
     };
     const timerCountdown = () => {
       var timeL = contest_info.value.contestTimeBeginStamp * 1000;
+      var timeFrozen = contest_info.value.contestFrozeTimeStamp * 1000;
       var timeR = contest_info.value.contestTimeEndStamp * 1000;
       var curr = Date.now();
+      var lenth = timeR - timeL + 1;
+
       var dit = parseInt((timeL - curr) / 1000);
-      if (timeL <= curr) {
+      if (timeL <= curr && curr <= timeR) {
         // 已开始
         dit = parseInt((timeR - curr) / 1000);
       }
@@ -176,8 +192,9 @@ export default {
           message: '比赛开始',
           progress: true,
         });
+        clearInterval(cgTimeTimerCountdown);
       }
-      if (tstatus.value == 1 && timeR <= curr) {
+      if (tstatus.value !== 3 && timeR <= curr) {
         $q.notify({
           type: 'negative',
           message: '比赛结束',
@@ -185,6 +202,15 @@ export default {
         });
         countdown_text.value = '已结束';
         clearInterval(cgTimeTimerCountdown);
+      }
+      if (timeL <= curr && curr <= timeR) {
+        tstatus.value = 1;
+        if (contest_info.value.needFroze && curr >= timeFrozen) {
+          tstatus.value = 2;
+        }
+      }
+      if (curr > timeR) {
+        tstatus.value = 3;
       }
     };
 
@@ -270,8 +296,14 @@ export default {
               Date.now() / 1000
             ) {
               tstatus.value = 1; // 比赛中
+              if (
+                contest_info.value['needFroze'] &&
+                contest_info.value['contestFrozeTimeStamp'] <= Date.now() / 1000
+              ) {
+                tstatus.value = 2;
+              }
             } else {
-              tstatus.value = 2;
+              tstatus.value = 3;
             }
           }
           timerCountdown();
@@ -323,6 +355,7 @@ export default {
       autoRefreshInfoTimer,
       cgTimeTimerCountdown,
       userDetail_dict,
+      user,
     };
   },
   mounted() {

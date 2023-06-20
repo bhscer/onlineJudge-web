@@ -207,10 +207,10 @@
                 dense
               >
                 {{ `${log.type === 1 ? '重新报警' : '解除报警'}` }}
-                <template v-slot:loading>
+                <!-- <template v-slot:loading>
                   <q-spinner-hourglass class="on-left" />
                   更改中
-                </template>
+                </template> -->
               </q-btn>
             </div>
             <q-img
